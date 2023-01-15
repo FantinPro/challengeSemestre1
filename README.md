@@ -7,9 +7,6 @@ docker-compose up -d
 ```
 # URL
 http://127.0.0.1:8000
-
-# Env DB (à mettre dans .env, si pas déjà présent)
-DATABASE_URL="postgresql://postgres:password@db:5432/db?serverVersion=13&charset=utf8"
 ```
 
 ## Commandes utiles
@@ -53,9 +50,6 @@ php bin/console doctrine:schema:update --force
 php bin/console doctrine:migrations:migrate
 ```
 
-## Gestion des messages flash
-https://symfony.com/doc/current/controller.html#flash-messages
-
 ## Fixtures
 ```
 php bin/console doctrine:fixtures:load
@@ -65,9 +59,6 @@ php bin/console doctrine:fixtures:load
 ```
 php bin/console make:voter
 ```
-
-## Stripe webhook
-```stripe listen --forward-to localhost/webhook/stripe```
 
 ## cache clear
 ```
