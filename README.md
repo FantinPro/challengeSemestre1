@@ -6,7 +6,8 @@ docker-compose up -d
 
 ```
 # URL
-http://127.0.0.1:8000
+http://127.0.0.1:8000 ou http://localhost:8000
+acceder dashboard api platform: http://localhost:8000/api
 ```
 
 ## Commandes utiles
