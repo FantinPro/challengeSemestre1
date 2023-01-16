@@ -1,4 +1,5 @@
 .idea
+.vscode
 .env
 .env*
 ./back
@@ -14,4 +15,7 @@
 /back/.idea
 
 /front/.vscode
-/font/build
+/front/build
+/front/node_modules
+
+db-data-postgres
