@@ -1,0 +1,13 @@
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+
+db-data-postgres
+
+
+/config/jwt
+
+.env
+.env*
+.idea
