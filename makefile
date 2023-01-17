@@ -23,8 +23,5 @@ schema-update:
 fixtures:
 	cd ./back && php bin/console doctrine:fixtures:load
 
-fixtures:
-	docker-compose exec node npm --workspace server run fixtures
-
 start: up
 	cd ./back && symfony serve
