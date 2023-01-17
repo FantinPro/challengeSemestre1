@@ -32,7 +32,7 @@ class UserToUser
     private ?User $other = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $status = null;
+    private ?string $status = 'following';
 
     public function getId(): ?int
     {

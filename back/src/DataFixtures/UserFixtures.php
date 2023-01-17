@@ -19,18 +19,20 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $teacher = (new User())
+        $admin = (new User())
             ->setEmail('admin@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_ADMIN'])
+            ->setUsername('admin')
         ;
-        $teacher->setPassword($this->userPasswordHasher->hashPassword($teacher, 'password'));
-        $manager->persist($teacher);
+        $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'password'));
+        $manager->persist($admin);
 
         $user = (new User())
             ->setEmail('user@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_USER'])
+            ->setUsername('defaultUser')
         ;
         $user->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
         $manager->persist($user);
@@ -47,6 +49,7 @@ class UserFixtures extends Fixture
             ->setEmail('notverified@gmail.com')
             ->setIsVerified(false)
             ->setRoles(['ROLE_USER'])
+            ->setUsername('notverified')
         ;
         $notVerfiedUser->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
         $manager->persist($notVerfiedUser);

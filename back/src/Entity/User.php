@@ -60,8 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: TokenResetPassword::class, orphanRemoval: true)]
     private Collection $tokenResetPasswords;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $isPremium = null;
+    #[ORM\Column]
+    private ?bool $isPremium = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePicture = null;
@@ -75,11 +75,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'other', targetEntity: UserToUser::class)]
     private Collection $followers;
 
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Message::class)]
+    private Collection $messages;
+
+    #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
+    private Collection $messagesSharedByUser;
+
+    #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
+    private Collection $reports;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
+    private Collection $ads;
+
+    #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
+    private Collection $stats;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->followers = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->messagesSharedByUser = new ArrayCollection();
+        $this->reports = new ArrayCollection();
+        $this->ads = new ArrayCollection();
+        $this->stats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -284,6 +304,153 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($follower->getOther() === $this) {
                 $follower->setOther(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getCreator() === $this) {
+                $message->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessagesSharedByUser(): Collection
+    {
+        return $this->messagesSharedByUser;
+    }
+
+    public function addMessagesSharedByUser(Message $messagesSharedByUser): self
+    {
+        if (!$this->messagesSharedByUser->contains($messagesSharedByUser)) {
+            $this->messagesSharedByUser->add($messagesSharedByUser);
+            $messagesSharedByUser->addUsersSharingMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessagesSharedByUser(Message $messagesSharedByUser): self
+    {
+        if ($this->messagesSharedByUser->removeElement($messagesSharedByUser)) {
+            $messagesSharedByUser->removeUsersSharingMessage($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportingUser() === $this) {
+                $report->setReportingUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ad>
+     */
+    public function getAds(): Collection
+    {
+        return $this->ads;
+    }
+
+    public function addAd(Ad $ad): self
+    {
+        if (!$this->ads->contains($ad)) {
+            $this->ads->add($ad);
+            $ad->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAd(Ad $ad): self
+    {
+        if ($this->ads->removeElement($ad)) {
+            // set the owning side to null (unless already changed)
+            if ($ad->getOwner() === $this) {
+                $ad->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stat>
+     */
+    public function getStats(): Collection
+    {
+        return $this->stats;
+    }
+
+    public function addStat(Stat $stat): self
+    {
+        if (!$this->stats->contains($stat)) {
+            $this->stats->add($stat);
+            $stat->setFromUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStat(Stat $stat): self
+    {
+        if ($this->stats->removeElement($stat)) {
+            // set the owning side to null (unless already changed)
+            if ($stat->getFromUser() === $this) {
+                $stat->setFromUser(null);
             }
         }
 
