@@ -20,7 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
-        ##new Get(),
         new Post(),
         new Put(),
     ],
@@ -61,13 +60,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: TokenResetPassword::class, orphanRemoval: true)]
     private Collection $tokenResetPasswords;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $isPremium = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 25, nullable: true)]
     private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
