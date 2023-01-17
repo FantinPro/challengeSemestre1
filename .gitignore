@@ -17,5 +17,6 @@
 /front/.vscode
 /front/build
 /front/node_modules
+/front/package-lock.json
 
 db-data-postgres
