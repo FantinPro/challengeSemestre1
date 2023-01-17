@@ -62,12 +62,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column]
+    #[Groups(['write:user', 'read:user'])]
     private ?bool $isPremium = false;
 
+    #[Groups(['write:user', 'read:user'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(length: 25)]
+    #[Groups(['write:user', 'read:user'])]
+    #[ORM\Column(length: 25, unique: true)]
     private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
