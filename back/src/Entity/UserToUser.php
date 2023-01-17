@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new Post(
-            security: "is_granted('ROLE_USER')",
+            securityPostDenormalize: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
         )
     ]
 )]

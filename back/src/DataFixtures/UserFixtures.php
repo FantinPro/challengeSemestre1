@@ -23,7 +23,7 @@ class UserFixtures extends Fixture
             ->setEmail('admin@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_ADMIN'])
-            ->setUsername('admin')
+            ->setPseudo('admin')
         ;
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'password'));
         $manager->persist($admin);
@@ -32,7 +32,7 @@ class UserFixtures extends Fixture
             ->setEmail('user@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_USER'])
-            ->setUsername('defaultUser')
+            ->setPseudo('defaultUser')
         ;
         $user->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
         $manager->persist($user);
@@ -41,6 +41,7 @@ class UserFixtures extends Fixture
             ->setEmail('moderator@moderator.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_MODERATOR'])
+            ->setPseudo('modo')
         ;
         $moderator->setPassword($this->userPasswordHasher->hashPassword($moderator, 'password'));
         $manager->persist($moderator);
@@ -49,7 +50,7 @@ class UserFixtures extends Fixture
             ->setEmail('notverified@gmail.com')
             ->setIsVerified(false)
             ->setRoles(['ROLE_USER'])
-            ->setUsername('notverified')
+            ->setPseudo('notverified')
         ;
         $notVerfiedUser->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
         $manager->persist($notVerfiedUser);
