@@ -88,6 +88,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
     private Collection $ads;
 
+    #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
+    private Collection $stats;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
@@ -97,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->messagesSharedByUser = new ArrayCollection();
         $this->reports = new ArrayCollection();
         $this->ads = new ArrayCollection();
+        $this->stats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -418,6 +422,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($ad->getOwner() === $this) {
                 $ad->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stat>
+     */
+    public function getStats(): Collection
+    {
+        return $this->stats;
+    }
+
+    public function addStat(Stat $stat): self
+    {
+        if (!$this->stats->contains($stat)) {
+            $this->stats->add($stat);
+            $stat->setFromUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStat(Stat $stat): self
+    {
+        if ($this->stats->removeElement($stat)) {
+            // set the owning side to null (unless already changed)
+            if ($stat->getFromUser() === $this) {
+                $stat->setFromUser(null);
             }
         }
 
