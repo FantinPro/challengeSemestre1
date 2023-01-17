@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { VueQueryPlugin } from 'vue-query';
 import './style.css'
 import App from './App.vue'
 import { router } from './router.js'
@@ -9,6 +10,7 @@ import '@formkit/themes/genesis'
 const app = createApp(App)
 
 app.use(router)
+app.use(VueQueryPlugin)
 
 app.use(
   plugin,
