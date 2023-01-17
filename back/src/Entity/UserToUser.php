@@ -2,10 +2,20 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserToUserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserToUserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Post(
+            security: "is_granted('ROLE_USER')",
+        )
+    ]
+)]
 class UserToUser
 {
     #[ORM\Id]

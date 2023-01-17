@@ -37,6 +37,14 @@ class UserFixtures extends Fixture
         $user->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
         $manager->persist($user);
 
+        $moderator = (new User())
+            ->setEmail('moderator@moderator.com')
+            ->setIsVerified(true)
+            ->setRoles(['ROLE_MODERATOR'])
+        ;
+        $moderator->setPassword($this->userPasswordHasher->hashPassword($moderator, 'password'));
+        $manager->persist($moderator);
+
         $notVerfiedUser = (new User())
             ->setEmail('notverified@gmail.com')
             ->setIsVerified(false)
