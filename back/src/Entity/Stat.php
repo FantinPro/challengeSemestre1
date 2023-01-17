@@ -9,25 +9,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Stat
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\ManyToOne(inversedBy: 'stats')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $fromUser = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'stats')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ad $ad = null;
 
     #[ORM\Column]
-    private ?bool $isClicked = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    private ?bool $isClicked = false;
 
     public function getFromUser(): ?User
     {
@@ -53,7 +45,7 @@ class Stat
         return $this;
     }
 
-    public function isIsClicked(): ?bool
+    public function isClicked(): ?bool
     {
         return $this->isClicked;
     }

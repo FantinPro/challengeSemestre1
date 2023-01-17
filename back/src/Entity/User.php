@@ -62,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column]
-    private ?bool $isPremium = null;
+    private ?bool $isPremium = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePicture = null;

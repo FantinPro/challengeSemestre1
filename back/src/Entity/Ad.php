@@ -26,10 +26,10 @@ class Ad
     private ?string $message = null;
 
     #[ORM\Column]
-    private ?float $price = null;
+    private ?float $price = 1;
 
     #[ORM\Column]
-    private ?bool $isAccepted = null;
+    private ?bool $isAccepted = false;
 
     #[ORM\ManyToOne(inversedBy: 'ads')]
     #[ORM\JoinColumn(nullable: false)]

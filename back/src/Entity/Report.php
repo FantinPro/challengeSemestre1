@@ -9,25 +9,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Report
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\ManyToOne(inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $reportingUser = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Message $reportedMessage = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $type = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    private ?string $type = 'null';
 
     public function getReportingUser(): ?User
     {
