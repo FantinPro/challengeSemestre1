@@ -79,12 +79,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
+    private Collection $messagesSharedByUser;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
         $this->follows = new ArrayCollection();
         $this->followers = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->messagesSharedByUser = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -320,6 +324,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($message->getCreator() === $this) {
                 $message->setCreator(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessagesSharedByUser(): Collection
+    {
+        return $this->messagesSharedByUser;
+    }
+
+    public function addMessagesSharedByUser(Message $messagesSharedByUser): self
+    {
+        if (!$this->messagesSharedByUser->contains($messagesSharedByUser)) {
+            $this->messagesSharedByUser->add($messagesSharedByUser);
+            $messagesSharedByUser->addUsersSharingMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessagesSharedByUser(Message $messagesSharedByUser): self
+    {
+        if ($this->messagesSharedByUser->removeElement($messagesSharedByUser)) {
+            $messagesSharedByUser->removeUsersSharingMessage($this);
         }
 
         return $this;
