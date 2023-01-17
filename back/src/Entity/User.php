@@ -70,9 +70,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 25)]
     private ?string $username = null;
 
+    #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
+    private Collection $follows;
+
+    #[ORM\OneToMany(mappedBy: 'other', targetEntity: UserToUser::class)]
+    private Collection $followers;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
+        $this->follows = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,6 +227,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserToUser>
+     */
+    public function getFollows(): Collection
+    {
+        return $this->follows;
+    }
+
+    public function addFollow(UserToUser $follow): self
+    {
+        if (!$this->follows->contains($follow)) {
+            $this->follows->add($follow);
+            $follow->setMe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollow(UserToUser $follow): self
+    {
+        if ($this->follows->removeElement($follow)) {
+            // set the owning side to null (unless already changed)
+            if ($follow->getMe() === $this) {
+                $follow->setMe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserToUser>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(UserToUser $follower): self
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->setOther($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(UserToUser $follower): self
+    {
+        if ($this->followers->removeElement($follower)) {
+            // set the owning side to null (unless already changed)
+            if ($follower->getOther() === $this) {
+                $follower->setOther(null);
+            }
+        }
 
         return $this;
     }
