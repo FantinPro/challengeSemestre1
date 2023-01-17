@@ -28,10 +28,17 @@ class Message
     #[ORM\OneToMany(mappedBy: 'reportedMessage', targetEntity: Report::class)]
     private Collection $reports;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->usersSharingMessage = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,6 +118,48 @@ class Message
             // set the owning side to null (unless already changed)
             if ($report->getReportedMessage() === $this) {
                 $report->setReportedMessage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(self $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(self $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getParent() === $this) {
+                $comment->setParent(null);
             }
         }
 
