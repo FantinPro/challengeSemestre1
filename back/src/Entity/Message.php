@@ -25,9 +25,13 @@ class Message
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'messagesSharedByUser')]
     private Collection $usersSharingMessage;
 
+    #[ORM\OneToMany(mappedBy: 'reportedMessage', targetEntity: Report::class)]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->usersSharingMessage = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,6 +83,36 @@ class Message
     public function removeUsersSharingMessage(User $usersSharingMessage): self
     {
         $this->usersSharingMessage->removeElement($usersSharingMessage);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportedMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportedMessage() === $this) {
+                $report->setReportedMessage(null);
+            }
+        }
 
         return $this;
     }

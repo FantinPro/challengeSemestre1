@@ -82,6 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
     private Collection $messagesSharedByUser;
 
+    #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
+    private Collection $reports;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
+    private Collection $ads;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
@@ -89,6 +95,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followers = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->messagesSharedByUser = new ArrayCollection();
+        $this->reports = new ArrayCollection();
+        $this->ads = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -351,6 +359,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->messagesSharedByUser->removeElement($messagesSharedByUser)) {
             $messagesSharedByUser->removeUsersSharingMessage($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportingUser() === $this) {
+                $report->setReportingUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ad>
+     */
+    public function getAds(): Collection
+    {
+        return $this->ads;
+    }
+
+    public function addAd(Ad $ad): self
+    {
+        if (!$this->ads->contains($ad)) {
+            $this->ads->add($ad);
+            $ad->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAd(Ad $ad): self
+    {
+        if ($this->ads->removeElement($ad)) {
+            // set the owning side to null (unless already changed)
+            if ($ad->getOwner() === $this) {
+                $ad->setOwner(null);
+            }
         }
 
         return $this;
