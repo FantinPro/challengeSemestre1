@@ -25,3 +25,6 @@ fixtures:
 
 start: up
 	cd ./back && symfony serve
+
+clear:
+	cd ./back && php bin/console cache:clear
