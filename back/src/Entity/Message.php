@@ -22,7 +22,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/messages/feed',
             controller: FeedController::class,
             normalizationContext: ['groups' => ['read:message:feed']],
-            security: "is_granted('ROLE_USER')",
         ),
         new Get(
             security: "is_granted('ROLE_USER')",
