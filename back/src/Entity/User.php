@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user', 'read:user_to_user_read'])]
+    #[Groups(['write:user', 'read:user', 'read:user_to_user'])]
     private ?string $email = null;
 
     #[ORM\Column]
