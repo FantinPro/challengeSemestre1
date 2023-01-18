@@ -2,12 +2,33 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ApiResource(
+    operations: [
+        new Post(
+            securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
+            securityPostDenormalizeMessage: 'You can only create messages for yourself.',
+        ),
+        new Put(
+            securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
+            securityPostDenormalizeMessage: 'You can only update messages for yourself.',
+        ),
+    ],
+    normalizationContext: ['groups' => ['read:message']],
+    denormalizationContext: ['groups' => ['write:message']],
+)]
 class Message
 {
     #[ORM\Id]
@@ -19,6 +40,7 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
+    #[Groups(['read:message', 'write:message'])]
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
@@ -33,6 +55,12 @@ class Message
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $comments;
+
+    #[ORM\Column]
+    private ?bool $isDeleted = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $editedAt = null;
 
     public function __construct()
     {
@@ -60,6 +88,9 @@ class Message
 
     public function getContent(): ?string
     {
+        if($this->isDeleted) {
+            return 'This message has been deleted.';
+        }
         return $this->content;
     }
 
@@ -162,6 +193,30 @@ class Message
                 $comment->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getEditedAt(): ?\DateTimeInterface
+    {
+        return $this->editedAt;
+    }
+
+    public function setEditedAt(): self
+    {
+        $this->editedAt = new \DateTime();
 
         return $this;
     }
