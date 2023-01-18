@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read'])]
+    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -79,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, nullable: true)]
-    #[Groups(['read:user', 'write:user', 'read:user_to_user'])]
+    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
@@ -102,6 +102,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
     private Collection $stats;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
 
     public function __construct()
     {
@@ -466,6 +469,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $stat->setFromUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): self
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
 
         return $this;
     }

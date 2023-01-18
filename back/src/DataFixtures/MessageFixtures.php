@@ -23,7 +23,7 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i < 3; $i++) {
             $message = (new Message())
-                ->setCreator($admin)
+                ->setCreator($user)
                 ->setContent($faker->paragraph(2));
 
             for ($y = 0; $y < 10; $y++) {
@@ -33,6 +33,7 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($comment);
                 $message->addComment($comment);
             }
+
 
             $manager->persist($message);
 

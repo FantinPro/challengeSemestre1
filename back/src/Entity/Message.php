@@ -21,6 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(
             uriTemplate: '/messages/feed',
             controller: FeedController::class,
+            normalizationContext: ['groups' => ['read:message:feed']],
             security: "is_granted('ROLE_USER')",
         ),
         new Get(
@@ -48,9 +49,10 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:message:feed'])]
     private ?User $creator;
 
-    #[Groups(['read:message', 'write:message'])]
+    #[Groups(['read:message', 'write:message', 'read:message:feed'])]
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
