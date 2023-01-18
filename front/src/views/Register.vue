@@ -4,7 +4,7 @@
       <h2 class="text-3xl font-bold mb-6 text-center">Inscription</h2>
       <FormKit type="form" @submit="submit" submit-label="S'inscrire" :submit-attrs="{ outerClass: 'pt-4', inputClass: '!w-full !bg-primary-500' }" >
         <FormKit type="text" name="email" validation="required" label="Email" />
-        <FormKit type="text" name="username" validation="required" label="Pseudo" />
+        <FormKit type="text" name="pseudo" validation="required" label="Pseudo" />
         <FormKit type="password" name="password" validation="required" label="Mot de Passe" />
         <FormKit type="password" name="password_confirm" validation="required|confirm" label="Confirmer le mot de passe" />
       </FormKit>
@@ -19,16 +19,12 @@
 
 <script setup>
 
+import { useUserStore } from "../store/user";
+
+const userStore = useUserStore();
+
 const submit = async (values) => {
-  const response = await fetch('http://localhost:8000/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(values)
-  })
-  const newUser = await response.json()
-  console.log(newUser)
+  await userStore.signUp(values);
 }
 
 </script>

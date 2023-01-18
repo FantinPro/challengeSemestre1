@@ -17,15 +17,22 @@
 
 <script setup>
 
+import { inject } from 'vue';
+import { useUserStore } from "../store/user";
+import { useRouter } from 'vue-router';
+
+const $cookies = inject('$cookies');
+const userStore = useUserStore();
+const router = useRouter();
+
 const submit = async (values) => {
-  const response = await fetch('http://localhost:8000/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(values)
-  })
-  const user = await response.json()
+  try {
+    const userToken = await userStore.signIn(values);
+    $cookies.set('echo_user_token', userToken)
+    router.push('/home')
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 </script>
