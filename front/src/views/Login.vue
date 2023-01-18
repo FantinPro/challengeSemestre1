@@ -26,12 +26,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const submit = async (values) => {
-  try {
-    await userStore.signIn(values);
-    router.push('/home')
-  } catch (error) {
-    console.log(error)
-  }
+  await userStore.signIn(values);
 }
 
 </script>
