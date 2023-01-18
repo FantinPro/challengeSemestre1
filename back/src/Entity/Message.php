@@ -49,7 +49,7 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:message:feed'])]
+    #[Groups(['read:message:feed', 'write:message'])]
     private ?User $creator;
 
     #[Groups(['read:message', 'write:message', 'read:message:feed'])]
