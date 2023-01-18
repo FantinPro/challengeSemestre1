@@ -30,6 +30,6 @@ class FeedController extends AbstractController
         $user = $this->getUser();
 
         $follows = $user->getFollows()->map(fn($follow) => $follow->getOther()->getId());
-        return $this->messageRepository->findBy(array('creator' => $follows->toArray()),null,self::PAGE_SIZE, ($page - 1) * self::PAGE_SIZE);
+        return $this->messageRepository->findBy(array('creator' => $follows->toArray(), "parent" => null),null,self::PAGE_SIZE, ($page - 1) * self::PAGE_SIZE);
     }
 }
