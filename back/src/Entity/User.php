@@ -47,12 +47,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user'])]
+    #[Groups(['read:user', 'read:user_to_user_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user'])]
+    #[Groups(['write:user', 'read:user', 'read:user_to_user'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -77,16 +77,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column]
-    #[Groups(['write:user', 'read:user'])]
+    #[Groups(['read:user_to_user_read'])]
     private ?bool $isPremium = false;
 
-    #[Groups(['write:user', 'read:user'])]
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read:user_to_user_read'])]
     private ?string $profilePicture = null;
 
-    #[Groups(['write:user', 'read:user'])]
-    #[ORM\Column(length: 25, unique: true)]
-    private ?string $username = null;
+    #[ORM\Column(length: 25, nullable: true)]
+    #[Groups(['read:user', 'write:user', 'read:user_to_user'])]
+    private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
     private Collection $follows;
@@ -257,14 +257,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUsername(): ?string
+    public function getPseudo(): ?string
     {
-        return $this->username;
+        return $this->pseudo;
     }
 
-    public function setUsername(string $username): self
+    public function setPseudo(string $pseudo): self
     {
-        $this->username = $username;
+        $this->pseudo = $pseudo;
 
         return $this;
     }
