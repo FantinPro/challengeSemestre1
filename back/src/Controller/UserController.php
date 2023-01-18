@@ -43,7 +43,10 @@ class UserController extends AbstractController
 
         $this->userEmailService->handleEmailConfirmation($request, $user);
 
-        return new JsonResponse(['message' => 'User verified'], Response::HTTP_OK);
+        return $this->redirect($this
+            ->getParameter('front_end_url')
+            . '/login'
+        );
     }
 
     #[Route('/forgot_password', name: 'app_forgot_password', methods: ['POST'])]
