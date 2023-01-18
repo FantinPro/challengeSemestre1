@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use App\Controller\FeedController;
 use App\Controller\MeController;
 use App\Controller\UserController;
 use App\Repository\UserRepository;
@@ -22,16 +24,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            name: 'me',
             uriTemplate: '/users/me',
             controller: MeController::class,
-            read: false
+            read: false,
+            name: 'me'
         ),
-        new Get(
-            security: "is_granted('ROLE_USER') and object == user",
+        new GetCollection(
+            uriTemplate: 'users/feed',
+            controller: FeedController::class,
+            security: 'is_granted("ROLE_ADMIN")',
+            securityMessage: 'Only admins can access the collection.',
         ),
         new Post(),
         new Put(),
+        new Get(),
     ],
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
@@ -41,12 +47,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read'])]
+    #[Groups(['read:user'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user', 'read:user_to_user'])]
+    #[Groups(['write:user', 'read:user'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -71,16 +77,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column]
-    #[Groups(['read:user_to_user_read'])]
+    #[Groups(['write:user', 'read:user'])]
     private ?bool $isPremium = false;
 
+    #[Groups(['write:user', 'read:user'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read'])]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(length: 25, nullable: true)]
-    #[Groups(['read:user', 'write:user', 'read:user_to_user'])]
-    private ?string $pseudo = null;
+    #[Groups(['write:user', 'read:user'])]
+    #[ORM\Column(length: 25, unique: true)]
+    private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
     private Collection $follows;
@@ -251,14 +257,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPseudo(): ?string
+    public function getUsername(): ?string
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
-    public function setPseudo(string $pseudo): self
+    public function setUsername(string $username): self
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }
