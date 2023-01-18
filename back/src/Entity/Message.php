@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')",
         ),
         new Post(
-            securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
+            securityPostDenormalize: 'is_granted("ROLE_USER") and object.getCreator() == user',
             securityPostDenormalizeMessage: 'You can only create messages for yourself.',
         ),
         new Put(
