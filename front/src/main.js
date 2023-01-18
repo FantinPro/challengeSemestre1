@@ -7,11 +7,18 @@ import { plugin, defaultConfig } from '@formkit/vue'
 import { fr } from '@formkit/i18n'
 import '@formkit/themes/genesis'
 import { generateClasses } from '@formkit/themes'
+import { createPinia } from 'pinia'
+import VueCookies from 'vue-cookies'
 
 const app = createApp(App)
+const pinia = createPinia()
 
 app.use(router)
 app.use(VueQueryPlugin)
+
+app.use(pinia)
+
+app.use(VueCookies, { expires: '90d' })
 
 app.use(
   plugin,
