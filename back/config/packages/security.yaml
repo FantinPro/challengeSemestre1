@@ -13,9 +13,8 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
-            pattern: ^/api/login
-            stateless: true
+        main:
+            user_checker: App\Security\UserChecker
             json_login:
                 check_path: /api/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
