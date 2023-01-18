@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/users/me',
             controller: MeController::class,
+            security: 'is_granted("ROLE_USER")',
             read: false,
             name: 'me'
         ),

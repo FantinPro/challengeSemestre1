@@ -26,5 +26,6 @@ class UserChecker implements UserCheckerInterface
         if (!$user instanceof User) {
             return;
         }
+        return;
     }
 }
