@@ -55,6 +55,7 @@
         </svg>
         Profile
       </MenuButton>
+      <ProfileButton />
     </div>
   </div>
 </template>
@@ -62,6 +63,7 @@
 import { reactive, computed } from "vue";
 import MenuButton from "../Button/MenuButton.vue";
 import Logo from "../Logo/Logo.vue";
+import ProfileButton from "../Button/ProfileButton.vue";
 </script>
 <style>
 </style>
