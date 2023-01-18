@@ -77,9 +77,6 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editedAt = null;
 
-    #[ORM\Column]
-    private ?bool $deleted = null;
-
     public function __construct()
     {
         $this->usersSharingMessage = new ArrayCollection();
