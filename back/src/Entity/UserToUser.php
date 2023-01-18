@@ -18,6 +18,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class UserToUser
 {
+
+    const STATUS_FOLLOWING = 'following';
+    const STATUS_BLOCKED = 'blocked';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,6 +57,11 @@ class UserToUser
 
     public function getOther(): ?User
     {
+        // if there is a user to user where other is me and me is other, and the status is blocked, return null
+        if ($this->other->getFollows()->filter(fn(UserToUser $userToUser) => $userToUser->getMe() === $this->me && $userToUser->getStatus() === self::STATUS_BLOCKED)->count() > 0) {
+            return null;
+        }
+
         return $this->other;
     }
 
