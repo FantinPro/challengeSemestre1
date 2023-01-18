@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class JWTCreatedListener
 {
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(
         private RequestStack $requestStack,
         private Security $security

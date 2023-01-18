@@ -1,5 +1,9 @@
 # api/config/packages/security.yaml
 security:
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_USER]
+        ROLE_MODERATOR: [ROLE_USER]
+
     # https://symfony.com/doc/current/security.html#c-hashing-passwords
     password_hashers:
         App\Entity\User: 'auto'

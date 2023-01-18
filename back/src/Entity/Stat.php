@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: StatRepository::class)]
 class Stat
 {
+
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'stats')]
     #[ORM\JoinColumn(nullable: false)]

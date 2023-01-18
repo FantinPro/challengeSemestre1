@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             securityPostDenormalizeMessage: 'You can only update messages for yourself.',
         ),
         new Delete(
-            security: 'is_granted("ROLE_USER") and object.creator == user',
+            security: 'is_granted("ROLE_USER") and object.getCreator() == user',
         )
     ],
     normalizationContext: ['groups' => ['read:message']],
@@ -61,13 +61,10 @@ class Message
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'messagesSharedByUser')]
     private Collection $usersSharingMessage;
 
-    #[ORM\OneToMany(mappedBy: 'reportedMessage', targetEntity: Report::class)]
-    private Collection $reports;
-
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
     #[Groups(['read:message'])]
     private Collection $comments;
 
@@ -77,11 +74,14 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'reportedMessage', targetEntity: Report::class)]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->usersSharingMessage = new ArrayCollection();
-        $this->reports = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,35 +140,6 @@ class Message
         return $this;
     }
 
-    /**
-     * @return Collection<int, Report>
-     */
-    public function getReports(): Collection
-    {
-        return $this->reports;
-    }
-
-    public function addReport(Report $report): self
-    {
-        if (!$this->reports->contains($report)) {
-            $this->reports->add($report);
-            $report->setReportedMessage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReport(Report $report): self
-    {
-        if ($this->reports->removeElement($report)) {
-            // set the owning side to null (unless already changed)
-            if ($report->getReportedMessage() === $this) {
-                $report->setReportedMessage(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getParent(): ?self
     {
@@ -244,6 +215,36 @@ class Message
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportedMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportedMessage() === $this) {
+                $report->setReportedMessage(null);
+            }
+        }
 
         return $this;
     }
