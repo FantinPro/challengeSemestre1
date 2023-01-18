@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             securityPostDenormalizeMessage: 'You can only update messages for yourself.',
         ),
         new Delete(
-            security: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
+            security: 'is_granted("ROLE_USER") and object.creator == user',
         )
     ],
     normalizationContext: ['groups' => ['read:message']],
@@ -76,6 +76,9 @@ class Message
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editedAt = null;
+
+    #[ORM\Column]
+    private ?bool $deleted = null;
 
     public function __construct()
     {
@@ -232,6 +235,18 @@ class Message
     public function setEditedAt(): self
     {
         $this->editedAt = new \DateTime();
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
