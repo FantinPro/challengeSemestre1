@@ -1,6 +1,7 @@
 // /store/user.js
 
 import { defineStore } from "pinia";
+import jwt_decode from "jwt-decode";
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -17,7 +18,7 @@ export const useUserStore = defineStore('user', {
       });
     },
     async signIn(values) {
-      const response = await fetch('http://localhost:8000/api/login', {
+      const response = await fetch('http://localhost:8000/auth', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,17 +27,28 @@ export const useUserStore = defineStore('user', {
       });
       const userToken = await response.json();
 
-      $cookies.set(userToken.token, 'echo_user_token');
+      if (userToken) {
+        $cookies.set('echo_user_token', userToken.token);
+  
+        const decoded = jwt_decode(userToken.token);
+  
+        const res = await fetch(`http://localhost:8000/api/users/${decoded.id}`, {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+          },
+        });
+        const user = await res.json();
 
-      const res = await fetch('http://localhost:8000/api/users/me', {
-        headers: {
-          Authorization: `Bearer ${userToken.token}`,
-        },
-      });
-      const user = await res.json();
-      this.user = user;
-
-      localStorage.setItem('echoUser', JSON.stringify(user));
+        if (user) {
+          this.user = user;
+          localStorage.setItem('echoUser', JSON.stringify(user));
+        }
+      }
     },
+    async logout() {
+      this.user = null;
+      localStorage.removeItem('echoUser');
+      $cookies.remove('echo_user_token');
+    }
   },
 });
