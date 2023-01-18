@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const formKitTailwind = require('@formkit/themes/tailwindcss');
+
 module.exports = {
   content: [
     "./index.html",
@@ -7,6 +10,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        error: '#FF5B5B',
         primary: {
           900: "#020A33",
           800: "#0C1A66",
@@ -32,5 +36,7 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    formKitTailwind
+  ],
 }
