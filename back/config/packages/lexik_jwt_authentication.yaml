@@ -4,3 +4,4 @@ lexik_jwt_authentication:
     pass_phrase: '%env(JWT_PASSPHRASE)%'
     ## 90 days
     token_ttl: 7776000
+    user_identity_field: id

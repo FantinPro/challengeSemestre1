@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -34,7 +35,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
             securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
             securityPostDenormalizeMessage: 'You can only update messages for yourself.',
         ),
-
+        new Delete(
+            security: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
+        )
     ],
     normalizationContext: ['groups' => ['read:message']],
     denormalizationContext: ['groups' => ['write:message']],
