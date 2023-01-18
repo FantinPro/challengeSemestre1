@@ -214,9 +214,9 @@ class Message
         return $this->editedAt;
     }
 
-    public function setEditedAt(?\DateTimeInterface $editedAt): self
+    public function setEditedAt(): self
     {
-        $this->editedAt = $editedAt;
+        $this->editedAt = new \DateTime();
 
         return $this;
     }
