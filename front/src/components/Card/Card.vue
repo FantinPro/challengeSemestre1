@@ -1,14 +1,5 @@
 <template>
-  <div
-    class="
-      mb-6
-      w-[560px]
-      bg-[#343A40]
-      shadow-md
-      border-2 border-[#4c5157]
-      rounded-lg
-    "
-  >
+  <div class="mb-6 bg-[#343A40] shadow-md border-2 border-[#4c5157] rounded-lg">
     <div class="p-5 flex">
       <img class="w-12 h-12 rounded-full" :src="avatar" alt="avatar" />
       <div class="ml-4">
@@ -32,8 +23,5 @@ const props = defineProps({
   },
 });
 
-const { id, username, avatar, text, time, comments, shares } =
-  props.item;
+const { id, username, avatar, text, time, comments, shares } = props.item;
 </script>
-<style>
-</style>
