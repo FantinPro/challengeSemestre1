@@ -22,16 +22,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
+            name: 'me',
+            uriTemplate: '/users/me',
+            controller: MeController::class,
+            read: false
+        ),
+        new Get(
             security: "is_granted('ROLE_USER') and object == user",
         ),
         new Post(),
         new Put(),
-        new Get(
-            name: 'me',
-            uriTemplate: '/me',
-            controller: MeController::class,
-            read: false
-        )
     ],
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
