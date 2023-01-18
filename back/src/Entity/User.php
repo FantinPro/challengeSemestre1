@@ -20,7 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
-        ##new Get(),
+        new Get(
+            security: "is_granted('ROLE_USER') and object == user",
+        ),
         new Post(),
         new Put(),
     ],
@@ -65,7 +67,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read:user_to_user_read'])]
     private ?bool $isPremium = false;
 
-    #[Groups(['write:user', 'read:user'])]
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read:user_to_user_read'])]
     private ?string $profilePicture = null;
