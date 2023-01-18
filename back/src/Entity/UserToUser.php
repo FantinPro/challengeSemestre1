@@ -2,19 +2,39 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\UserToUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Post;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
 
 #[ORM\Entity(repositoryClass: UserToUserRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            security: "is_granted('ROLE_USER') and request.get('me') == user.getId()",
+        ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-        )
-    ]
+            securityPostDenormalize: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
+        ),
+        new Delete(
+            security: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
+        ),
+    ],
+    normalizationContext: ['groups' => ['read:user_to_user']],
+    denormalizationContext: ['groups' => ['write:user_to_user']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['me' => 'exact'])]
+#[UniqueEntity(
+    fields: ['me', 'other'],
+    message: 'You already follow this user.',
+    errorPath: 'other',
 )]
 class UserToUser
 {
@@ -25,18 +45,23 @@ class UserToUser
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:user_to_user'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'follows')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:user_to_user', 'write:user_to_user'])]
     private ?User $me = null;
 
     #[ORM\ManyToOne(inversedBy: 'followers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:user_to_user', 'write:user_to_user'])]
     private ?User $other = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $status = 'following';
+    #[Groups(['read:user_to_user', 'write:user_to_user'])]
+    #[Choice(choices: ['following', 'blocked'], message: 'Choose a valid status.')]
+    private string $status = 'following';
 
     public function getId(): ?int
     {
