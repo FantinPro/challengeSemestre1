@@ -5,10 +5,11 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\UserToUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserToUserFixtures extends Fixture
+class UserToUserFixtures extends Fixture implements DependentFixtureInterface
 {
 
     public function load(ObjectManager $manager): void

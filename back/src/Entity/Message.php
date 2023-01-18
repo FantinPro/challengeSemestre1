@@ -17,6 +17,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ApiResource(
     operations: [
+        new Get(
+            security: "is_granted('ROLE_USER')",
+        ),
         new Post(
             securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
             securityPostDenormalizeMessage: 'You can only create messages for yourself.',
@@ -38,7 +41,7 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $creator = null;
+    private ?User $creator;
 
     #[Groups(['read:message', 'write:message'])]
     #[ORM\Column(length: 255)]
@@ -54,6 +57,7 @@ class Message
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[Groups(['read:message'])]
     private Collection $comments;
 
     #[ORM\Column]
