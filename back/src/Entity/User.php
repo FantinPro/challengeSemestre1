@@ -29,12 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             read: false,
             name: 'me'
         ),
-        new GetCollection(
-            uriTemplate: 'users/feed',
-            controller: FeedController::class,
-            security: 'is_granted("ROLE_ADMIN")',
-            securityMessage: 'Only admins can access the collection.',
-        ),
         new Post(),
         new Put(),
         new Get(),

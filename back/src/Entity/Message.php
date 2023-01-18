@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\FeedController;
 use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +18,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            uriTemplate: '/messages/feed',
+            controller: FeedController::class,
+            security: "is_granted('ROLE_USER')",
+        ),
         new Get(
             security: "is_granted('ROLE_USER')",
         ),
@@ -28,6 +34,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             securityPostDenormalize: 'is_granted("ROLE_USER") and object.creator.getId() == user.getId()',
             securityPostDenormalizeMessage: 'You can only update messages for yourself.',
         ),
+
     ],
     normalizationContext: ['groups' => ['read:message']],
     denormalizationContext: ['groups' => ['write:message']],

@@ -17,6 +17,11 @@ import { reactive, computed } from "vue";
 import { useQuery } from "vue-query";
 import SideMenu from "../components/Menu/SideMenu.vue";
 import Card from "../components/Card/Card.vue";
+import { useUserStore } from "../store/user";
+
+const { user } = useUserStore();
+
+console.log(user)
 
 // const query = useQuery("feed", getFeed);
 

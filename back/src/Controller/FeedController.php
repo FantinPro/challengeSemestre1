@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Message;
 use App\Repository\MessageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
@@ -18,7 +19,7 @@ class FeedController extends AbstractController
     public function __construct(private readonly MessageRepository $messageRepository)
     {
     }
-    public function __invoke(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
+    public function __invoke(Request $request): array
     {
 
         $page = $request->query->get('page', 1);
@@ -27,7 +28,8 @@ class FeedController extends AbstractController
         }
 
         $user = $this->getUser();
-        $follows = $user->getFollows()->getOther();
-        return $this->json($this->messageRepository->findBy(['creator' => $follows, ['createdAt' => 'DESC', 'limit'=> self::PAGE_SIZE, 'offset' => ($page - 1) * self::PAGE_SIZE]]));
+
+        $follows = $user->getFollows()->map(fn($follow) => $follow->getOther()->getId());
+        return $this->messageRepository->findBy(array('creator' => $follows->toArray()),null,self::PAGE_SIZE, ($page - 1) * self::PAGE_SIZE);
     }
 }
