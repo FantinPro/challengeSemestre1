@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
+use App\Controller\MeController;
 use App\Controller\UserController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
@@ -25,6 +26,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(),
         new Put(),
+        new Get(
+            name: 'me',
+            uriTemplate: '/me',
+            controller: MeController::class,
+            read: false
+        )
     ],
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],

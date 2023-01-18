@@ -26,7 +26,6 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreator($admin)
                 ->setContent($faker->paragraph(2));
 
-            // for y 10
             for ($y = 0; $y < 10; $y++) {
                 $comment = (new Message())
                     ->setCreator($user)
