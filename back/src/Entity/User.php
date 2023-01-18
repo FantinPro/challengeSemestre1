@@ -31,12 +31,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user'])]
+    #[Groups(['read:user', 'read:user_to_user_read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user'])]
+    #[Groups(['write:user', 'read:user', 'read:user_to_user_read'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -61,12 +61,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column]
+    #[Groups(['read:user_to_user_read'])]
     private ?bool $isPremium = false;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read:user_to_user_read'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, nullable: true)]
+    #[Groups(['read:user_to_user_read'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
