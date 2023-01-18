@@ -19,7 +19,7 @@ class MeController extends AbstractController
 
     public function __invoke()
     {
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
         return $user;
     }
