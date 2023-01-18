@@ -72,7 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, nullable: true)]
-    #[Groups(['read:user_to_user_read'])]
+    #[Groups(['read:user_to_user_read', 'write:user'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
