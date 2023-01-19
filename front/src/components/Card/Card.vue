@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-6 bg-[#343A40] shadow-md border-2 border-[#4c5157] rounded-lg">
+  <div class="mb-6 bg-[#343A40] shadow-md border border-[#4c5157] rounded-lg">
     <div class="p-5 flex">
       <img class="w-12 h-12 rounded-full" src="https://i.pravatar.cc/150?img=1" alt="avatar" />
       <div class="ml-4">

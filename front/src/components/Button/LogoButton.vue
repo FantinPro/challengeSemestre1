@@ -6,8 +6,7 @@
         text-left text-white text-lg
         font-medium
         rounded-3xl
-        px-4
-        py-2
+        p-3
         w-fit
         group-hover:bg-opacity-10 group-hover:bg-white
         transition

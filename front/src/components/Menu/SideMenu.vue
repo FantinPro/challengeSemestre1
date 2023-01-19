@@ -8,7 +8,7 @@
       w-full
       my-2
       mb-4
-      md:mx-4 md:items-end
+      md:mx-4 md:items-end md:mt-2
     "
   >
     <div class="flex md:flex-col gap-2">
