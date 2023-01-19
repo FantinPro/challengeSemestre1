@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 class FeedV2Controller extends AbstractController
 {
-    const PAGE_SIZE = 100;
+    const PAGE_SIZE = 25;
 
     public function __construct(private readonly MessageRepository $messageRepository)
     {
