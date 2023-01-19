@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 class MessageWithAtLeast2ReportsController extends AbstractController
 {
     public function __construct(private MessageRepository $messageRepository)
-    {
-    }
+    {}
+
     public function __invoke(Request $request): array
     {
 

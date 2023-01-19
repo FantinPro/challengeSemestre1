@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\AdRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +13,18 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
+#[ApiResource(
+    operations: [
+        new Post(
+            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
+        ),
+        new Put(
+            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
+        ),
+    ],
+    normalizationContext: ['groups' => ['read:stat']],
+    denormalizationContext: ['groups' => ['write:stat']],
+)]
 class Ad
 {
     #[ORM\Id]
@@ -26,10 +42,7 @@ class Ad
     private ?string $message = null;
 
     #[ORM\Column]
-    private ?float $price = 1;
-
-    #[ORM\Column]
-    private ?bool $isAccepted = false;
+    private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'ads')]
     #[ORM\JoinColumn(nullable: false)]
@@ -96,18 +109,6 @@ class Ad
         return $this;
     }
 
-    public function isIsAccepted(): ?bool
-    {
-        return $this->isAccepted;
-    }
-
-    public function setIsAccepted(bool $isAccepted): self
-    {
-        $this->isAccepted = $isAccepted;
-
-        return $this;
-    }
-
     public function getOwner(): ?User
     {
         return $this->owner;
@@ -149,4 +150,5 @@ class Ad
 
         return $this;
     }
+
 }

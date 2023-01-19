@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -38,6 +37,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: 'is_granted("ROLE_MODERATOR")',
         ),
         new GetCollection(
+            paginationEnabled: true,
+            paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:message:search']],
         ),
         new Get(

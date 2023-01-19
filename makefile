@@ -1,4 +1,4 @@
-.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start
+.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start resetdb
 
 up:
 	docker-compose up --detach
@@ -16,6 +16,9 @@ backend-install:
 
 frontend-install:
 	docker-compose exec frontend yarn install
+
+resetdb:
+	cd ./back && php bin/console doctrine:database:drop --force && php bin/console doctrine:database:create && php bin/console doctrine:schema:update --force && php bin/console doctrine:fixtures:load
 
 schema-update:
 	cd ./back && php bin/console doctrine:schema:update --force

@@ -28,8 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
+            paginationEnabled: true,
+            paginationMaximumItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:user:search']],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
         )
     ],
     normalizationContext: ['groups' => ['read:user']],
@@ -98,14 +100,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
     private Collection $ads;
 
-    #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
-    private Collection $stats;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stripeCustomerId = null;
 
     #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
     private Collection $reports;
+
+    #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
+    private Collection $stats;
 
     public function __construct()
     {
@@ -115,8 +117,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->messages = new ArrayCollection();
         $this->messagesSharedByUser = new ArrayCollection();
         $this->ads = new ArrayCollection();
-        $this->stats = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->stats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -409,36 +411,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Stat>
-     */
-    public function getStats(): Collection
-    {
-        return $this->stats;
-    }
-
-    public function addStat(Stat $stat): self
-    {
-        if (!$this->stats->contains($stat)) {
-            $this->stats->add($stat);
-            $stat->setFromUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStat(Stat $stat): self
-    {
-        if ($this->stats->removeElement($stat)) {
-            // set the owning side to null (unless already changed)
-            if ($stat->getFromUser() === $this) {
-                $stat->setFromUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getStripeCustomerId(): ?string
     {
         return $this->stripeCustomerId;
@@ -475,6 +447,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($report->getReportingUser() === $this) {
                 $report->setReportingUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stat>
+     */
+    public function getStats(): Collection
+    {
+        return $this->stats;
+    }
+
+    public function addStat(Stat $stat): self
+    {
+        if (!$this->stats->contains($stat)) {
+            $this->stats->add($stat);
+            $stat->setFromUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStat(Stat $stat): self
+    {
+        if ($this->stats->removeElement($stat)) {
+            // set the owning side to null (unless already changed)
+            if ($stat->getFromUser() === $this) {
+                $stat->setFromUser(null);
             }
         }
 
