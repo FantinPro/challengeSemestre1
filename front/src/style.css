@@ -29,5 +29,5 @@ body {
 #app {
   margin: 0;
   display: flex;
-  min-width: 100%;
+  width: 100%;
 }
