@@ -9,6 +9,7 @@
       my-2
       mb-4
       md:mx-4 md:items-end md:mt-2
+      items-baseline
     "
   >
     <div class="flex md:flex-col gap-2">
