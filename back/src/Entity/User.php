@@ -137,6 +137,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sharingBy', targetEntity: Share::class)]
     private Collection $shares;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
+    private ?string $bio = null;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
@@ -586,5 +590,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFollowersCount(): int
     {
         return count($this->followers);
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
+
+        return $this;
     }
 }
