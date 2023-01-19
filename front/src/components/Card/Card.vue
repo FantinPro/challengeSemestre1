@@ -1,11 +1,11 @@
 <template>
   <div class="mb-6 bg-[#343A40] shadow-md border-2 border-[#4c5157] rounded-lg">
     <div class="p-5 flex">
-      <img class="w-12 h-12 rounded-full" :src="avatar" alt="avatar" />
+      <img class="w-12 h-12 rounded-full" src="https://i.pravatar.cc/150?img=1" alt="avatar" />
       <div class="ml-4">
-        <CardHeader :item="{ id, avatar, username, time }" />
-        <CardBody :item="{ id, text }" />
-        <CardFooter :item="{ id, comments, shares }" />
+        <CardHeader :item="{ id, pseudo }" />
+        <CardBody :item="{ id, content }" />
+        <CardFooter :item="{ id, commentsCount }" />
       </div>
     </div>
   </div>
@@ -22,6 +22,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const { id, username, avatar, text, time, comments, shares } = props.item;
+const { id, creator, content, commentsCount } = props.item;
+const { pseudo } = creator;
 </script>

@@ -1,5 +1,16 @@
 <template>
-  <div class="flex md:flex-col justify-center md:justify-between w-full my-2 mb-4 md:mx-4 md:items-end">
+  <div
+    class="
+      flex
+      md:flex-col
+      justify-center
+      md:justify-between
+      w-full
+      my-2
+      mb-4
+      md:mx-4 md:items-end
+    "
+  >
     <div class="flex md:flex-col gap-2">
       <LogoButton :to="'/home'">
         <Logo />
@@ -64,7 +75,7 @@
         </svg>
         <p class="hidden md:flex">Messages</p>
       </MenuButton>
-      <MenuButton :to="'/profile'" v-slot="{ isActive }">
+      <MenuButton :to="`/${user?.pseudo}`" v-slot="{ isActive }">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"
@@ -77,7 +88,6 @@
             clip-rule="evenodd"
           />
         </svg>
-
         <svg
           v-else
           fill="none"
@@ -100,8 +110,13 @@
 </template>
 <script setup>
 import { reactive, computed } from "vue";
+import { useUserStore } from "../../store/user";
 import MenuButton from "../Button/MenuButton.vue";
 import LogoButton from "../Button/LogoButton.vue";
-import Logo from "../Logo/Logo.vue";
 import ProfileButton from "../Button/ProfileButton.vue";
+import Logo from "../Logo/Logo.vue";
+
+const userStore = useUserStore();
+
+const { user } = userStore;
 </script>

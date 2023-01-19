@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <span class="text-white font-bold">{{ username }}</span>
+      <span class="text-white font-bold">{{ pseudo }}</span>
       <span class="text-gray-400 text-sm">{{ time }}</span>
     </div>
   </div>
@@ -14,7 +14,7 @@ const props = defineProps({
   },
 });
 
-const { id, username, avatar, time } =
+const { id, pseudo, time = "Il y a 1 heure" } =
   props.item;
 </script>
 <style>
