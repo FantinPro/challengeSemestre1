@@ -1,5 +1,3 @@
-// /store/user.js
-
 import { defineStore } from "pinia";
 import jwt_decode from "jwt-decode";
 import { router } from "../router";
@@ -10,17 +8,21 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     async signUp(values) {
-      await fetch('http://localhost:8000/api/users', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      try {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+      } catch (e) {
+        console.log(e)
+      }
     },
     async signIn(values) {
       try {
-        const response = await fetch('http://localhost:8000/auth', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -28,23 +30,37 @@ export const useUserStore = defineStore('user', {
           body: JSON.stringify(values),
         });
         const userToken = await response.json();
-  
-        if (userToken.token) {
+
+        if (userToken) {
           $cookies.set('echo_user_token', userToken.token);
-    
+
           const decoded = jwt_decode(userToken.token);
-    
-          const res = await fetch(`http://localhost:8000/api/users/${decoded.id}`, {
+
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`, {
             headers: {
-              Authorization: `Bearer ${userToken.token}`,
+              "Content-Type": "application/json",
             },
+            body: JSON.stringify(values),
           });
-          const user = await res.json();
-  
-          if (user) {
-            this.user = user;
-            localStorage.setItem('echoUser', JSON.stringify(user));
-            router.push('/home');
+          const userToken = await response.json();
+
+          if (userToken.token) {
+            $cookies.set('echo_user_token', userToken.token);
+
+            const decoded = jwt_decode(userToken.token);
+
+            const res = await fetch(`http://localhost:8000/api/users/${decoded.id}`, {
+              headers: {
+                Authorization: `Bearer ${userToken.token}`,
+              },
+            });
+            const user = await res.json();
+
+            if (user) {
+              this.user = user;
+              localStorage.setItem('echoUser', JSON.stringify(user));
+              router.push('/home');
+            }
           }
         }
       } catch (e) {
