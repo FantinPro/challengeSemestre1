@@ -2,19 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\FeedController;
+use App\Controller\MessageWithAtLeast2ReportsController;
 use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ApiResource(
@@ -23,6 +29,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/messages/feed',
             controller: FeedController::class,
             normalizationContext: ['groups' => ['read:message:feed']],
+            security: 'is_granted("ROLE_USER")',
+        ),
+        new GetCollection(
+            uriTemplate: '/messages/reports',
+            controller: MessageWithAtLeast2ReportsController::class,
+            normalizationContext: ['groups' => ['read:message', 'read:message:reports']],
+            security: 'is_granted("ROLE_MODERATOR")',
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:message:search']],
         ),
         new Get(
             security: "is_granted('ROLE_USER')",
@@ -37,11 +53,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Delete(
             security: 'is_granted("ROLE_USER") and object.getCreator() == user',
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['patch:message']],
+            security: 'is_granted("ROLE_MODERATOR")',
         )
     ],
     normalizationContext: ['groups' => ['read:message']],
     denormalizationContext: ['groups' => ['write:message']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['content' => 'partial'])]
 class Message
 {
     #[ORM\Id]
@@ -51,10 +72,10 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:message:feed', 'write:message'])]
+    #[Groups(['read:message', 'read:message:feed', 'write:message', 'read:message:search'])]
     private ?User $creator;
 
-    #[Groups(['read:message', 'write:message', 'read:message:feed'])]
+    #[Groups(['read:message', 'write:message', 'read:message:feed', 'read:message:search'])]
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
@@ -65,16 +86,17 @@ class Message
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
-    #[Groups(['read:message'])]
     private Collection $comments;
 
     #[ORM\Column]
+    #[Groups(['read:message', 'patch:message'])]
     private ?bool $isDeleted = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'reportedMessage', targetEntity: Report::class)]
+    #[Groups(['read:message:reports'])]
     private Collection $reports;
 
     public function __construct()
@@ -104,7 +126,7 @@ class Message
     public function getContent(): ?string
     {
         if($this->isDeleted) {
-            return 'This message has been deleted.';
+            return 'this message has been deleted because it does not respect the rules of the application';
         }
         return $this->content;
     }
@@ -207,18 +229,6 @@ class Message
         return $this;
     }
 
-    public function isDeleted(): ?bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted): self
-    {
-        $this->deleted = $deleted;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Report>
      */
@@ -248,4 +258,11 @@ class Message
 
         return $this;
     }
+
+    #[Groups(['read:message:reports'])]
+    public function getReportsCount(): int
+    {
+        return count($this->reports);
+    }
+
 }
