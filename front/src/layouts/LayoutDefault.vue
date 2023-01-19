@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col md:flex-row gap-2 h-full w-full">
-    <header class="flex md:flex-grow max-md:bottom-0 fixed md:relative w-full max-md:bg-opacity-90 max-md:bg-slate-900">
+    <header class="flex md:flex-grow max-md:bottom-0 sticky top-0 w-full h-screen max-md:bg-opacity-90 max-md:bg-slate-900">
       <SideMenu />
     </header>
     <main class="flex">

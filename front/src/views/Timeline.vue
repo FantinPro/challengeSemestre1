@@ -68,6 +68,24 @@ const timeline = reactive([
     comments: 2,
     shares: 1,
   },
+  {
+    id: 1,
+    username: "Emily Davis",
+    avatar: "https://i.pravatar.cc/150?img=3",
+    text: "Feeling great! 5 miles in 40 minutes. #running #fitness",
+    time: "2 hours ago",
+    comments: 2,
+    shares: 1,
+  },
+  {
+    id: 1,
+    username: "Emily Davis",
+    avatar: "https://i.pravatar.cc/150?img=3",
+    text: "Feeling great! 5 miles in 40 minutes. #running #fitness",
+    time: "2 hours ago",
+    comments: 2,
+    shares: 1,
+  },
 ]);
 
 const filteredFeed = computed(() => {
