@@ -1,15 +1,13 @@
 <template>
-  <router-link v-bind="buttonProps" class="group" :active-class="'text-primary-300 font-bold'" v-slot="{ isActive }">
+  <router-link v-bind="buttonProps" class="group">
     <div
       class="
         flex
-        text-left
-        text-lg
+        text-left text-white text-lg
+        font-medium
         rounded-3xl
         px-4
         py-2
-        max-md:px-6
-        max-md:py-3
         w-fit
         group-hover:bg-opacity-10 group-hover:bg-white
         transition
@@ -18,7 +16,7 @@
         gap-2
       "
     >
-      <slot :isActive="isActive" />
+      <slot />
     </div>
   </router-link>
 </template>
