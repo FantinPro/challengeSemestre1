@@ -15,12 +15,21 @@ class ShareFixtures extends Fixture implements DependentFixtureInterface
     {
         $users = $manager->getRepository(User::class)->findAll();
 
+        $messageFromAdmin = $this->getReference('messageFromAdmin');
+        $messageFromNobody = $this->getReference('nobodyFollowUserMessage');
+
         foreach ($users as $user) {
-            $messageFromAdmin = $this->getReference('messageFromAdmin');
+
             $share  = (new Share())
                 ->setSharingBy($user)
                 ->setSharedMessage($messageFromAdmin);
             $manager->persist($share);
+
+
+            $share2 = (new Share())
+                ->setSharingBy($user)
+                ->setSharedMessage($messageFromNobody);
+            $manager->persist($share2);
         }
 
         $manager->flush();

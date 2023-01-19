@@ -20,6 +20,9 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
         $user = $manager->getRepository(User::class)->findOneBy([
             'email' => 'user@gmail.com'
         ]);
+        $nobodyFollowUser = $manager->getRepository(User::class)->findOneBy([
+            'email' => 'nobodyfollowme@gmail.com'
+        ]);
 
         for ($i = 0; $i < 3; $i++) {
             $message = (new Message())
@@ -47,7 +50,13 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
         // add ref
         $this->addReference("messageFromAdmin", $messageFromAdmin);
 
+        $nobodyFollowUserMessage = (new Message())
+            ->setCreator($nobodyFollowUser)
+            ->setContent("Personne ne me follow mais quelqu'un m'a RT");
+        $this->addReference("nobodyFollowUserMessage", $nobodyFollowUserMessage);
+
         $manager->persist($messageFromAdmin);
+        $manager->persist($nobodyFollowUserMessage);
 
         $manager->flush();
     }

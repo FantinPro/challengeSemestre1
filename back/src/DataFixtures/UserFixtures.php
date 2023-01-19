@@ -73,6 +73,15 @@ class UserFixtures extends Fixture
         $premiumUser2->setPassword($this->userPasswordHasher->hashPassword($premiumUser2, 'password'));
         $manager->persist($premiumUser2);
 
+        $nobodyFollowMe = (new User())
+            ->setEmail('nobodyfollowme@gmail.com')
+            ->setIsVerified(true)
+            ->setRoles(['ROLE_USER'])
+            ->setPseudo('nobodyfollowme')
+        ;
+        $nobodyFollowMe->setPassword($this->userPasswordHasher->hashPassword($nobodyFollowMe, 'password'));
+        $manager->persist($nobodyFollowMe);
+
         $manager->flush();
     }
 }

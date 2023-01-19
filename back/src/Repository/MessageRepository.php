@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Message;
 use App\Entity\User;
+use App\Entity\UserToUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,6 +26,7 @@ class MessageRepository extends ServiceEntityRepository
     public function save(Message $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
+
 
         if ($flush) {
             $this->getEntityManager()->flush();
@@ -56,14 +58,26 @@ class MessageRepository extends ServiceEntityRepository
         $qb->select('m')
             ->leftJoin('m.shares', 's')
             ->leftJoin('s.sharingBy', 'u')
-            ->where('m.creator IN (SELECT f.other FROM App\Entity\Follow f WHERE f.user = :userId)')
+            ->where('m.creator IN (:following)')
+            ->setParameter('following', $this->getFollowingIds($userId))
             ->orWhere('u = :userId')
+            ->orWhere('m.creator = :userId')
             ->setParameter('userId', $userId)
             ->orderBy('m.created', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
         $query = $qb->getQuery();
         return $query->execute();
+    }
+
+    private function getFollowingIds($userId)
+    {
+        $qb = $this->getEntityManager()->getRepository(UserToUser::class)->createQueryBuilder('u')
+            ->select('IDENTITY(u.other)')
+            ->where('u.me = :userId')
+            ->setParameter('userId', $userId);
+
+        return $qb->getQuery()->getScalarResult();
     }
 
 //    /**

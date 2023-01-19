@@ -15,11 +15,13 @@ use App\Controller\FeedController;
 use App\Controller\FeedV2Controller;
 use App\Controller\MessageWithAtLeast2ReportsController;
 use App\Repository\MessageRepository;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
@@ -47,7 +49,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(
             uriTemplate: '/messages/feed/v2',
             controller: FeedV2Controller::class,
-            normalizationContext: ['groups' => ['read:message', 'read:message:feed']],
+            normalizationContext: ['groups' => ['read:message', 'read:message:feed', 'read:message:feedV2']],
             security: 'is_granted("ROLE_USER")',
         ),
         new Get(
@@ -123,7 +125,10 @@ class Message
     #[ORM\OneToMany(mappedBy: 'sharedMessage', targetEntity: Share::class)]
     private Collection $shares;
 
-    public function __construct()
+    public function __construct(
+        private UserRepository $userRepository,
+        private Security $security,
+    )
     {
         $this->usersSharingMessage = new ArrayCollection();
         $this->comments = new ArrayCollection();
@@ -350,5 +355,11 @@ class Message
         }
 
         return $this;
+    }
+
+    #[Groups(['read:message:feedV2'])]
+    public function getSharesCount()
+    {
+        return count($this->shares);
     }
 }
