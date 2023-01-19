@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -21,7 +22,11 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            paginationEnabled: true,
+            paginationItemsPerPage: 20,
+            security: 'is_granted("ROLE_PREMIUM")',
+        ),
         new Get(
             security: 'is_granted("ROLE_PREMIUM") and object.getOwner() == user',
         ),
@@ -31,11 +36,14 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
         ),
         new Put(
             denormalizationContext: ['groups' => ['put:ad']],
-            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
+            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user and object.getStatus() != 'accepted'",
         ),
         new Patch(
             denormalizationContext: ['groups' => ['patch:ad']],
             security: "is_granted('ROLE_ADMIN')",
+        ),
+        new Delete(
+            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
         )
     ],
     normalizationContext: ['groups' => ['read:ad']],
@@ -92,10 +100,12 @@ class Ad
 
     #[Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['read:ad'])]
     private $created;
 
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
     #[Timestampable(on: 'update')]
+    #[Groups(['read:ad'])]
     private $updated;
 
     public function __construct()
