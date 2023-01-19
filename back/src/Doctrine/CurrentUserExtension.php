@@ -18,11 +18,10 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-        dd($operation->getName());
         $user = $this->security->getUser();
-        if ($resourceClass === Ad::class && $operation->getName() === 'get') {
+        if ($resourceClass === Ad::class) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
-            $queryBuilder->andWhere(sprintf('%s.$owner = :current_user', $rootAlias));
+            $queryBuilder->andWhere(sprintf('%s.user = :current_user', $rootAlias));
             $queryBuilder->setParameter('current_user', $user->getId());
         }
     }
