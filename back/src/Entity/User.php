@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed', 'read:message'])]
+    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed', 'read:message', 'read:message:search'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
