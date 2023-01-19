@@ -143,6 +143,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->created = new \DateTime();
         $this->updated = new \DateTime();
         $this->shares = new ArrayCollection();
+        $random = random_int(1, 100);
+        $this->profilePicture = "https://avatars.dicebear.com/api/male/$random.svg";
     }
 
     public function getId(): ?int

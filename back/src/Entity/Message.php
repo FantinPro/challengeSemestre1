@@ -284,7 +284,7 @@ class Message
         return count($this->reports);
     }
 
-    #[Groups(['read:message:feed'])]
+    #[Groups(['read:message:feed', 'read:message:search'])]
     public function getCommentsCount(): int
     {
         return count($this->comments);

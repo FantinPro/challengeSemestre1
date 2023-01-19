@@ -54,7 +54,10 @@ class Stat
     #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
     private $created;
 
-
+    public function __construct()
+    {
+        $this->created = new \DateTime();
+    }
 
     public function getId(): ?int
     {

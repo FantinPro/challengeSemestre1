@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Message;
+use App\Entity\Share;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -16,8 +17,10 @@ class ShareFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($users as $user) {
             $messageFromAdmin = $this->getReference('messageFromAdmin');
-            $messageFromAdmin->addShare($user);
-            $manager->persist($messageFromAdmin);
+            $share  = (new Share())
+                ->setSharingBy($user)
+                ->setSharedMessage($messageFromAdmin);
+            $manager->persist($share);
         }
 
         $manager->flush();
