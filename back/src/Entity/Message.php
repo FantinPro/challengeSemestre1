@@ -69,6 +69,7 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:message:feed'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
@@ -90,7 +91,7 @@ class Message
     private Collection $comments;
 
     #[ORM\Column]
-    #[Groups(['read:message', 'patch:message'])]
+    #[Groups(['read:message', 'patch:message', 'read:message:feed'])]
     private ?bool $isDeleted = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]

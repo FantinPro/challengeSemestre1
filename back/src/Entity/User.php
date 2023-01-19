@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search'])]
+    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed'])]
     private array $roles = [];
 
     /**
@@ -78,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search'])]
+    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, nullable: true)]
