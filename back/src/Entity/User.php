@@ -65,16 +65,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed', 'read:message', 'read:message:search'])]
+    #[Groups(['read:user', 'read:user_to_user','read:message:feed', 'read:message', 'read:message:search'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user_to_user', 'read:message'])]
+    #[Groups(['write:user', 'read:message'])]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'put:user:change_role'])]
+    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'put:user:change_role', 'read:user_to_user'])]
     private array $roles = [];
 
     /**
@@ -95,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed'])]
+    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, unique: true)]
