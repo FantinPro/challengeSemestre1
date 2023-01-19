@@ -26,6 +26,13 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreator($user)
                 ->setContent($faker->paragraph(2));
 
+            $messageFromAdmin = (new Message())
+                ->setCreator($admin)
+                ->setContent("vous devez RT ce msg $faker->paragraph(2)");
+
+            // add ref
+            $this->addReference("messageFromAdmin", $messageFromAdmin);
+
             for ($y = 0; $y < 10; $y++) {
                 $comment = (new Message())
                     ->setCreator($user)
@@ -36,6 +43,7 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
 
 
             $manager->persist($message);
+            $manager->persist($messageFromAdmin);
 
         }
         $manager->flush();

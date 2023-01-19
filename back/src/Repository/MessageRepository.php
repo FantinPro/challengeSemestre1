@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,6 +48,22 @@ class MessageRepository extends ServiceEntityRepository
             ->having('COUNT(r.id) >= 2')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getFeed($userId, $page = 1, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m')
+            ->leftJoin('m.shares', 's')
+            ->leftJoin('m.user', 'u')
+            ->where('u.id IN (:ids)')
+            ->orWhere('s.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('m.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
 //    /**

@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user', 'read:user_to_user', 'read:message'])]
+    #[Groups(['write:user', 'read:user_to_user', 'read:message'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -127,6 +127,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Timestampable(on: 'update')]
     private $updated;
 
+    #[ORM\OneToMany(mappedBy: 'sharingBy', targetEntity: Share::class)]
+    private Collection $shares;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
@@ -139,6 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->stats = new ArrayCollection();
         $this->created = new \DateTime();
         $this->updated = new \DateTime();
+        $this->shares = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -525,5 +529,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updated = $updated;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Share>
+     */
+    public function getShares(): Collection
+    {
+        return $this->shares;
+    }
+
+    public function addShare(Share $share): self
+    {
+        if (!$this->shares->contains($share)) {
+            $this->shares->add($share);
+            $share->setSharingBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShare(Share $share): self
+    {
+        if ($this->shares->removeElement($share)) {
+            // set the owning side to null (unless already changed)
+            if ($share->getSharingBy() === $this) {
+                $share->setSharingBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Groups(['read:user'])]
+    public function getMessagesCount(): int
+    {
+        return count($this->messages);
+    }
+
+    #[Groups(['read:user'])]
+    public function getFollowsCount(): int
+    {
+        return count($this->follows);
+    }
+
+    #[Groups(['read:user'])]
+    public function getFollowersCount(): int
+    {
+        return count($this->followers);
     }
 }
