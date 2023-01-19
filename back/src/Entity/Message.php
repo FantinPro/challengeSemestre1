@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\FeedController;
+use App\Controller\FeedV2Controller;
 use App\Controller\MessageWithAtLeast2ReportsController;
 use App\Repository\MessageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -42,6 +43,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:message:search']],
             security: "is_granted('ROLE_USER')",
+        ),
+        new GetCollection(
+            uriTemplate: '/messages/feed/v2',
+            controller: FeedV2Controller::class,
+            normalizationContext: ['groups' => ['read:message', 'read:message:feed']],
+            security: 'is_granted("ROLE_USER")',
         ),
         new Get(
             security: "is_granted('ROLE_USER')",

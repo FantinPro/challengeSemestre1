@@ -55,11 +55,11 @@ class MessageRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('m');
         $qb->select('m')
             ->leftJoin('m.shares', 's')
-            ->leftJoin('m.user', 'u')
-            ->where('u.id IN (:ids)')
-            ->orWhere('s.user = :userId')
+            ->leftJoin('s.sharingBy', 'u')
+            ->where('m.creator IN (SELECT f.other FROM App\Entity\Follow f WHERE f.user = :userId)')
+            ->orWhere('u = :userId')
             ->setParameter('userId', $userId)
-            ->orderBy('m.createdAt', 'DESC')
+            ->orderBy('m.created', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
         $query = $qb->getQuery();

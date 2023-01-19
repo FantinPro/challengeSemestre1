@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,6 +34,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(
             denormalizationContext: ['groups' => ['write:user']],
             security: 'is_granted("ROLE_USER") and object == user',
+        ),
+        new Get(
+            uriTemplate: '/users/profile',
+            controller: MeController::class,
+            security: "is_granted('ROLE_USER')",
+            read: false,
         ),
         new Get(
             security: "is_granted('ROLE_USER')"
