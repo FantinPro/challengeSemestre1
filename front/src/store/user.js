@@ -31,7 +31,7 @@ export const useUserStore = defineStore('user', {
         });
         const userToken = await response.json();
 
-        if (userToken) {
+        if (userToken && userToken.token) {
           $cookies.set('echo_user_token', userToken.token);
 
           const decoded = jwt_decode(userToken.token);
@@ -39,28 +39,16 @@ export const useUserStore = defineStore('user', {
           const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`, {
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${userToken.token}`,
             },
-            body: JSON.stringify(values),
           });
-          const userToken = await response.json();
 
-          if (userToken.token) {
-            $cookies.set('echo_user_token', userToken.token);
+          const user = await res.json();
 
-            const decoded = jwt_decode(userToken.token);
-
-            const res = await fetch(`http://localhost:8000/api/users/${decoded.id}`, {
-              headers: {
-                Authorization: `Bearer ${userToken.token}`,
-              },
-            });
-            const user = await res.json();
-
-            if (user) {
-              this.user = user;
-              localStorage.setItem('echoUser', JSON.stringify(user));
-              router.push('/home');
-            }
+          if (user) {
+            this.user = user;
+            localStorage.setItem('echoUser', JSON.stringify(user));
+            router.push('/home');
           }
         }
       } catch (e) {
