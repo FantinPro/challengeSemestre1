@@ -2,12 +2,14 @@ import * as VueRouter from 'vue-router'
 import Timeline from './views/Timeline.vue'
 import Register from './views/Register.vue'
 import Login from './views/Login.vue'
+import Messages from './views/Messages.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
   { path: '/home', component: Timeline },
   { path: '/register', component: Register },
   { path: '/login', component: Login },
+  { path: '/messages', component: Messages },
 ]
 
 export const router = VueRouter.createRouter({
