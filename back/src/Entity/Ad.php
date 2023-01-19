@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\GreaterThan;
@@ -89,9 +90,19 @@ class Ad
     #[Groups(['read:ad', 'patch:ad'])]
     private ?string $status = self::STATUS_PENDING;
 
+    #[Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
+    private $created;
+
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Timestampable(on: 'update')]
+    private $updated;
+
     public function __construct()
     {
         $this->stats = new ArrayCollection();
+        $this->created = new \DateTime();
+        $this->updated = new \DateTime();
     }
 
     public function getId(): ?int
@@ -197,6 +208,30 @@ class Ad
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreated(): \DateTime
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTime $created): self
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): \DateTime
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTime $updated): self
+    {
+        $this->updated = $updated;
 
         return $this;
     }

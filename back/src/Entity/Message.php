@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 
@@ -27,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(
             uriTemplate: '/messages/feed',
             controller: FeedController::class,
-            normalizationContext: ['groups' => ['read:message:feed']],
+            normalizationContext: ['groups' => ['read:message', 'read:message:feed']],
             security: 'is_granted("ROLE_USER")',
         ),
         new GetCollection(
@@ -77,7 +78,7 @@ class Message
     #[Groups(['read:message', 'read:message:feed', 'write:message', 'read:message:search'])]
     private ?User $creator;
 
-    #[Groups(['read:message', 'write:message', 'read:message:feed', 'read:message:search'])]
+    #[Groups(['read:message', 'write:message', 'read:message:search'])]
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
@@ -91,7 +92,7 @@ class Message
     private Collection $comments;
 
     #[ORM\Column]
-    #[Groups(['read:message', 'patch:message', 'read:message:feed'])]
+    #[Groups(['read:message', 'patch:message'])]
     private ?bool $isDeleted = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -101,11 +102,23 @@ class Message
     #[Groups(['read:message:reports'])]
     private Collection $reports;
 
+    #[Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['read:message'])]
+    private $created;
+
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Timestampable(on: 'update')]
+    #[Groups(['read:message'])]
+    private $updated;
+
     public function __construct()
     {
         $this->usersSharingMessage = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->created = new \DateTime();
+        $this->updated = new \DateTime();
     }
 
     public function getId(): ?int
@@ -273,4 +286,27 @@ class Message
         return count($this->comments);
     }
 
+    public function getCreated(): \DateTime
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTime $created): self
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): \DateTime
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTime $updated): self
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
 }
