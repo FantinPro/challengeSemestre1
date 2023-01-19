@@ -15,6 +15,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ApiResource(
@@ -24,6 +25,7 @@ use Symfony\Component\Validator\Constraints\Choice;
             security: 'is_granted("ROLE_PREMIUM") and object.getOwner() == user',
         ),
         new Post(
+            denormalizationContext: ['groups' => ['post:ad']],
             securityPostDenormalize: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
         ),
         new Put(
@@ -57,25 +59,26 @@ class Ad
     #[Groups(['read:ad'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['read:ad', 'put:ad'])]
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Groups(['read:ad', 'put:ad', 'post:ad'])]
     private ?\DateTimeInterface $startDate = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['read:ad', 'put:ad'])]
+    #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
+    #[Groups(['read:ad', 'put:ad', 'post:ad'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:ad', 'put:ad'])]
+    #[Groups(['read:ad', 'put:ad', 'post:ad'])]
     private ?string $message = null;
 
     #[ORM\Column]
-    #[Groups(['read:ad', 'put:ad'])]
+    #[Groups(['read:ad', 'put:ad', 'post:ad'])]
+    #[GreaterThan(0)]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'ads')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:ad'])]
+    #[Groups(['read:ad', 'post:ad'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Stat::class)]

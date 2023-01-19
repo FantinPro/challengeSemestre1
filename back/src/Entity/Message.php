@@ -63,7 +63,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['read:message']],
     denormalizationContext: ['groups' => ['write:message']],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['content' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['content' => 'ipartial'])]
 class Message
 {
     #[ORM\Id]

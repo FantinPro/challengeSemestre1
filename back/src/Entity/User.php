@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['pseudo' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['pseudo' => 'ipartial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_USER = 'ROLE_USER';
@@ -81,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed'])]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(length: 25, nullable: true)]
+    #[ORM\Column(length: 25, unique: true)]
     #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $pseudo = null;
 
