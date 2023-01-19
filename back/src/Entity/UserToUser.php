@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints\Choice;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_USER') and request.get('me') == user.getId()",
+            security: "is_granted('ROLE_USER')",
         ),
         new Post(
             securityPostDenormalize: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints\Choice;
     normalizationContext: ['groups' => ['read:user_to_user']],
     denormalizationContext: ['groups' => ['write:user_to_user']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['me' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['me' => 'exact', 'other' => 'exact'])]
 #[UniqueEntity(
     fields: ['me', 'other'],
     message: 'You already follow this user.',
