@@ -1,31 +1,37 @@
 <template>
-  <div class="flex gap-2">
-    <div class="w-3/12">
-      <SideMenu />
-    </div>
-    <div class="flex flex-col w-6/12">
-      <div v-for="item in feed" :key="item.id">
-        <Card :item="item" />
-      </div>
-    </div>
-    <div class="w-3/12">
+  <div class="flex flex-col overflow-auto overflow-x-hidden h-full">
+    <span v-if="isLoading">Loading...</span>
+    <span v-else-if="isError">Error: {{ error.message }}</span>
+    <div v-for="feed in timeline" :key="feed.id">
+      <Card :item="feed" />
     </div>
   </div>
 </template>
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { useQuery } from "vue-query";
 import SideMenu from "../components/Menu/SideMenu.vue";
 import Card from "../components/Card/Card.vue";
+import LayoutDefault from "../layouts/LayoutDefault.vue";
+
 import { useUserStore } from "../store/user";
+import { useFeedStore } from "../store/feed";
 
 const { user } = useUserStore();
+const { fetchFeed } = useFeedStore();
+const emit = defineEmits(["update:layout"]);
 
-console.log(user)
+onMounted(() => {
+  emit("update:layout", LayoutDefault);
+});
 
-// const query = useQuery("feed", getFeed);
+function useFeedQuery() {
+  return useQuery("feed", fetchFeed(1));
+}
 
-const feed = reactive([
+const { isLoading, isError, data, error } = useFeedQuery();
+
+const timeline = reactive([
   {
     id: 1,
     username: "John Doe",

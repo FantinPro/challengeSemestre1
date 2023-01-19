@@ -1,11 +1,16 @@
 <template>
-  <div class="h-full">
-    <router-view />
-  </div>
+  <component :is="layout" :class="layout === 'div' ? '' : 'flex'">
+    <router-view @update:layout="updateLayout" :layout.sync="layout" />
+  </component>
 </template>
 
 <script setup>
-</script>
+import { ref } from "vue";
 
-<style scoped>
-</style>
+let layout = ref("div");
+
+const updateLayout = (newLayout) => {
+  layout.value = newLayout;
+};
+
+</script>

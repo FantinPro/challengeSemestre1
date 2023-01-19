@@ -17,13 +17,18 @@
 
 <script setup>
 
-import { inject } from 'vue';
+import { inject, onMounted } from 'vue';
 import { useUserStore } from "../store/user";
 import { useRouter } from 'vue-router';
 
 const $cookies = inject('$cookies');
 const userStore = useUserStore();
 const router = useRouter();
+
+const emit = defineEmits(["update:layout"]);
+onMounted(() => {
+  emit('update:layout', 'div')
+});
 
 const submit = async (values) => {
   await userStore.signIn(values);
