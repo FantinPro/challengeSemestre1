@@ -28,6 +28,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
             security: 'is_granted("ROLE_PREMIUM")',
         ),
         new Get(
+            normalizationContext: ['groups' => ['read:ad', 'read:ad:stats']],
             security: 'is_granted("ROLE_PREMIUM") and object.getOwner() == user',
         ),
         new Post(
@@ -244,6 +245,18 @@ class Ad
         $this->updated = $updated;
 
         return $this;
+    }
+
+    #[Groups(['read:ad:stats'])]
+    public function getImpressions() {
+        return count($this->stats);
+    }
+
+    #[Groups(['read:ad:stats'])]
+    public function getClicks() {
+        return count(array_filter($this->stats->toArray(), function (Stat $stat) {
+            return $stat->isClick();
+        }));
     }
 
 }

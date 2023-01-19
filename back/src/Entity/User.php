@@ -25,7 +25,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Post(),
-        new Put(),
+        new Put(
+            uriTemplate: '/users/{id}/change_role',
+            denormalizationContext: ['groups' => ['put:user:change_role']],
+            securityPostDenormalize: "is_granted('ROLE_ADMIN')",
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['write:user']],
+            security: 'is_granted("ROLE_USER") and object == user',
+        ),
         new Get(
             security: "is_granted('ROLE_USER')"
         ),
@@ -59,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed'])]
+    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'put:user:change_role'])]
     private array $roles = [];
 
     /**

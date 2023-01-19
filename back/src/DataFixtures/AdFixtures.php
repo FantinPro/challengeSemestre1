@@ -37,6 +37,9 @@ class AdFixtures extends Fixture implements DependentFixtureInterface
             ->setEndDate($endTime)
             ->setStatus(Ad::STATUS_ACCEPTED);
 
+        // use reference
+        $this->addReference('adThatStartNow', $adThatStartNow);
+
         $startTime2 = new \DateTime();
         $startTime2->sub(new \DateInterval('P10D'));
 
