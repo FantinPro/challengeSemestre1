@@ -27,7 +27,7 @@ fixtures:
 	cd ./back && php bin/console doctrine:fixtures:load
 
 start: up
-	cd ./back && symfony serve
+	cd ./back && php bin/console cache:clear && symfony serve
 
 clear:
 	cd ./back && php bin/console cache:clear
