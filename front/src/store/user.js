@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', {
         await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
           method: "POST",
           headers: {
+            Accept: 'application/json',
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
@@ -25,6 +26,7 @@ export const useUserStore = defineStore('user', {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/auth`, {
           method: "POST",
           headers: {
+            Accept: 'application/json',
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),

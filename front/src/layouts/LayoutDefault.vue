@@ -3,10 +3,10 @@
     <header class="flex md:flex-grow max-md:bottom-0 sticky top-0 w-full h-screen max-md:bg-opacity-90 max-md:bg-slate-900">
       <SideMenu />
     </header>
-    <main class="flex">
+    <main class="flex w-full">
       <slot class="w-full" />
       <div class="hidden md:flex md:w-1/3">
-        <div class="sticky top-0">
+        <!-- <div class="">
           <div class="bg-white rounded-lg shadow-lg p-4">
             <div class="flex items-center">
               <img
@@ -44,7 +44,7 @@
               </button>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </main>
   </div>
