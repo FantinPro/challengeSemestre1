@@ -38,7 +38,7 @@ class UserFixtures extends Fixture
         $manager->persist($user);
 
         $moderator = (new User())
-            ->setEmail('moderator@moderator.com')
+            ->setEmail('moderator@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_MODERATOR'])
             ->setPseudo('modo')

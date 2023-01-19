@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\TokenResetPassword;
-use App\Entity\User;
 use App\Repository\TokenResetPasswordRepository;
 use App\Repository\UserRepository;
 use App\Service\UserEmailService;
@@ -16,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 
 #[AsController]
 class UserController extends AbstractController

@@ -2,19 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
-use App\Controller\FeedController;
-use App\Controller\MeController;
-use App\Controller\UserController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -29,29 +27,35 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             security: "is_granted('ROLE_USER')"
         ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:user:search']],
+            security: "is_granted('ROLE_USER')"
+        )
     ],
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['pseudo' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_USER = 'ROLE_USER';
     const ROLE_MODERATOR = 'ROLE_MODERATOR';
     const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_PREMIUM = 'ROLE_PREMIUM';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed'])]
+    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed', 'read:message'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user', 'read:user_to_user'])]
+    #[Groups(['write:user', 'read:user', 'read:user_to_user', 'read:message'])]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read:user'])]
+    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search'])]
     private array $roles = [];
 
     /**
@@ -71,16 +75,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: TokenResetPassword::class, orphanRemoval: true)]
     private Collection $tokenResetPasswords;
 
-    #[ORM\Column]
-    #[Groups(['read:user_to_user_read'])]
-    private ?bool $isPremium = false;
-
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read'])]
+    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, nullable: true)]
-    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed'])]
+    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
@@ -233,18 +233,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $tokenResetPassword->setFromUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isIsPremium(): ?bool
-    {
-        return $this->isPremium;
-    }
-
-    public function setIsPremium(bool $isPremium): self
-    {
-        $this->isPremium = $isPremium;
 
         return $this;
     }

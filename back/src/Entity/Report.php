@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ReportRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Choice;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
@@ -42,6 +43,7 @@ class Report
 
     #[ORM\ManyToOne(inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:message:reports'])]
     private ?User $reportingUser = null;
 
     #[ORM\ManyToOne(inversedBy: 'reports')]
@@ -50,6 +52,7 @@ class Report
 
     #[ORM\Column(length: 30)]
     #[Choice(choices: self::REPORT_TYPES)]
+    #[Groups(['read:message:reports'])]
     private ?string $type = null;
 
     public function getId(): ?int
