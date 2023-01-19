@@ -8,15 +8,13 @@ export const useFeedStore = defineStore('feed', {
     async fetchFeed(page) {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages/feed?page=${page}`, {
         headers: {
+          Accept: 'application/json',
           Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
         },
       });
 
-      if (page === 1) {
-        this.feed = await response.json();
-      } else {
-        this.feed = this.feed.concat(await response.json());
-      }
+      const data = await response.json();
+      return data;
     },
   },
 });

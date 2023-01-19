@@ -23,7 +23,7 @@
           />
         </g>
       </svg>
-      <span class="text-gray-400 ml-1">{{ comments }}</span>
+      <span class="text-gray-400 ml-1">{{ commentsCount }}</span>
     </div>
     <div
       class="
@@ -61,7 +61,7 @@ const props = defineProps({
   },
 });
 
-const { id, comments, shares } = props.item;
+const { id, commentsCount, shares = 6 } = props.item;
 </script>
 <style lang="">
 </style>

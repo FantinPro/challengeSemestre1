@@ -1,6 +1,6 @@
 <template>
   <div class="mt-4">
-    <span class="text-white">{{ text }}</span>
+    <span class="text-white">{{ content }}</span>
   </div>
 </template>
 <script setup>
@@ -11,7 +11,7 @@ const props = defineProps({
   },
 });
 
-const { id, text } = props.item;
+const { id, content } = props.item;
 
 </script>
 <style>

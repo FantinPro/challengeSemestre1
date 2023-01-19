@@ -5,9 +5,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { shallowRef } from "vue";
 
-let layout = ref("div");
+let layout = shallowRef("div");
 
 const updateLayout = (newLayout) => {
   layout.value = newLayout;
