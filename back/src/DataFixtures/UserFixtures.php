@@ -23,6 +23,7 @@ class UserFixtures extends Fixture
             ->setEmail('admin@gmail.com')
             ->setIsVerified(true)
             ->setRoles(['ROLE_ADMIN'])
+            ->setBio('I am the admin be nice to me')
             ->setPseudo('admin')
         ;
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, 'password'));
