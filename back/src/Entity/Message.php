@@ -41,6 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             paginationEnabled: true,
             paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:message:search']],
+            security: "is_granted('ROLE_USER')",
         ),
         new Get(
             security: "is_granted('ROLE_USER')",
@@ -104,12 +105,12 @@ class Message
 
     #[Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
-    #[Groups(['read:message'])]
+    #[Groups(['read:message', 'read:message:search'])]
     private $created;
 
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
     #[Timestampable(on: 'update')]
-    #[Groups(['read:message'])]
+    #[Groups(['read:message', 'read:message:search'])]
     private $updated;
 
     #[ORM\OneToMany(mappedBy: 'sharedMessage', targetEntity: Share::class)]
