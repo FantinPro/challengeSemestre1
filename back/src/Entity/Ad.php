@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -11,45 +13,78 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Choice;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(),
+        new Get(
+            security: 'is_granted("ROLE_PREMIUM") and object.getOwner() == user',
+        ),
         new Post(
-            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
+            securityPostDenormalize: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
         ),
         new Put(
+            denormalizationContext: ['groups' => ['put:ad']],
             security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
         ),
+        new Patch(
+            denormalizationContext: ['groups' => ['patch:ad']],
+            security: "is_granted('ROLE_ADMIN')",
+        )
     ],
-    normalizationContext: ['groups' => ['read:stat']],
-    denormalizationContext: ['groups' => ['write:stat']],
+    normalizationContext: ['groups' => ['read:ad']],
+    denormalizationContext: ['groups' => ['write:ad']],
 )]
 class Ad
 {
+
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACCEPTED = 'accepted';
+    const STATUS_REJECTED = 'rejected';
+
+    const STATUS = [
+        self::STATUS_PENDING,
+        self::STATUS_ACCEPTED,
+        self::STATUS_REJECTED,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:ad'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['read:ad', 'put:ad'])]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['read:ad', 'put:ad'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:ad', 'put:ad'])]
     private ?string $message = null;
 
     #[ORM\Column]
+    #[Groups(['read:ad', 'put:ad'])]
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'ads')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read:ad'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Stat::class)]
     private Collection $stats;
+
+    #[ORM\Column(length: 30)]
+    #[Choice(choices: self::STATUS)]
+    #[Groups(['read:ad', 'patch:ad'])]
+    private ?string $status = self::STATUS_PENDING;
 
     public function __construct()
     {
@@ -147,6 +182,18 @@ class Ad
                 $stat->setAd(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

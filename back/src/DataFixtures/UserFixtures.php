@@ -46,14 +46,32 @@ class UserFixtures extends Fixture
         $moderator->setPassword($this->userPasswordHasher->hashPassword($moderator, 'password'));
         $manager->persist($moderator);
 
-        $notVerfiedUser = (new User())
+        $notVerified = (new User())
             ->setEmail('notverified@gmail.com')
             ->setIsVerified(false)
             ->setRoles(['ROLE_USER'])
-            ->setPseudo('notverified')
+            ->setPseudo('not_verified')
         ;
-        $notVerfiedUser->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
-        $manager->persist($notVerfiedUser);
+        $notVerified->setPassword($this->userPasswordHasher->hashPassword($notVerified, 'password'));
+        $manager->persist($notVerified);
+
+        $premiumUser = (new User())
+            ->setEmail('premium@gmail.com')
+            ->setIsVerified(true)
+            ->setRoles(['ROLE_PREMIUM'])
+            ->setPseudo('premium')
+        ;
+        $premiumUser->setPassword($this->userPasswordHasher->hashPassword($premiumUser, 'password'));
+        $manager->persist($premiumUser);
+
+        $premiumUser2 = (new User())
+            ->setEmail('premium2@gmail.com')
+            ->setIsVerified(true)
+            ->setRoles(['ROLE_PREMIUM'])
+            ->setPseudo('premium2')
+        ;
+        $premiumUser2->setPassword($this->userPasswordHasher->hashPassword($premiumUser2, 'password'));
+        $manager->persist($premiumUser2);
 
         $manager->flush();
     }
