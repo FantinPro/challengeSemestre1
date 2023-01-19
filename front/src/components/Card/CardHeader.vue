@@ -2,11 +2,13 @@
   <div class="flex justify-between">
     <div class="flex flex-col">
       <span class="text-white font-bold">{{ pseudo }}</span>
-      <span class="text-gray-400 text-sm">{{ time }}</span>
+      <span class="text-gray-400 text-sm">{{ createdAt }}</span>
     </div>
   </div>
 </template>
 <script setup>
+import { formatDistance } from "date-fns";
+
 const props = defineProps({
   item: {
     type: Object,
@@ -14,8 +16,9 @@ const props = defineProps({
   },
 });
 
-const { id, pseudo, time = "Il y a 1 heure" } =
-  props.item;
+const { id, pseudo, created } = props.item;
+
+const createdAt = formatDistance(new Date(created), new Date(), { addSuffix: true });
 </script>
 <style>
 </style>

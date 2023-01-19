@@ -3,7 +3,7 @@
     <div class="p-5 flex">
       <img class="w-12 h-12 rounded-full" src="https://i.pravatar.cc/150?img=1" alt="avatar" />
       <div class="ml-4">
-        <CardHeader :item="{ id, pseudo }" />
+        <CardHeader :item="{ id, pseudo, created }" />
         <CardBody :item="{ id, content }" />
         <CardFooter :item="{ id, commentsCount }" />
       </div>
@@ -22,6 +22,6 @@ const props = defineProps({
     required: true,
   },
 });
-const { id, creator, content, commentsCount } = props.item;
+const { id, creator, content, commentsCount, created } = props.item;
 const { pseudo } = creator;
 </script>
