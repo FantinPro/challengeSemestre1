@@ -22,8 +22,7 @@ jobs:
         php-version: '8.1'
         coverage: none
     
-    - name: Install Composer dependencies
-      run: composer install
+    - uses: php-actions/composer@v5
 
   deploy:
     runs-on: ubuntu-latest
