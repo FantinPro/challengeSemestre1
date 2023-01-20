@@ -5,10 +5,10 @@
     </header>
     <main class="flex w-full">
       <div class="flex flex-col min-w-[600px]">
-        <SearchButton />
         <slot />
       </div>
-      <div class="hidden md:flex md:w-1/3 border-l border-[#4c5157]">
+      <div class="hidden md:flex flex-col pt-4 pl-3 md:w-1/3 border-l border-[#4c5157]">
+        <SearchButton />
         <!-- <div class="">
           <div class="bg-white rounded-lg shadow-lg p-4">
             <div class="flex items-center">
