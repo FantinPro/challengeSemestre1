@@ -65,5 +65,9 @@ onMounted(async () => {
 
   await getUserProfileByUsername(router.currentRoute.value.params.pseudo);
 
+  if (!profile.value) {
+    router.push("/");
+  }
+
 });
 </script>

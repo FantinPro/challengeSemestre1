@@ -4,6 +4,7 @@ import Register from './views/Register.vue'
 import Login from './views/Login.vue'
 import Messages from './views/Messages.vue'
 import Profile from './views/Profile.vue'
+import Search from './views/Search.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -11,6 +12,7 @@ const routes = [
   { path: '/register', component: Register },
   { path: '/login', component: Login },
   { path: '/messages', component: Messages },
+  { path: '/search', component: Search },
   { path: '/:pseudo', component: Profile },
 ]
 

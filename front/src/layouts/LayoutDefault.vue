@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col md:flex-row h-full md:m-auto">
-    <header class="flex max-md:w-full bottom-0 fixed md:relative md:h-screen max-md:bg-opacity-90 max-md:bg-slate-900 border-r border-[#4c5157]">
+    <header class="flex max-md:w-full fixed md:sticky md:top-0 md:h-screen max-md:bg-opacity-90 max-md:bg-slate-900 border-r border-[#4c5157]">
       <SideMenu />
     </header>
-    <main class="flex w-full">
-      <div class="flex flex-col min-w-[600px]">
+    <main class="flex w-full relative">
+      <div class="flex flex-col w-[600px]">
         <slot />
       </div>
-      <div class="hidden md:flex flex-col pt-4 pl-3 md:w-1/3 border-l border-[#4c5157]">
+      <div class="hidden md:sticky md:top-0 md:flex md:h-screen flex-col pt-4 pl-3 md:w-1/3 border-l border-[#4c5157]">
         <SearchButton />
         <!-- <div class="">
           <div class="bg-white rounded-lg shadow-lg p-4">

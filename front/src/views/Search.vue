@@ -2,7 +2,7 @@
   <div class="flex flex-col overflow-auto h-full">
     <HeaderMenu :tabs="tabs">
       <template #title>
-        <h1 class="text-2xl font-bold cursor-pointer">Home</h1>
+        <h1 class="text-2xl font-bold cursor-pointer">Recherche</h1>
       </template>
       <template #panels>
         <TabPanels>
@@ -21,26 +21,28 @@
     </HeaderMenu>
   </div>
 </template>
+
 <script setup>
-  import { TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-  import { onMounted } from "vue";
-  import { useQuery } from "vue-query";
-  import SideMenu from "../components/Menu/SideMenu.vue";
+  import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
+  import LayoutDefault from "../layouts/LayoutDefault.vue";
   import Card from "../components/Card/Card.vue";
   import HeaderMenu from "../components/Menu/HeaderMenu.vue";
-  import LayoutDefault from "../layouts/LayoutDefault.vue";
-
+  import { useQuery } from "vue-query";
+  import { computed, onMounted } from "vue";
   import { useFeedStore } from "../store/feed";
+  import { useRoute } from "vue-router";
 
-  const tabs = ['For you', 'Following']
-  const { fetchFeed } = useFeedStore();
+  const tabs = ['Messages', 'Utilisateurs']
+
+  const route = useRoute();
+  const { fetchMessages } = useFeedStore();
   const emit = defineEmits(["update:layout"]);
-
+  const search = computed(() => route.query.q);
   onMounted(() => {
-    emit("update:layout", LayoutDefault);
+    emit('update:layout', LayoutDefault);
   });
 
-  const { isLoading, isError, data, error } = useQuery("feed", () =>
-    fetchFeed(1)
+  const { isLoading, isError, data, error } = useQuery(["feed", search], () =>
+    fetchMessages(1, { content: route.query.q })
   );
 </script>

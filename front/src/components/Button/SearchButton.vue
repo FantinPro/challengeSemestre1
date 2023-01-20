@@ -6,7 +6,7 @@
       autocomplete="off"
       class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-white focus:ring-0 rounded-full"
       @input="searchUser = $event.target.value"
-      @keydown.enter="handleSelectUser(searchUser, 'enter')"
+      @keydown.enter="searchUser !== '' && handleSelectUser(searchUser, 'enter')"
     />
     <div v-show="open" class="relative">
       <div class="absolute top-3 w-full max-h-60 overflow-auto rounded-md text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
@@ -92,6 +92,8 @@
       router.push(`/${userPseudo}`);
       searchUser.value = '';
     } else if (type === 'enter') {
+      console.log('enter')
+      console.log(userPseudo)
       router.push(`/search?q=${userPseudo}`);
     }
   }
