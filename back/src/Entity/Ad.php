@@ -56,11 +56,13 @@ class Ad
     const STATUS_PENDING = 'pending';
     const STATUS_ACCEPTED = 'accepted';
     const STATUS_REJECTED = 'rejected';
+    const STATUS_PAYED = 'payed';
 
     const STATUS = [
         self::STATUS_PENDING,
         self::STATUS_ACCEPTED,
         self::STATUS_REJECTED,
+        self::STATUS_PAYED,
     ];
 
     #[ORM\Id]

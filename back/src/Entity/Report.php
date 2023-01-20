@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints\Choice;
             security: "is_granted('ROLE_MODERATOR')",
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
+            securityPostDenormalize: "is_granted('ROLE_USER') and object.getReportingUser() == user and object.getReportedMessage().getCreator() != user",
         ),
         new GetCollection(
             security: "is_granted('ROLE_MODERATOR')",
