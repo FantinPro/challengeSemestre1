@@ -39,6 +39,16 @@ class ReportRepository extends ServiceEntityRepository
         }
     }
 
+    public function deleteAllReportsFromMessage($messageId)
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb->delete()
+            ->where('r.reportedMessage = :messageId')
+            ->setParameter('messageId', $messageId)
+            ->getQuery()
+            ->execute();
+    }
+
 //    /**
 //     * @return Report[] Returns an array of Report objects
 //     */
