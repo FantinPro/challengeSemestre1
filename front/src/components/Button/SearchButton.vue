@@ -41,16 +41,7 @@
               :value="user.pseudo"
               @click="handleSelectUser(user.pseudo, 'select')"
             >
-              <div class="flex items-center pl-3 py-4 bg-neutral-800 hover:bg-neutral-700/60 hover:cursor-pointer">
-                <img
-                  v-if="user?.profilePicture"
-                  :src="user?.profilePicture"
-                  class="w-8 h-8 rounded-full"
-                  alt="User avatar"
-                />
-                <div v-else class="w-7 h-7 bg-neutral-500 rounded-full" />
-                <span class="font-bold text-lg ml-3 hidden md:block">{{ user?.pseudo }}</span>
-              </div>
+              <UserCard :user="user" type="searchBar" />
             </ComboboxOption>
           </ComboboxOptions>
         </template>
@@ -66,23 +57,16 @@
   import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/vue';
   import { useQuery } from "vue-query";
   import { useRouter, useRoute } from 'vue-router';
+  import { useUserStore } from '../../store/user';
+  import UserCard from '../User/UserCard.vue'
 
   const router = useRouter();
   const route = useRoute();
+  const { fetchUsers } = useUserStore();
 
   const searchUser = ref(route.query.q || '');
   const debouncedSearchUser = refDebounced(searchUser, 200);
   const isSearchUserNotEmpty = computed(() => debouncedSearchUser.value !== '');
-
-  function fetchUsers(search) {
-    return fetch(`${import.meta.env.VITE_API_URL}/api/users?page=1&pseudo=${search.value}`, {
-      headers: {
-        "Authorization": `Bearer ${$cookies.get('echo_user_token')}`,
-        "Accept": "application/json",
-      }
-    })
-    .then((res) => res.json());
-  }
 
   function useUsersQuery(search , { enabled }) {
     return useQuery(["users", search], async () => await fetchUsers(search), { enabled });
@@ -97,7 +81,5 @@
     }
   }
 
-  const { isLoading, isError, data, error } = useUsersQuery(debouncedSearchUser, { enabled: isSearchUserNotEmpty });
-
-  // const selectedPerson = ref(people[0])
+  const { isLoading, isError, data, error } = useUsersQuery(debouncedSearchUser.value, { enabled: isSearchUserNotEmpty });
 </script>

@@ -110,6 +110,21 @@ export const useUserStore = defineStore('user', {
       } catch (e) {
         console.log(e)
       }
+    },
+    async fetchUsers(pseudo) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users?page=1&pseudo=${pseudo}`, {
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        });
+        const users = await response.json();
+        return users;
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
 });
