@@ -95,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
+    #[Groups(['read:user', 'read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, unique: true)]
