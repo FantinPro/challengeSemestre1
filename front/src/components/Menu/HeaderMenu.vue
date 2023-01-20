@@ -26,7 +26,7 @@
         </TabList>
       </div>
     </div>
-    <div class="mt-3">
+    <div>
       <slot name="panels" />
     </div>
   </TabGroup>

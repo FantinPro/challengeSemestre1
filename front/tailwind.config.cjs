@@ -37,6 +37,7 @@ module.exports = {
     },
   },
   plugins: [
-    formKitTailwind
+    formKitTailwind,
+    require('@tailwindcss/line-clamp'),
   ],
 }
