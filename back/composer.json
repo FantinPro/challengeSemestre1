@@ -21,7 +21,6 @@
         "sendinblue/api-v3-sdk": "^8.4",
         "symfony/asset": "6.2.*",
         "symfony/console": "6.2.*",
-        "symfony/dotenv": "6.2.*",
         "symfony/expression-language": "6.2.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.2.*",
@@ -85,6 +84,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.21",
+        "symfony/dotenv": "6.2.*",
         "symfony/maker-bundle": "^1.48",
         "symfony/stopwatch": "6.2.*",
         "symfony/web-profiler-bundle": "6.2.*"
