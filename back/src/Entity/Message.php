@@ -53,6 +53,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: 'is_granted("ROLE_USER")',
         ),
         new Get(
+            normalizationContext: ['groups' => ['read:message', 'read:message+thread']],
             security: "is_granted('ROLE_USER')",
         ),
         new Post(
@@ -99,6 +100,7 @@ class Message
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
+    #[Groups(['read:message+thread'])]
     private Collection $comments;
 
     #[ORM\Column]
@@ -295,7 +297,7 @@ class Message
         return count($this->reports);
     }
 
-    #[Groups(['read:message:feed', 'read:message:search'])]
+    #[Groups(['read:message', 'read:message:search'])]
     public function getCommentsCount(): int
     {
         return count($this->comments);
@@ -355,7 +357,7 @@ class Message
         return $this;
     }
 
-    #[Groups(['read:message:feedV2'])]
+    #[Groups(['read:message'])]
     public function getSharesCount()
     {
         return count($this->shares);
