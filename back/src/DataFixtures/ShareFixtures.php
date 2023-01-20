@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Message;
 use App\Entity\Share;
 use App\Entity\User;
+use App\Entity\UserToUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -13,12 +14,16 @@ class ShareFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $users = $manager->getRepository(User::class)->findAll();
+        $admin = $manager->getRepository(User::class)->findOneBy([
+            'email' => 'admin@gmail.com'
+        ]);
+
+        $follows = $admin->getFollows()->map(fn (UserToUser $follow) => $follow->getOther());
 
         $messageFromAdmin = $this->getReference('messageFromAdmin');
         $messageFromNobody = $this->getReference('nobodyFollowUserMessage');
 
-        foreach ($users as $user) {
+        foreach ($follows as $user) {
 
             $share  = (new Share())
                 ->setSharingBy($user)
