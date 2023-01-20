@@ -6,6 +6,17 @@
         }
     ],
     "scripts": {
-        "postdeploy": "php bin/console doctrine:schema:create"
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts",
+            "php bin/console doctrine:schema:update --force",
+            "php bin/console doctrine:fixtures:load --append"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
     }
 }
