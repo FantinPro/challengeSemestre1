@@ -65,11 +65,12 @@
   import { refDebounced } from '@vueuse/core'
   import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/vue';
   import { useQuery } from "vue-query";
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
 
   const router = useRouter();
+  const route = useRoute();
 
-  const searchUser = ref('');
+  const searchUser = ref(route.query.q || '');
   const debouncedSearchUser = refDebounced(searchUser, 200);
   const isSearchUserNotEmpty = computed(() => debouncedSearchUser.value !== '');
 
@@ -92,8 +93,6 @@
       router.push(`/${userPseudo}`);
       searchUser.value = '';
     } else if (type === 'enter') {
-      console.log('enter')
-      console.log(userPseudo)
       router.push(`/search?q=${userPseudo}`);
     }
   }
