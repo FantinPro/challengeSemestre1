@@ -9,7 +9,6 @@
 /back/var/
 /back/vendor/
 /back/db-data-postgres
-/back/config/jwt
 /back/.env
 /back/.env*
 /back/.idea
