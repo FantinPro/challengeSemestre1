@@ -5,6 +5,7 @@
     </header>
     <main class="flex w-full">
       <div class="flex flex-col min-w-[600px]">
+        <SearchButton />
         <slot />
       </div>
       <div class="hidden md:flex md:w-1/3 border-l border-[#4c5157]">
@@ -21,30 +22,6 @@
                 <p class="text-sm text-gray-500">@johndoe</p>
               </div>
             </div>
-            <div class="mt-4">
-              <p class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam quod, voluptatum, quia, voluptates quas voluptatibus
-                quae voluptate quibusdam quidem quos nesciunt. Quisquam, quae.
-                Quisquam quod, voluptatum, quia, voluptates quas voluptatibus
-                quae voluptate quibusdam quidem quos nesciunt. Quisquam, quae.
-              </p>
-            </div>
-            <div class="mt-4">
-              <button
-                class="
-                  bg-blue-500
-                  hover:bg-blue-600
-                  text-white
-                  font-semibold
-                  py-2
-                  px-4
-                  rounded-full
-                "
-              >
-                Follow
-              </button>
-            </div>
           </div>
         </div> -->
       </div>
@@ -53,4 +30,5 @@
 </template>
 <script setup>
 import SideMenu from "../components/Menu/SideMenu.vue";
+import SearchButton from "../components/Button/SearchButton.vue";
 </script>
