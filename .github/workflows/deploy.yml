@@ -23,8 +23,11 @@ jobs:
         tools: composer:v2
         coverage: none
 
+    ## create a .env.local file
+
+
     - name: Install Dependencies
-      run: composer update --prefer-stable --no-interaction --no-progress --ansi
+      run: composer install --no-interaction --no-progress --no-scripts
 
   deploy:
     runs-on: ubuntu-latest
