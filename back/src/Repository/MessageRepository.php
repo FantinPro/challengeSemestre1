@@ -52,7 +52,7 @@ class MessageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getFeed($userId, $page = 1, $limit = 10)
+    public function getFeed($userId, $page = 1, $limit)
     {
         $qb = $this->createQueryBuilder('m');
         $qb->select('m')

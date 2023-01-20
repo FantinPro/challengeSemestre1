@@ -97,6 +97,7 @@ class Message
     private Collection $usersSharingMessage;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
+    #[Groups(['read:message:feed'])]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
@@ -126,6 +127,9 @@ class Message
 
     #[ORM\OneToMany(mappedBy: 'sharedMessage', targetEntity: Share::class)]
     private Collection $shares;
+
+    #[Groups('read:message:feedV2')]
+    public array $whoHasSharedFromMyFollows = [];
 
     public function __construct(
     )
@@ -361,5 +365,16 @@ class Message
     public function getSharesCount()
     {
         return count($this->shares);
+    }
+
+    public function setWhoHasSharedFromMyFollows(array $follows): void
+    {
+        $users = $this->shares->filter(function (Share $share) use ($follows) {
+            return in_array($share->getSharingBy()->getId(), $follows);
+        })->map(function (Share $share) {
+            return $share->getSharingBy()->getPseudo();
+        })->toArray();
+
+        $this->whoHasSharedFromMyFollows = array_values($users);
     }
 }

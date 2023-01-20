@@ -27,6 +27,7 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 3; $i++) {
             $message = (new Message())
                 ->setCreator($user)
+                ->setCreated($faker->dateTimeBetween('-1 week', 'now'))
                 ->setContent($faker->paragraph(2));
 
 
