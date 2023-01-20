@@ -1,9 +1,6 @@
 <template>
   <div class="flex flex-col overflow-auto h-full">
-    <HeaderMenu :tabs="tabs">
-      <template #title>
-        <h1 class="text-2xl font-bold cursor-pointer">Recherche</h1>
-      </template>
+    <HeaderMenu :tabs="tabs" title="Recherche">
       <template #panels>
         <TabPanels>
           <TabPanel>
