@@ -8,7 +8,7 @@
         rounded-3xl
         px-4
         py-2
-        max-md:px-6
+        max-md:px-3
         max-md:py-3
         w-fit
         group-hover:bg-opacity-10 group-hover:bg-white

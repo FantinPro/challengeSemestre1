@@ -1,7 +1,10 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <span class="text-white font-bold">{{ pseudo }}</span>
+      <div class="flex items-baseline gap-2">
+        <router-link :to="`/${pseudo}`" class="text-gray-200 font-bold">{{ pseudo }}</router-link>
+        <router-link :to="`/${pseudo}`" class="text-gray-400 text-sm">@{{ pseudo }}</router-link>
+      </div>
       <span class="text-gray-400 text-sm">{{ createdAt }}</span>
     </div>
   </div>
@@ -16,9 +19,7 @@ const props = defineProps({
   },
 });
 
-const { id, pseudo, created } = props.item;
+const { pseudo, created } = props.item;
 
 const createdAt = formatDistance(new Date(created), new Date(), { addSuffix: true });
 </script>
-<style>
-</style>

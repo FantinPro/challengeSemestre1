@@ -4,7 +4,7 @@
       <img class="w-12 h-12 rounded-full" src="https://i.pravatar.cc/150?img=1" alt="avatar" />
       <div class="ml-4">
         <CardHeader :item="{ id, pseudo, created }" />
-        <CardBody :item="{ id, content }" />
+        <CardBody :item="{ id, content, isDeleted }" />
         <CardFooter :item="{ id, commentsCount }" />
       </div>
     </div>
@@ -22,6 +22,6 @@ const props = defineProps({
     required: true,
   },
 });
-const { id, creator, content, commentsCount, created } = props.item;
+const { id, creator, content, commentsCount, created, isDeleted } = props.item;
 const { pseudo } = creator;
 </script>

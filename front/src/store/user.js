@@ -5,6 +5,7 @@ import { router } from "../router";
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: JSON.parse(localStorage.getItem('echoUser')),
+    profile: null,
   }),
   actions: {
     async signUp(values) {
@@ -40,6 +41,7 @@ export const useUserStore = defineStore('user', {
 
           const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`, {
             headers: {
+              Accept: 'application/json',
               "Content-Type": "application/json",
               Authorization: `Bearer ${userToken.token}`,
             },
@@ -61,6 +63,53 @@ export const useUserStore = defineStore('user', {
       this.user = null;
       localStorage.removeItem('echoUser');
       $cookies.remove('echo_user_token');
+    },
+    async getUserProfileByUsername(username) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile?pseudo=${username}`, {
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        });
+        const profile = await response.json();
+        this.profile = profile;
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    // http://localhost:8000/api/user_to_users?me=67  == les gens que je follow
+    // http://localhost:8000/api/user_to_users?other=67  == les gens qui me follow
+    async getFollowers() {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?other=${this.user.id}`, {
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        });
+        const followers = await response.json();
+        return followers;
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getFollowings() {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?me=${this.user.id}`, {
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        });
+        const followings = await response.json();
+        return followings;
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
 });

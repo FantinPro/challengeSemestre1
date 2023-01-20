@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <Menu as="div" class="relative inline-block text-left">
-      <MenuButton class="flex items-center gap-3 rounded-3xl px-4 py-2 w-fit hover:bg-opacity-10 hover:bg-white transition duration-200 ease-in-out">
+      <MenuButton class="flex items-center gap-3 rounded-3xl px-2 py-2 w-fit hover:bg-opacity-10 hover:bg-white transition duration-200 ease-in-out">
         <img
           v-if="user?.avatar"
           :src="user?.avatar"
