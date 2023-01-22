@@ -33,10 +33,15 @@ jobs:
         docker-compose build
         docker-compose up -d
 
+    ## create .env file
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
+
     - name: Create test database
       run: |
-        php bin/console -e test doctrine:database:create
-        php bin/console -e test doctrine:schema:update --force
+        php bin/console doctrine:database:create --env=test
+        php bin/console doctrine:schema:update --env=test --force
 
     - name: PHPUnit
       run: php bin/phpunit

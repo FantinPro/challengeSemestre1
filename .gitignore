@@ -1,7 +1,6 @@
 .idea
 .vscode
 .env
-.env*
 ./back
 
 /back/config/secrets/prod/prod.decrypt.private.php
@@ -10,7 +9,6 @@
 /back/vendor/
 /back/db-data-postgres
 /back/.env
-/back/.env*
 /back/.idea
 
 /front/.vscode
