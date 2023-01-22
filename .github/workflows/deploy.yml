@@ -38,6 +38,9 @@ jobs:
       run: |
         echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
 
+    - name: Wait for services
+      run: sleep 10
+
     - name: Create test database
       run: |
         php bin/console doctrine:database:create --env=test
