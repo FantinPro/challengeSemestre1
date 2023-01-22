@@ -36,12 +36,12 @@ jobs:
     ## create .env file
     - name: Create .env file
       run: |
-        echo DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8 >> .env
-        echo APP_ENV=dev >> .env
+        echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
+        echo "APP_ENV=dev" >> .env
         echo APP_SECRET=${{ secrets.APP_SECRET }} >> .env
-        echo CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$ >> .env
-        echo JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem >> .env
-        echo JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem >> .env
+        echo "CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$" >> .env
+        echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
+        echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
         echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
 
     - name: Wait for services
