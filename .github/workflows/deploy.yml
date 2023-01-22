@@ -35,10 +35,8 @@ jobs:
 
     ## create .env file
     - name: Set env variables
-      id: set-env
       run: |
-          touch .env
-          printf ${{ secrets.ENV_FILE }} | base64 --decode > .env
+          echo "${{ secrets.ENV_FILE }}" > .env
 
     - name: Wait for services
       run: sleep 10
