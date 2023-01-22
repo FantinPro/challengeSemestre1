@@ -34,9 +34,11 @@ jobs:
         docker-compose up -d
 
     ## create .env file
-    - name: Create .env file
+    - name: Set env variables
+      id: set-env
       run: |
-        echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
+          touch .env
+          printf ${{ secrets.ENV_FILE }} | base64 --decode > .env
 
     - name: Wait for services
       run: sleep 10
