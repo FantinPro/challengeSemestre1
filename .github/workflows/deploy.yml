@@ -49,7 +49,6 @@ jobs:
       run: |
         php bin/console -e test doctrine:database:create
         php bin/console -e test doctrine:schema:update --force
-        php bin/console -e test doctrine:fixtures:load --no-interaction
 
     - name: PHPUnit
       run: php bin/phpunit
