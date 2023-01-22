@@ -43,6 +43,8 @@ jobs:
         echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
         echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
         echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
+        echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
+        echo "FRONT_END_URL=http://localhost:5000" >> .env
 
     - name: Wait for services
       run: sleep 10
