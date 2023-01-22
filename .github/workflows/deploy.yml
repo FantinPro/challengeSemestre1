@@ -37,6 +37,7 @@ jobs:
     - name: Set env variables
       run: |
           echo "${{ secrets.ENV_FILE }}" > .env
+          cat .env
 
     - name: Wait for services
       run: sleep 10
