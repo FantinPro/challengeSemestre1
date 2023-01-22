@@ -46,7 +46,7 @@ class MessageFixtures extends Fixture implements DependentFixtureInterface
 
         $messageFromAdmin = (new Message())
             ->setCreator($admin)
-            ->setContent("vous devez RT ce msg $faker->paragraph(2)");
+            ->setContent("vous devez RT ce msg" . $faker->paragraph(2));
 
         // add ref
         $this->addReference("messageFromAdmin", $messageFromAdmin);

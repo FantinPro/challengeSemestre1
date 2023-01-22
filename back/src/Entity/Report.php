@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints\Choice;
             security: "is_granted('ROLE_MODERATOR')",
         ),
         new Delete(
-            uriTemplate: '/messages/reports/denied',
+            uriTemplate: '/messages/reports/reject',
             controller: DeleteAllReportsFromMessageController::class,
             security: "is_granted('ROLE_MODERATOR')",
         )

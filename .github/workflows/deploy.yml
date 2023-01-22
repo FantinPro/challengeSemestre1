@@ -23,11 +23,36 @@ jobs:
         tools: composer:v2
         coverage: none
 
-    ## create a .env.local file
-
-
     - name: Install Dependencies
       run: composer install --no-interaction --no-progress --no-scripts
+
+    - name: Pull images
+      run: docker compose pull --ignore-pull-failures || true
+    - name: Start services
+      run: docker compose up --build -d
+    - name: Wait for services
+      run: |
+        while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker compose ps -q php)")"; do
+          case $status in
+            starting) sleep 1;;
+            healthy) exit 0;;
+            unhealthy)
+              docker compose ps
+              docker compose logs
+              exit 1
+            ;;
+          esac
+        done
+        exit 1
+
+    - name: Create test database
+      run: |
+        php bin/console -e test doctrine:database:create
+        php bin/console -e test doctrine:schema:update --force
+        php bin/console -e test doctrine:fixtures:load --no-interaction
+
+    - name: PHPUnit
+      run: php bin/phpunit
 
   deploy:
     runs-on: ubuntu-latest

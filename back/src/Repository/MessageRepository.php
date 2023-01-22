@@ -45,6 +45,7 @@ class MessageRepository extends ServiceEntityRepository
     public function findWithAtLeast2Reports(): array
     {
         return $this->createQueryBuilder('m')
+            ->where('m.isDeleted = false')
             ->innerJoin('m.reports', 'r')
             ->groupBy('m.id')
             ->having('COUNT(r.id) >= 2')
