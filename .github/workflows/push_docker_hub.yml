@@ -7,9 +7,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: back
 
     steps:
       - name: Checkout
@@ -30,7 +27,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./back/Dockerfile
+          context: ./back
+          file: ./Dockerfile
           push: true
           tags: challenge-api-platform/app:latest
