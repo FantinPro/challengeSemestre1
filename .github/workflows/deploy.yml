@@ -43,6 +43,9 @@ jobs:
       run: |
         docker-compose -f docker-compose.test.yml up --build --detach --wait
 
+    - name: wait
+      run : sleep 10
+
     - name: Create test database
       run: |
         php bin/console doctrine:database:create --env=test
