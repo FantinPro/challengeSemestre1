@@ -31,5 +31,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          file: ./back/Dockerfile
           push: true
           tags: challenge-api-platform/app:latest
