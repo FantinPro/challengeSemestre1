@@ -35,5 +35,6 @@ security:
 
     access_control:
         - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
+        ## ENV PROD
+        - { path: ^/api/docs, roles: ROLE_ADMIN, allow_if: '%env(resolve:ALLOW_DOCS)%' }
         - { path: ^/auth, roles: PUBLIC_ACCESS }
