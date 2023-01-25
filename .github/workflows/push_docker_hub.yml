@@ -29,4 +29,4 @@ jobs:
         with:
           context: "{{defaultContext}}:back"
           push: true
-          tags: challenge-api-platform/app:latest
+          tags: fantinraimbault/challenge-api-platform:latest
