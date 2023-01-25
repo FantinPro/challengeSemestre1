@@ -16,6 +16,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    ## create .env file
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
+        echo "APP_ENV=dev" >> .env
+        echo APP_SECRET=${{ secrets.APP_SECRET }} >> .env
+        echo "CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$" >> .env
+        echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
+        echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
+        echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
+        echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
+        echo "FRONT_END_URL=http://localhost:5000" >> .env
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -32,18 +45,7 @@ jobs:
       run: |
         docker-compose -f docker-compose.test.yml build
         docker-compose -f docker-compose.test.yml up -d
-    ## create .env file
-    - name: Create .env file
-      run: |
-        echo "DATABASE_URL=postgresql://user:password@127.0.0.1:5432/api-platform-db?serverVersion=15&charset=utf8" >> .env
-        echo "APP_ENV=dev" >> .env
-        echo APP_SECRET=${{ secrets.APP_SECRET }} >> .env
-        echo "CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$" >> .env
-        echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
-        echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
-        echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
-        echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
-        echo "FRONT_END_URL=http://localhost:5000" >> .env
+    
     - name: Wait for services
       run: sleep 10
 
