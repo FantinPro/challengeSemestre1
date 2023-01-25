@@ -16,23 +16,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.1
-        tools: composer:v2
-        coverage: none
-
-    - name: Install Dependencies
-      run: composer install --no-interaction --no-progress --no-scripts
-
-    - name: Pull images
-      run: docker compose pull --ignore-pull-failures || true
-    - name: Start services
-      run: |
-        docker-compose build
-        docker-compose up -d
-
     ## create .env file
     - name: Create .env file
       run: |
@@ -46,8 +29,22 @@ jobs:
         echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
         echo "FRONT_END_URL=http://localhost:5000" >> .env
 
-    - name: Wait for services
-      run: sleep 10
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        tools: composer:v2
+        coverage: none
+
+    - name: Install Dependencies
+      run: composer install --no-interaction --no-progress --no-scripts
+    
+    - name: Pull images
+      run: docker compose pull --ignore-pull-failures || true
+    - name: Start services
+      run: |
+        docker-compose --build
+        docker-compose -f docker-compose.test.yml up --detach --wait
 
     - name: Create test database
       run: |
