@@ -25,14 +25,13 @@ jobs:
 
     - name: Install Dependencies
       run: composer install --no-interaction --no-progress --no-scripts
-    
+
+    - name: Pull images
+      run: docker compose pull --ignore-pull-failures || true
     - name: Start services
       run: |
-        docker-compose -f docker-compose.test.yml up --build --detach --wait
-
-    - name: wait
-      run : sleep 10
-
+        docker-compose build
+        docker-compose up -d
     ## create .env file
     - name: Create .env file
       run: |
@@ -45,12 +44,13 @@ jobs:
         echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
         echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
         echo "FRONT_END_URL=http://localhost:5000" >> .env
+    - name: Wait for services
+      run: sleep 10
 
     - name: Create test database
       run: |
         php bin/console doctrine:database:create --env=test
         php bin/console doctrine:schema:update --env=test --force
-
     - name: PHPUnit
       run: php bin/phpunit
 
