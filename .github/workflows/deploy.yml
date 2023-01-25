@@ -27,11 +27,11 @@ jobs:
       run: composer install --no-interaction --no-progress --no-scripts
 
     - name: Pull images
-      run: docker compose pull --ignore-pull-failures || true
+      run: docker compose -f docker-compose.test.yml pull --ignore-pull-failures || true
     - name: Start services
       run: |
-        docker-compose build
-        docker-compose up -d
+        docker-compose -f docker-compose.test.yml build
+        docker-compose -f docker-compose.test.yml up -d
     ## create .env file
     - name: Create .env file
       run: |
