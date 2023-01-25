@@ -69,12 +69,10 @@ RUN set -eux; \
 COPY --link . .
 RUN rm -Rf docker/
 
-RUN set -eux; \
-	mkdir -p var/cache var/log; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
-	composer dump-env prod; \
-	composer run-script --no-dev post-install-cmd; \
-	chmod +x bin/console; sync
+RUN set -eux;
+RUN mkdir -p var/cache var/log;
+RUN composer dump-autoload --classmap-authoritative --no-dev;
+RUN chmod +x bin/console; sync
 
 # Build Caddy with the Mercure and Vulcain modules
 FROM caddy:2-builder-alpine AS app_caddy_builder
