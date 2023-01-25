@@ -65,8 +65,8 @@ jobs:
 
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
+          heroku_email: ${{ secrets.APP_HEROKU_EMAIL }}
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "api-platform-challenge"
           appdir: back
-          heroku_email: "raimbaultfantin94@gmail.com"
           procfile: "web: heroku-php-apache2 public/"
