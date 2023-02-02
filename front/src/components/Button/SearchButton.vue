@@ -1,10 +1,11 @@
 <template>
-  <Combobox v-model="searchUser" v-slot="{ open }">
+  <Combobox v-slot="{ open }" v-model="searchUser">
     <ComboboxButton
       :as="ComboboxInput"
-      @click="open = true"
+      placeholder="Search for a user"
       autocomplete="off"
       class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-white focus:ring-0 rounded-full"
+      @click="open = true"
       @input="searchUser = $event.target.value"
       @keydown.enter="searchUser !== '' && handleSelectUser(searchUser, 'enter')"
     />
@@ -19,13 +20,13 @@
           </div>
         </template>
         <template v-else-if="!isSearchUserNotEmpty">
-          <div class="pl-3 py-4 bg-neutral-800">
-            Tapez un pseudo
+          <div class="pl-3 py-4 bg-neutral-800 italic">
+            search by @pseudo
           </div>
         </template>
         <template v-else-if="data?.length == 0">
           <div class="pl-3 py-4 bg-neutral-800">
-            Aucun résultat
+            No result
           </div>
         </template>
         <template v-else>
@@ -52,34 +53,34 @@
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue';
-  import { refDebounced } from '@vueuse/core'
-  import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/vue';
-  import { useQuery } from "vue-query";
-  import { useRouter, useRoute } from 'vue-router';
-  import { useUserStore } from '../../store/user';
-  import UserCard from '../User/UserCard.vue'
+import { ref, computed } from 'vue';
+import { refDebounced } from '@vueuse/core'
+import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/vue';
+import { useQuery } from "vue-query";
+import { useRouter, useRoute } from 'vue-router';
+import { useUserStore } from '../../store/user';
+import UserCard from '../User/UserCard.vue'
 
-  const router = useRouter();
-  const route = useRoute();
-  const { fetchUsers } = useUserStore();
+const router = useRouter();
+const route = useRoute();
+const { fetchUsers } = useUserStore();
 
-  const searchUser = ref(route.query.q || '');
-  const debouncedSearchUser = refDebounced(searchUser, 200);
-  const isSearchUserNotEmpty = computed(() => debouncedSearchUser.value !== '');
+const searchUser = ref(route.query.q || '');
+const debouncedSearchUser = refDebounced(searchUser, 200);
+const isSearchUserNotEmpty = computed(() => debouncedSearchUser.value !== '');
 
-  function useUsersQuery(search , { enabled }) {
-    return useQuery(["users", search], async () => await fetchUsers(search), { enabled });
+function useUsersQuery(search , { enabled }) {
+  return useQuery(["users", search], async () => await fetchUsers(search), { enabled });
+}
+
+function handleSelectUser(userPseudo, type) {
+  if (type === 'select') {
+    router.push(`/${userPseudo}`);
+    searchUser.value = '';
+  } else if (type === 'enter') {
+    router.push(`/search?q=${userPseudo}`);
   }
+}
 
-  function handleSelectUser(userPseudo, type) {
-    if (type === 'select') {
-      router.push(`/${userPseudo}`);
-      searchUser.value = '';
-    } else if (type === 'enter') {
-      router.push(`/search?q=${userPseudo}`);
-    }
-  }
-
-  const { isLoading, isError, data, error } = useUsersQuery(debouncedSearchUser.value, { enabled: isSearchUserNotEmpty });
+const { isLoading, isError, data, error } = useUsersQuery(debouncedSearchUser.value, { enabled: isSearchUserNotEmpty });
 </script>

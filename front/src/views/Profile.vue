@@ -1,10 +1,10 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="flex flex-col overflow-auto h-full">
     <HeaderMenu>
       <template #title>
         <div class="flex gap-2 cursor-pointer">
           <button
-            @click="router.back()"
             class="
               hover:bg-[#2f3336]
               text-white
@@ -13,6 +13,7 @@
               py-2
               rounded-full
             "
+            @click="router.back()"
           >
             <svg
               class="h-6 w-6"

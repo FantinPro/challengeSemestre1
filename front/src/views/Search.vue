@@ -28,35 +28,35 @@
 </template>
 
 <script setup>
-  import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-  import LayoutDefault from "../layouts/LayoutDefault.vue";
-  import Card from "../components/Card/Card.vue";
-  import UserCard from "../components/User/UserCard.vue";
-  import HeaderMenu from "../components/Menu/HeaderMenu.vue";
-  import { useQuery } from "vue-query";
-  import { computed, onMounted } from "vue";
-  import { useFeedStore } from "../store/feed";
-  import { useUserStore } from '../store/user';
-  import { useRouter, useRoute } from "vue-router";
+import { TabPanel, TabPanels } from '@headlessui/vue';
+import { computed, onMounted } from "vue";
+import { useQuery } from "vue-query";
+import { useRoute, useRouter } from "vue-router";
+import Card from "../components/Card/Card.vue";
+import HeaderMenu from "../components/Menu/HeaderMenu.vue";
+import UserCard from "../components/User/UserCard.vue";
+import LayoutDefault from "../layouts/LayoutDefault.vue";
+import { useFeedStore } from "../store/feed";
+import { useUserStore } from '../store/user';
 
-  const tabs = ['Messages', 'Utilisateurs']
+const tabs = ['Messages', 'Utilisateurs']
 
-  const router = useRouter();
-  const route = useRoute();
-  const { fetchMessages } = useFeedStore();
-  const { fetchUsers } = useUserStore();
-  const emit = defineEmits(["update:layout"]);
-  const search = computed(() => route.query.q);
+const router = useRouter();
+const route = useRoute();
+const { fetchMessages } = useFeedStore();
+const { fetchUsers } = useUserStore();
+const emit = defineEmits(["update:layout"]);
+const search = computed(() => route.query.q);
 
-  onMounted(() => {
-    emit('update:layout', LayoutDefault);
-  });
+onMounted(() => {
+  emit('update:layout', LayoutDefault);
+});
  
-  const { isLoading: isLoadingFeed, isError: isErrorFeed, data: feed } = useQuery(["feed", search], () =>
-    fetchMessages(1, { content: route.query.q })
-  );
+const { isLoading: isLoadingFeed, isError: isErrorFeed, data: feed } = useQuery(["feed", search], () =>
+  fetchMessages(1, { content: route.query.q })
+);
 
-  const { isLoading: isLoadingUsers, isError: isErrorUsers, data: users } = useQuery(["users", search], () =>
-    fetchUsers(route.query.q)
-  );
+const { isLoading: isLoadingUsers, isError: isErrorUsers, data: users } = useQuery(["users", search], () =>
+  fetchUsers(route.query.q)
+);
 </script>

@@ -5,6 +5,9 @@ import Login from './views/Login.vue'
 import Messages from './views/Messages.vue'
 import Profile from './views/Profile.vue'
 import Search from './views/Search.vue'
+import Admin from './views/Admin.vue'
+import { useUserStore } from './store/user';
+import { ROLES } from './utils/constants'
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -14,6 +17,20 @@ const routes = [
   { path: '/messages', component: Messages },
   { path: '/search', component: Search },
   { path: '/:pseudo', component: Profile },
+  { 
+    path: '/admin', 
+    component: Admin,
+    beforeEnter: (to, from, next) => {
+      const { user } = useUserStore();
+      const isAdmin = user.roles.includes(ROLES.ROLE_ADMIN)
+      if (isAdmin) {
+        next()
+      }
+      else {
+        next('/home')
+      }
+    }
+  },
 ]
 
 export const router = VueRouter.createRouter({
@@ -22,6 +39,7 @@ export const router = VueRouter.createRouter({
 })
 
 function isAuthenticated() {
+  // eslint-disable-next-line no-undef
   const userToken = $cookies.get('echo_user_token')
   return !!userToken
 }

@@ -1,6 +1,6 @@
 <template>
   <component :is="layout" :class="layout === 'div' ? 'mx-auto' : 'flex'">
-    <router-view @update:layout="updateLayout" :layout.sync="layout" />
+    <router-view v-model:layout="layout" @update:layout="updateLayout" />
   </component>
 </template>
 
