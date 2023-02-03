@@ -1,0 +1,164 @@
+<!-- eslint-disable vue/multi-word-component-names -->
+<template>
+  <div class="flex flex-1 flex-col p-8">
+    <h1 class="mb-4 text-4xl">Users</h1>
+    <div class="relative h-0 flex-auto overflow-auto rounded-lg shadow-xl">
+      <table class="w-full border-collapse text-left text-sm text-gray-500">
+        <thead class="bg-gray-100">
+          <tr>
+            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+              Pseudo
+            </th>
+            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+              Email
+            </th>
+            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+              Role
+            </th>
+            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+              Total tweets
+            </th>
+            <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 border-t border-gray-100">
+          <span v-if="isLoading"> Loading...</span>
+          <tr
+            v-for="user in users"
+            :key="user.id"
+            class="bg-row-table hover:bg-row-table-hover">
+            <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
+              <div class="relative h-10 w-10">
+                <img
+                  class="h-full w-full rounded-full object-cover object-center"
+                  :src="user.profilePicture"
+                  alt="" />
+                <span
+                  class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
+              </div>
+              <div class="flex items-center text-sm">
+                <div class="font-medium text-white">
+                  {{ user.pseudo }}
+                </div>
+              </div>
+            </th>
+            <td class="px-6 py-4">
+              <span
+                class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
+                {{ user.email }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-white">
+              {{ $filters.displayRole(user.roles[0]) }}
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex gap-2">
+                <span
+                  class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
+                  {{ user.messagesCount }}
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex justify-end gap-4">
+                <a x-data="{ tooltip: 'Edite' }" href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="white"
+                    class="h-6 w-6"
+                    x-tooltip="tooltip">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                  </svg>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        v-show="!isLoading"
+        class="sticky bottom-0 flex w-full justify-end gap-4 rounded-lg bg-gray-100 p-4 text-gray-500">
+        <div class="flex items-center">
+          <strong>Total :&nbsp;</strong>
+          <strong>{{ total }}</strong>
+        </div>
+        <div class="flex items-center">
+          <strong>Page :&nbsp;</strong>
+          <strong>{{ page }} of {{ nbPage }}</strong>
+        </div>
+        <div class="flex gap-2">
+          <div
+            class="cursor-pointer rounded-[50%] p-3 hover:bg-gray-200"
+            @click="previousPage">
+            <img class="h-6 rotate-180" :src="ArrowLogo" alt="" />
+          </div>
+          <div
+            class="cursor-pointer rounded-[50%] p-3 hover:bg-gray-200"
+            @click="nextPage">
+            <img class="h-6" :src="ArrowLogo" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script setup>
+import ArrowLogo from '../assets/arrow.svg';
+import { ref, watch } from 'vue';
+import { onMounted } from 'vue';
+import { useUserStore } from '../store/user';
+import { useMutation, useQuery } from 'vue-query';
+const { fetchUsersPaginated } = useUserStore();
+
+const emit = defineEmits(['update:layout', 'update:classes']);
+
+onMounted(() => {
+  emit('update:layout', 'main');
+  emit('update:classes', 'flex w-full');
+});
+
+const MAX_ITEM_PER_PAGE = 20;
+
+const page = ref(1);
+const users = ref([]);
+const total = ref(0);
+const nbPage = ref(0);
+
+const { isLoading } = useQuery(
+  'usersPaginated',
+  () => fetchUsersPaginated(page.value),
+  {
+    onSuccess: (data) => {
+      users.value = data.users;
+      total.value = data.total;
+      nbPage.value = Math.ceil(total.value / MAX_ITEM_PER_PAGE);
+    },
+  }
+);
+
+const mutation = useMutation((page) => fetchUsersPaginated(page));
+
+watch(page, (newPage) => {
+  mutation.mutate(newPage, {
+    onSuccess: (data) => {
+      users.value = data.users;
+    },
+  });
+});
+
+const nextPage = () => {
+  if (page.value === nbPage.value) return;
+  page.value++;
+};
+
+const previousPage = () => {
+  if (page.value === 1) return;
+  page.value--;
+};
+</script>

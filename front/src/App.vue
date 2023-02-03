@@ -1,6 +1,6 @@
 <template>
-  <component :is="layout" :class="layout === 'div' ? 'mx-auto' : 'flex'">
-    <router-view v-model:layout="layout" @update:layout="updateLayout" />
+  <component :is="layout" :class="classes">
+    <router-view v-model:layout="layout" @update:layout="updateLayout" @update:classes="updateClasses"/>
   </component>
 </template>
 
@@ -8,9 +8,14 @@
 import { shallowRef } from "vue";
 
 let layout = shallowRef("div");
+let classes = layout.value === "div" ? shallowRef("mx-auto") : shallowRef("flex");
 
 const updateLayout = (newLayout) => {
   layout.value = newLayout;
+};
+
+const updateClasses = (newClass) => {
+  classes.value = newClass;
 };
 
 </script>

@@ -16,7 +16,7 @@
       <LogoButton :to="'/home'">
         <Logo />
       </LogoButton>
-      <MenuButton :to="'/home'" v-slot="{ isActive }">
+      <MenuButton v-slot="{ isActive }" :to="'/home'">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"
@@ -46,7 +46,7 @@
         </svg>
         <p class="hidden md:flex">Home</p>
       </MenuButton>
-      <MenuButton :to="'/messages'" v-slot="{ isActive }">
+      <MenuButton v-slot="{ isActive }" :to="'/messages'">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"
@@ -76,7 +76,7 @@
         </svg>
         <p class="hidden md:flex">Messages</p>
       </MenuButton>
-      <MenuButton :to="`/${user?.pseudo}`" v-slot="{ isActive }">
+      <MenuButton v-slot="{ isActive }" :to="`/profile/${user?.pseudo}`">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"

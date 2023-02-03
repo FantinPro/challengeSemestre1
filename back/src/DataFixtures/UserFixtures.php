@@ -19,6 +19,8 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $faker = \Faker\Factory::create();
+
         $admin = (new User())
             ->setEmail('admin@gmail.com')
             ->setIsVerified(true)
@@ -82,6 +84,19 @@ class UserFixtures extends Fixture
         ;
         $nobodyFollowMe->setPassword($this->userPasswordHasher->hashPassword($nobodyFollowMe, 'password'));
         $manager->persist($nobodyFollowMe);
+
+
+        // bunch of 30 random user with random pseudo
+        for ($i = 0; $i < 30; $i++) {
+            $user = (new User())
+                ->setEmail($faker->email())
+                ->setIsVerified(true)
+                ->setRoles(['ROLE_USER'])
+                ->setPseudo($faker->userName())
+            ;
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
+            $manager->persist($user);
+        }
 
         $manager->flush();
     }

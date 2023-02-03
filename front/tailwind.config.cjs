@@ -7,6 +7,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'row-table': '#273C4D',
+        'row-table-hover': '#2f4a5f',
         error: '#FF5B5B',
         primary: {
           900: '#020A33',

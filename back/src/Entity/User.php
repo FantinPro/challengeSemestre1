@@ -46,9 +46,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new GetCollection(
             paginationEnabled: true,
-            paginationMaximumItemsPerPage: 20,
-            normalizationContext: ['groups' => ['read:user:search']],
-            security: "is_granted('ROLE_USER')",
+            paginationItemsPerPage: 20,
+            normalizationContext: ['groups' => ['read:user', 'read:users:collection']],
+            security: "is_granted('ROLE_ADMIN')",
         )
     ],
     normalizationContext: ['groups' => ['read:user']],
@@ -70,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:message'])]
+    #[Groups(['write:user', 'read:message', 'read:users:collection'])]
     private ?string $email = null;
 
     #[ORM\Column]

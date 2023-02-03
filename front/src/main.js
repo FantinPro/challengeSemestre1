@@ -11,6 +11,15 @@ import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
 
 const app = createApp(App)
+
+app.config.globalProperties.$filters = {
+  displayRole(role) {
+    const mapped = role.replace('ROLE_', '')
+    const roleCapitalized = mapped.charAt(0).toUpperCase() + mapped.slice(1).toLowerCase()
+    return roleCapitalized
+  }
+}
+
 const pinia = createPinia()
 
 app.use(router)

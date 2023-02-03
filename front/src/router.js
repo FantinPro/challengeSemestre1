@@ -5,7 +5,8 @@ import Login from './views/Login.vue'
 import Messages from './views/Messages.vue'
 import Profile from './views/Profile.vue'
 import Search from './views/Search.vue'
-import Admin from './views/Admin.vue'
+import Dashboard from './views/Dashboard.vue'
+import ManageUsers from './views/ManageUsers.vue'
 import { useUserStore } from './store/user';
 import { ROLES } from './utils/constants'
 
@@ -16,20 +17,23 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/messages', component: Messages },
   { path: '/search', component: Search },
-  { path: '/:pseudo', component: Profile },
+  { path: '/profile/:pseudo', component: Profile },
   { 
-    path: '/admin', 
-    component: Admin,
-    beforeEnter: (to, from, next) => {
-      const { user } = useUserStore();
-      const isAdmin = user.roles.includes(ROLES.ROLE_ADMIN)
-      if (isAdmin) {
-        next()
-      }
-      else {
-        next('/home')
-      }
-    }
+    path: '/dashboard', 
+    component: Dashboard,
+    redirect: (to) => {
+      console.log('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩')
+      console.log(to)
+      console.log('🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦')
+      return { path: 'dashboard/users' }
+    },
+    children: [
+      { path: 'stats', component: ManageUsers },
+      { path: 'users', component: ManageUsers },
+      { path: 'reports', component: ManageUsers },
+      { path: 'calendar', component: ManageUsers },
+      { path: 'manage_ads', component: ManageUsers },
+    ]
   },
 ]
 
