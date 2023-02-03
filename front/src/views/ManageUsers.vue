@@ -4,21 +4,21 @@
     <h1 class="mb-4 text-4xl">Users</h1>
     <div class="relative h-0 flex-auto overflow-auto rounded-lg shadow-xl">
       <table class="w-full border-collapse text-left text-sm text-gray-500">
-        <thead class="bg-gray-100">
+        <thead class="bg-row-table">
           <tr>
-            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" class="px-6 py-4 font-medium text-white">
               Pseudo
             </th>
-            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" class="px-6 py-4 font-medium text-white">
               Email
             </th>
-            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" class="px-6 py-4 font-medium text-white">
               Role
             </th>
-            <th scope="col" class="px-6 py-4 font-medium text-gray-900">
+            <th scope="col" class="px-6 py-4 font-medium text-white">
               Total tweets
             </th>
-            <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
+            <th scope="col" class="px-6 py-4 font-medium text-white"></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
@@ -27,7 +27,7 @@
             v-for="user in users"
             :key="user.id"
             class="bg-row-table hover:bg-row-table-hover">
-            <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
+            <th class="flex gap-3 px-6 py-4 font-normal text-white">
               <div class="relative h-10 w-10">
                 <img
                   class="h-full w-full rounded-full object-cover object-center"
@@ -83,7 +83,7 @@
       </table>
       <div
         v-show="!isLoading"
-        class="sticky bottom-0 flex w-full justify-end gap-4 rounded-lg bg-gray-100 p-4 text-gray-500">
+        class="sticky bottom-0 flex w-full justify-end gap-4 rounded-lg bg-row-table p-4 text-white shadow-inner">
         <div class="flex items-center">
           <strong>Total :&nbsp;</strong>
           <strong>{{ total }}</strong>
@@ -94,14 +94,14 @@
         </div>
         <div class="flex gap-2">
           <div
-            class="cursor-pointer rounded-[50%] p-3 hover:bg-gray-200"
+            class="cursor-pointer rounded-[50%] p-3 hover:bg-row-table-hover"
             @click="previousPage">
-            <img class="h-6 rotate-180" :src="ArrowLogo" alt="" />
+            <img class="h-4 rotate-180" :src="ArrowLogo" alt="" />
           </div>
           <div
-            class="cursor-pointer rounded-[50%] p-3 hover:bg-gray-200"
+            class="cursor-pointer rounded-[50%] p-3 hover:bg-row-table-hover"
             @click="nextPage">
-            <img class="h-6" :src="ArrowLogo" alt="" />
+            <img class="h-4" :src="ArrowLogo" alt="" />
           </div>
         </div>
       </div>
