@@ -9,11 +9,13 @@ import '@formkit/themes/genesis'
 import { generateClasses } from '@formkit/themes'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
+import 'vue3-toastify/dist/index.css';
 
 const app = createApp(App)
 
 app.config.globalProperties.$filters = {
   displayRole(role) {
+    if (!role) return ''
     const mapped = role.replace('ROLE_', '')
     const roleCapitalized = mapped.charAt(0).toUpperCase() + mapped.slice(1).toLowerCase()
     return roleCapitalized

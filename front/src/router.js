@@ -22,9 +22,6 @@ const routes = [
     path: '/dashboard', 
     component: Dashboard,
     redirect: (to) => {
-      console.log('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩')
-      console.log(to)
-      console.log('🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦')
       return { path: 'dashboard/users' }
     },
     children: [

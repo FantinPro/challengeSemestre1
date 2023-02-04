@@ -11,6 +11,7 @@
   "dependencies": {
     "@formkit/vue": "^1.0.0-beta.12",
     "@headlessui/vue": "^1.7.7",
+    "@heroicons/vue": "^2.0.14",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@vueuse/core": "^9.11.0",
     "date-fns": "^2.29.3",
@@ -19,7 +20,8 @@
     "vue": "^3.2.45",
     "vue-cookies": "^1.8.2",
     "vue-query": "^1.26.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-toastify": "^0.0.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
