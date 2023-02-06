@@ -7,17 +7,15 @@ import Profile from './views/Profile.vue'
 import Search from './views/Search.vue'
 import Dashboard from './views/Dashboard.vue'
 import ManageUsers from './views/ManageUsers.vue'
-import { useUserStore } from './store/user';
-import { ROLES } from './utils/constants'
 
 const routes = [
   { path: '/', redirect: '/home' },
-  { path: '/home', component: Timeline },
-  { path: '/register', component: Register },
-  { path: '/login', component: Login },
-  { path: '/messages', component: Messages },
-  { path: '/search', component: Search },
-  { path: '/profile/:pseudo', component: Profile },
+  { path: '/home', component: () => Timeline },
+  { path: '/register', component: () => Register },
+  { path: '/login', component: () => Login },
+  { path: '/messages', component: () => Messages },
+  { path: '/search', component: () => Search },
+  { path: '/profile/:pseudo', component: () => Profile },
   { 
     path: '/dashboard', 
     component: Dashboard,
@@ -25,11 +23,11 @@ const routes = [
       return { path: 'dashboard/users' }
     },
     children: [
-      { path: 'stats', component: ManageUsers },
-      { path: 'users', component: ManageUsers },
-      { path: 'reports', component: ManageUsers },
-      { path: 'calendar', component: ManageUsers },
-      { path: 'manage_ads', component: ManageUsers },
+      { path: 'stats', component: () => ManageUsers },
+      { path: 'users', component: () => ManageUsers },
+      { path: 'reports', component: () => ManageUsers },
+      { path: 'calendar', component: () => ManageUsers },
+      { path: 'manage_ads', component: () => ManageUsers },
     ]
   },
 ]
@@ -50,7 +48,6 @@ router.beforeEach(async (to, _, next) => {
     next('/home')
   } else if (!(to.path === '/login' || to.path === '/register') && !isAuthenticated()) {
     next('/login')
-  } else {
-    next()
   }
+  next()
 })
