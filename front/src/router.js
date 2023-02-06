@@ -9,8 +9,8 @@ import Dashboard from './views/Dashboard.vue'
 import ManageUsers from './views/ManageUsers.vue'
 
 const routes = [
-  { path: '/', redirect: '/home' },
-  { path: '/home', component: () => Timeline },
+  { path: '/home', redirect: '/' },
+  { path: '/', component: () => Timeline },
   { path: '/register', component: () => Register },
   { path: '/login', component: () => Login },
   { path: '/messages', component: () => Messages },
