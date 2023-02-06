@@ -1,4 +1,4 @@
-.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start resetdb
+.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start resetdb setup
 
 up:
 	docker-compose up --detach
@@ -9,7 +9,7 @@ stop:
 restart: stop start
 
 init-jwt-keys:
-	cd ./back && php bin/console lexik:jwt:generate-keypair
+	cd ./back && php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
 backend-install:
 	cd ./back && composer install
@@ -31,3 +31,5 @@ start: up
 
 clear:
 	cd ./back && php bin/console cache:clear
+
+setup: clear backend-install frontend-install init-jwt-keys schema-update fixtures start
