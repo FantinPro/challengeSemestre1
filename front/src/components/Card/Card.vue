@@ -11,7 +11,7 @@
   </div>
 </template>
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import CardHeader from "./CardHeader.vue";
 import CardBody from "./CardBody.vue";
 import CardFooter from "./CardFooter.vue";
@@ -24,4 +24,5 @@ const props = defineProps({
 });
 const { id, creator, content, commentsCount, created, isDeleted } = props.item;
 const { pseudo } = creator;
+
 </script>

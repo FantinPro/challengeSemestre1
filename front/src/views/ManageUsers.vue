@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="flex flex-1 flex-col p-8">
     <h1 class="mb-4 text-4xl">Users</h1>
