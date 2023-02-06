@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col border-b border-[#4c5157]">
     <div
       class="h-40 w-full relative"
       :style="{
@@ -142,7 +142,7 @@
         <p class="text-gray-500 font-medium">@{{ profile?.pseudo }}</p>
       </div>
       <div class="flex flex-col mt-4">
-        <h1 class="text-md">{{ profile?.biography }}</h1>
+        <h1 class="text-md">{{ profile?.bio }}</h1>
         <div class="flex gap-6 mt-2">
           <span class="flex gap-1 font-medium text-gray-500">
             <p class="">

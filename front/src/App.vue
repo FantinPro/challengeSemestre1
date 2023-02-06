@@ -1,6 +1,6 @@
 <template>
   <component :is="layout" :class="classes">
-    <router-view v-model:layout="layout" @update:layout="updateLayout" @update:classes="updateClasses"/>
+    <router-view :layout="layout" @update:layout="updateLayout" @update:classes="updateClasses"/>
   </component>
 </template>
 
