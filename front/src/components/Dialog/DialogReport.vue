@@ -35,7 +35,7 @@
                   <ListboxButton
                     class="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                     <span class="block truncate text-black capitalize">
-                      {{ selectedReport.display }}
+                      {{ selectedReport }}
                     </span>
                     <span
                       class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -54,7 +54,7 @@
                       <ListboxOption
                         v-for="report in reportTypes"
                         v-slot="{ active, selected }"
-                        :key="report.value"
+                        :key="report"
                         :value="report"
                         as="template">
                         <li
@@ -69,7 +69,7 @@
                               selected ? 'font-medium' : 'font-normal',
                               'block truncate capitalize',
                             ]"
-                            >{{ report.display }}</span
+                            >{{ report }}</span
                           >
                           <span
                             v-if="selected"
@@ -83,6 +83,10 @@
                 </div>
               </Listbox>
 
+              <div class="my-4 overflow-auto text-black">
+                {{ props.message.content }}
+              </div>
+
               <div class="mt-auto flex justify-end gap-2">
                 <button
                   type="button"
@@ -92,9 +96,11 @@
                 </button>
                 <button
                   type="button"
+                  :disabled="isLoading"
                   class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   @click="confirm">
                   <span>Confirm</span>
+                  <Spin :is-loading="isLoading" />
                 </button>
               </div>
             </DialogPanel>
@@ -121,45 +127,57 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import { ref } from 'vue';
 import { useMutation } from 'vue-query';
 import { toast } from 'vue3-toastify';
-import { changeRoleByUserId } from '../../services/service.users';
+import { createReport } from '../../services/service.reports';
 import { REPORT_TYPES } from '../../utils/constants';
+import Spin from '../Loader/Spin.vue';
+import { useUserStore } from '../../store/user';
+
+const { user } = useUserStore()
 
 const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false,
   },
-  messageId: {
-    type: Number,
+  message: {
+    type: Object,
     required: true,
   },
 });
 
 const emit = defineEmits(['close']);
 
-const reportTypes = Object.values(REPORT_TYPES).map((report) => ({
-  value: report,
-  display: report,
-}))
+const reportTypes = Object.values(REPORT_TYPES);
 const selectedReport = ref(reportTypes[0]);
 
 function closeModal() {
   emit('close');
 }
-function openModal() {}
 
-const { isLoading, mutate: changeRoleByUserIdMutation } = useMutation(
-  async (userId, role) => await changeRoleByUserId(userId, role),
+const { isLoading, mutate: createReportMutation } = useMutation(
+  (data) => createReport(data),
   {
     onSuccess: () => {
-      toast.success('Role changed successfully');
+      toast.success('Message has been reported !');
       closeModal();
     },
-    onError: () => {
-      toast.error('Something went wrong');
+    onError: (err) => {
+      if (err.message.match(/Access Denied/)) {
+        toast.error('You cannot report your own message !');
+      } else if (err.message.match(/You already reported it/)) {
+        toast.error('You already reported this message !');
+      } else {
+        toast.error('Something went wrong !');
+      }
     },
   }
 );
 
-const confirm = () => {};
+const confirm = () => {
+  createReportMutation({
+    messageId: props.message.id,
+    userId: user.id,
+    type: selectedReport.value,
+  });
+};
 </script>

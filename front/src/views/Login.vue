@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-center h-full">
+  <div class="flex w-full justify-center items-center h-full">
     <div class="flex flex-col rounded-2xl shadow-2xl bg-neutral-800/75 py-10 px-16 w-[500px]">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold mb-6">Login</h1>

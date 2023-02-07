@@ -187,7 +187,7 @@ function openModal() {
 }
 
 const { isLoading, mutate: changeRoleByUserIdMutation } = useMutation(
-  async (userId, role) => await changeRoleByUserId(userId, role),
+  (data) => changeRoleByUserId(data),
   {
     onSuccess: () => {
       toast.success('Role changed successfully');

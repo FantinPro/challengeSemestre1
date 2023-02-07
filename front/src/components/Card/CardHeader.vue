@@ -2,11 +2,11 @@
   <div class="flex justify-between">
     <div class="flex flex-col">
       <div class="flex items-baseline gap-2">
-        <router-link :to="`/profile/${props.item.pseudo}`" class="font-bold text-gray-200">{{
-          props.item.pseudo
+        <router-link :to="`/profile/${props.item.creator.pseudo}`" class="font-bold text-gray-200">{{
+          props.item.creator.pseudo
         }}</router-link>
-        <router-link :to="`/profile/${props.item.pseudo}`" class="text-sm text-gray-400"
-          >@{{ props.item.pseudo }}</router-link
+        <router-link :to="`/profile/${props.item.creator.pseudo}`" class="text-sm text-gray-400"
+          >@{{ props.item.creator.pseudo }}</router-link
         >
       </div>
       <span class="text-sm text-gray-400">{{ createdAt }}</span>
@@ -36,8 +36,11 @@
           class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
           <div class="px-1 py-1">
-            <MenuItem v-slot="{ active }">
+            <MenuItem 
+            v-if="props.item.creator.id === user.id"
+            v-slot="{ active }">
               <button
+                
                 :class="[
                   active ? 'bg-primary-300 text-white' : 'text-gray-900',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
@@ -52,7 +55,9 @@
                 Delete
               </button>
             </MenuItem>
-            <MenuItem v-slot="{ active }">
+            <MenuItem 
+            v-if="props.item.creator.id !== user.id"
+            v-slot="{ active }">
                 <button
                 :class="[
                   active ? 'bg-primary-300 text-white' : 'text-gray-900',
@@ -73,7 +78,7 @@
         </MenuItems>
       </transition>
     </Menu>
-    <DialogReport :is-open="isOpenReportDialog" :message-id="props.item.id" @close="closeReportDialog" />
+    <DialogReport :is-open="isOpenReportDialog" :message="props.item" @close="closeReportDialog" />
   </div>
 </template>
 <script setup>
@@ -83,6 +88,9 @@ import { formatDistance } from 'date-fns';
 import DialogReport from '../../components/Dialog/DialogReport.vue';
 import { FlagIcon } from '@heroicons/vue/20/solid';
 import { ref } from 'vue';
+import { useUserStore } from '../../store/user';
+
+const { user } = useUserStore()
 
 const props = defineProps({
   item: {
