@@ -3,9 +3,9 @@ import { defineStore } from "pinia";
 export const useFeedStore = defineStore('feed', {
   state: () => ({
     feed: [],
+    userMessages: [],
   }),
   actions: {
-    // 
     async fetchFeed(page) {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages/feed/v2?page=${page}`, {
         headers: {
@@ -45,6 +45,18 @@ export const useFeedStore = defineStore('feed', {
       } catch (e) {
         console.log(e);
       }
-    }
+    },
+    async getUserMessagesById(id, page = 1) {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages?creator=${id}&page=${page}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+        },
+      });
+      
+      const data = await response.json();
+      this.userMessages = data;
+      return data;
+    },
   },
 });
