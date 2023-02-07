@@ -1,7 +1,14 @@
 <template>
   <div class="flex flex-1 flex-col p-8">
     <h1 class="mb-4 text-4xl">Reports</h1>
-    <div class="relative h-0 flex-auto overflow-auto rounded-lg shadow-xl">
+    <Select
+      class="w-52"
+      title="Select message state"
+      :list="messageStates"
+      :selected-value="selectedState"
+      @update:model-value="updateState" />
+    <div
+      class="relative mt-6 flex h-0 flex-auto flex-col justify-between overflow-auto rounded-lg shadow-xl">
       <table class="w-full border-collapse text-left text-sm text-gray-500">
         <thead class="bg-row-table">
           <tr>
@@ -9,6 +16,9 @@
             <th scope="col" class="px-6 py-4 font-medium text-white">Role</th>
             <th scope="col" class="px-6 py-4 font-medium text-white">
               Message
+            </th>
+            <th scope="col" class="px-6 py-4 font-medium text-white">
+              State
             </th>
             <th scope="col" class="px-6 py-4 font-medium text-white">
               Total reports
@@ -19,7 +29,7 @@
         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
           <span v-if="isLoading"> Loading...</span>
           <tr
-            v-for="message in messagesWithReports"
+            v-for="(message, index) in messagesWithReports"
             :key="message.id"
             class="bg-row-table hover:bg-row-table-hover">
             <th class="flex gap-3 px-6 py-4 font-normal text-white">
@@ -41,9 +51,19 @@
               {{ $filters.displayRole(message.creator.roles[0]) }}
             </td>
             <td class="px-6 py-4">
-                <div class="font-medium text-white">
-                {{ message.content }}
+              <div ref="itemRefs" class="flex first-letter:font-medium text-white w-[600px] justify-between">
+                {{ message.show ? message.showContent : message.content }}
+
+                <div v-if="message.isDeleted"  class="p-2 h-fit rounded-[50%] hover:bg-slate-500 cursor-pointer" @click="hide(message.id)">
+                    <EyeIcon v-show="message.show" class="h-5 w-5 min-w-[20px]" />
+                    <EyeSlashIcon v-show="!message.show" class="h-5 w-5 min-w-[20px]" />
                 </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-medium text-white">
+                {{ message.isDeleted ? 'Masked' : 'Reported' }}
+              </div>
             </td>
             <td class="px-6 py-4">
               <div class="flex gap-2">
@@ -55,7 +75,12 @@
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-end gap-4">
-                Edit
+                <DialogManageReport
+                  action-name="Manage message"
+                  :message="message"
+                  @update-messages-with-reports-list="
+                    updateMessagesWithReportsList
+                  " />
               </div>
             </td>
           </tr>
@@ -89,13 +114,39 @@
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
-import { useQuery } from 'vue-query';
+import { ref } from 'vue';
+import { useQuery, useQueryClient } from 'vue-query';
 import ArrowLogo from '../assets/arrow.svg';
-import DialogManageUser from '../components/Dialog/DialogManageUser.vue';
+import DialogManageReport from '../components/Dialog/DialogManageReport.vue';
 import { getAllMessagesWithAtLeast2Reports } from '../services/service.reports';
-import { useUserStore } from '../store/user';
-const { fetchUsersPaginated } = useUserStore();
+import Select from '../components/Select/Select.vue';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/20/solid';
+
+const itemRefs = ref([])
+
+const hide = (messageId) => {
+  const message = messagesWithReports.value.find((message) => message.id === messageId);
+  message.show = !message.show;
+}
+
+const messageStates = [
+  {
+    value: false,
+    display: 'Reported',
+  },
+  {
+    value: true,
+    display: 'Masked',
+  }
+];
+
+const updateState = (state) => {
+  selectedState.value = state;
+};
+
+const selectedState = ref(messageStates[0]);
+
+const queryClient = useQueryClient();
 
 const MAX_ITEM_PER_PAGE = 20;
 
@@ -104,21 +155,15 @@ const messagesWithReports = ref([]);
 const total = ref(0);
 const nbPage = ref(0);
 
-const { isLoading, refetch: getAllMessagesWithAtLeast2ReportsQuery } = useQuery(
-  'reports',
-  () => getAllMessagesWithAtLeast2Reports(page.value),
-  {
-    onSuccess: (data) => {
-      console.log('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩');
-      console.log(data);
-      console.log('🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦');
-      messagesWithReports.value = data;
-    },
-  }
-);
-
-watch(page, (newPage) => {
-  getAllMessagesWithAtLeast2ReportsQuery(newPage);
+const { isLoading } = useQuery({
+  queryKey: ['messagesWithReports', page, selectedState],
+  queryFn: () => getAllMessagesWithAtLeast2Reports(page.value, selectedState.value.value),
+  keepPreviousData: true,
+  onSuccess: (data) => {
+    messagesWithReports.value = data.messagesWithReports;
+    total.value = data.total;
+    nbPage.value = Math.ceil(data.total / MAX_ITEM_PER_PAGE);
+  },
 });
 
 const nextPage = () => {
@@ -131,8 +176,7 @@ const previousPage = () => {
   page.value--;
 };
 
-const updateUserList = (user) => {
-  const index = users.value.findIndex((u) => u.id === user.id);
-  users.value[index] = user;
+const updateMessagesWithReportsList = (message) => {
+  queryClient.invalidateQueries('messagesWithReports');
 };
 </script>

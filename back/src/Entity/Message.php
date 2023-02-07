@@ -36,6 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new GetCollection(
             uriTemplate: '/messages/reports',
+            paginationEnabled: true,
             controller: MessageWithAtLeast2ReportsController::class,
             normalizationContext: ['groups' => ['read:message', 'read:message:reports']],
             security: 'is_granted("ROLE_MODERATOR")',
@@ -81,7 +82,7 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:message:feed'])]
+    #[Groups(['read:message', 'read:message:feed'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
@@ -129,7 +130,10 @@ class Message
     private Collection $shares;
 
     #[Groups('read:message:feedV2')]
-    public array $whoHasSharedFromMyFollows = [];
+    private array $whoHasSharedFromMyFollows = [];
+
+    #[Groups(['read:message:reports'])]
+    private String $showContent = '';
 
     public function __construct(
     )
@@ -377,4 +381,11 @@ class Message
 
         $this->whoHasSharedFromMyFollows = array_values($users);
     }
+
+    #[Groups(['read:message:reports'])]
+    public function getShowContent()
+    {
+        return $this->content;
+    }
+
 }

@@ -43,15 +43,18 @@ class MessageRepository extends ServiceEntityRepository
         }
     }
 
-    public function findWithAtLeast2Reports(): array
+    public function findWithAtLeast2Reports($limit, $page, $isDeleted)
     {
-        return $this->createQueryBuilder('m')
-            ->where('m.isDeleted = false')
+        $qb = $this->createQueryBuilder('m')
+            ->where('m.isDeleted = :isDeleted')
+            ->setParameter('isDeleted', $isDeleted)
             ->innerJoin('m.reports', 'r')
             ->groupBy('m.id')
             ->having('COUNT(r.id) >= 2')
-            ->getQuery()
-            ->getResult();
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $paginator = new Paginator($qb);
+        return $paginator;
     }
 
     public function getFeed($userId, $limit, $page)

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col p-8">
     <h1 class="mb-4 text-4xl">Users</h1>
-    <div class="relative h-0 flex-auto overflow-auto rounded-lg shadow-xl">
+    <div class="flex flex-col justify-between relative h-0 flex-auto overflow-auto rounded-lg shadow-xl">
       <table class="w-full border-collapse text-left text-sm text-gray-500">
         <thead class="bg-row-table">
           <tr>
@@ -94,20 +94,15 @@
   </div>
 </template>
 <script setup>
+import { ref } from 'vue';
+import { useQuery, useQueryClient } from 'vue-query';
 import ArrowLogo from '../assets/arrow.svg';
-import { ref, watch } from 'vue';
-import { onMounted } from 'vue';
-import { useUserStore } from '../store/user';
-import { useMutation, useQuery } from 'vue-query';
 import DialogManageUser from '../components/Dialog/DialogManageUser.vue';
+import { useUserStore } from '../store/user';
 const { fetchUsersPaginated } = useUserStore();
 
-const emit = defineEmits(['update:layout', 'update:classes']);
+const queryClient = useQueryClient();
 
-onMounted(() => {
-  emit('update:layout', 'main');
-  emit('update:classes', 'flex w-full');
-});
 
 const MAX_ITEM_PER_PAGE = 20;
 
@@ -116,26 +111,15 @@ const users = ref([]);
 const total = ref(0);
 const nbPage = ref(0);
 
-const { isLoading } = useQuery(
-  'usersPaginated',
-  () => fetchUsersPaginated(page.value),
-  {
-    onSuccess: (data) => {
-      users.value = data.users;
-      total.value = data.total;
-      nbPage.value = Math.ceil(total.value / MAX_ITEM_PER_PAGE);
-    },
-  }
-);
-
-const mutation = useMutation((page) => fetchUsersPaginated(page));
-
-watch(page, (newPage) => {
-  mutation.mutate(newPage, {
-    onSuccess: (data) => {
-      users.value = data.users;
-    },
-  });
+const { isLoading } = useQuery({
+  queryKey: ['usersPaginated', page],
+  queryFn: () => fetchUsersPaginated(page.value),
+  keepPreviousData: true,
+  onSuccess: (data) => {
+    users.value = data.users;
+    total.value = data.total;
+    nbPage.value = Math.ceil(data.total / MAX_ITEM_PER_PAGE);
+  },
 });
 
 const nextPage = () => {
@@ -148,8 +132,7 @@ const previousPage = () => {
   page.value--;
 };
 
-const updateUserList = (user) => {
-  const index = users.value.findIndex((u) => u.id === user.id);
-  users.value[index] = user;
+const updateUserList = () => {
+  queryClient.invalidateQueries(['usersPaginated']);
 };
 </script>

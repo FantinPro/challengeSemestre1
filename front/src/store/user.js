@@ -155,17 +155,18 @@ export const useUserStore = defineStore('user', {
           {
             headers: {
               // explicitly no set accept
-            //   Accept: 'application/json',
+              // Accept: 'application/json',
               'Content-Type': 'application/json',
               Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
             },
           }
         );
-        const { 'hydra:member': users, 'hydra:totalItems': total } = await response.json();
+        const { 'hydra:member': users, 'hydra:totalItems': total } =
+          await response.json();
         return { users, total };
       } catch (e) {
         console.log(e);
       }
-    }
+    },
   },
 });
