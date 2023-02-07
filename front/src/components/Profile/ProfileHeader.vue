@@ -6,8 +6,7 @@
         backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(
           16
         )}`,
-      }"
-    >
+      }">
       <div
         class="
           absolute
@@ -19,13 +18,11 @@
           bg-gray-300
           border-4 border-[#2f3336]
           shadow-md
-        "
-      >
+        ">
         <img
           class="h-full w-full rounded-full object-cover"
-          :src="profile?.avatar || 'https://i.pravatar.cc/160?img=24'"
-          alt=""
-        />
+          :src="profile?.avatar || 'https://i.pravatar.cc/160?img=40'"
+          alt="" />
       </div>
     </div>
     <div class="flex gap-4 p-4">
@@ -43,8 +40,7 @@
               transition-all
               duration-300
             "
-            @click="editprofile()"
-          >
+            @click="editprofile()">
             <span class="">Edit profile</span>
           </button>
         </div>
@@ -60,32 +56,27 @@
               border border-[#3b4043]
               transition-all
               duration-300
-            "
-          >
+            ">
             <svg
               class="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+              stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="1"
-                d="M4 8h16M4 16h16"
-              />
+                d="M4 8h16M4 16h16" />
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="1"
-                d="M4 8h16M4 16h16"
-              />
+                d="M4 8h16M4 16h16" />
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="1"
-                d="M4 8h16M4 16h16"
-              />
+                d="M4 8h16M4 16h16" />
             </svg>
           </button>
           <button
@@ -100,20 +91,17 @@
               transition-all
               duration-300
             "
-            @click="sendMessage()"
-          >
+            @click="sendMessage()">
             <svg
               class="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+              stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-              />
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
           <button
@@ -129,14 +117,13 @@
               transition-all
               duration-300
             "
-            @click="follow()"
-          >
+            @click="follow()">
             <span>Follow</span>
           </button>
         </div>
       </div>
     </div>
-    <div class="flex flex-col p-5">
+    <div class="flex flex-col p-4 pb-0">
       <div class="flex flex-col">
         <h1 class="text-xl font-semibold">{{ profile?.pseudo }}</h1>
         <p class="text-gray-500 font-medium">@{{ profile?.pseudo }}</p>
@@ -162,16 +149,22 @@
             <p class="font-bold">
               {{ profile?.followersCount }}
             </p>
-            <p class="text-gray-500">Followers</p>
+            <p class="text-gray-500">
+              {{ profile?.followersCount > 1 ? 'Followers' : 'Follower' }}
+            </p>
           </span>
         </div>
       </div>
     </div>
+    <HeaderMenu :tabs="tabs" />
   </div>
 </template>
 <script setup>
-import { computed } from "vue";
-import { useUserStore } from "../../store/user";
+import { computed } from 'vue';
+import HeaderMenu from '../Menu/HeaderMenu.vue';
+import { useUserStore } from '../../store/user';
+
+const tabs = ['Echoes', 'Media', 'Likes'];
 
 const { user } = useUserStore();
 
@@ -179,9 +172,9 @@ const profile = computed(() => useUserStore().profile);
 
 const createdAt = computed(() => {
   const date = new Date();
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
   });
 });
 </script>

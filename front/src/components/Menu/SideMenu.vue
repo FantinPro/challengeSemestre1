@@ -4,7 +4,7 @@
       <LogoButton :to="'/'">
         <Logo />
       </LogoButton>
-      <MenuButton v-slot="{ isActive }" :to="'/'">
+      <MenuButton v-slot="{ isActive }" :to="'/home'">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"

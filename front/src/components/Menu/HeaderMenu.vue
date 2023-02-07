@@ -4,7 +4,7 @@
       <div v-if="customTitle" class="px-6">
         <slot name="title" />
       </div>
-      <div v-else class="px-6">
+      <div v-else-if="title" class="px-6">
         <h1 class="text-2xl font-bold cursor-pointer">
           {{ title }}
         </h1>
@@ -58,7 +58,6 @@ import { TabGroup, TabList, Tab } from '@headlessui/vue';
 defineProps({
   title: {
     type: String,
-    default: 'Home',
   },
   customTitle: {
     type: Boolean,

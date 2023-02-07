@@ -2,7 +2,7 @@
   <Combobox v-slot="{ open }" v-model="searchUser">
     <ComboboxButton
       :as="ComboboxInput"
-      placeholder="Search for a user"
+      placeholder="Search Echo"
       autocomplete="off"
       class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-white focus:ring-0 rounded-full"
       @click="open = true"
