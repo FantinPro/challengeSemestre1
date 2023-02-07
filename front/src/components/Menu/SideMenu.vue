@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-between w-full p-4">
     <div class="flex flex-col gap-2">
-      <LogoButton :to="'/home'">
+      <LogoButton :to="'/'">
         <Logo />
       </LogoButton>
       <MenuButton v-slot="{ isActive }" :to="'/home'">

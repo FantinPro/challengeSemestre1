@@ -14,7 +14,7 @@ const routes = [
   { path: '/register', component: () => Register },
   { path: '/login', component: () => Login },
   { 
-    path: '/', 
+    path: '/',
     component: LayoutDefault,
     redirect: '/home',
     children : [

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { defineStore } from 'pinia';
 import jwt_decode from 'jwt-decode';
 import { router } from '../router';

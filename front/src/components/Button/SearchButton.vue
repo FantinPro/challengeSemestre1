@@ -2,7 +2,7 @@
   <Combobox v-slot="{ open }" v-model="searchUser">
     <ComboboxButton
       :as="ComboboxInput"
-      placeholder="Search for a user"
+      placeholder="Search Echo"
       autocomplete="off"
       class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-white focus:ring-0 rounded-full"
       @click="open = true"
@@ -21,7 +21,7 @@
         </template>
         <template v-else-if="!isSearchUserNotEmpty">
           <div class="pl-3 py-4 bg-neutral-800 italic">
-            search by @pseudo
+            search by @username
           </div>
         </template>
         <template v-else-if="data?.length == 0">
@@ -33,7 +33,7 @@
           <ComboboxOptions>
             <ComboboxOption :value="debouncedSearchUser">
               <div class="pl-3 py-4 bg-neutral-800 hover:bg-neutral-700/60 hover:cursor-pointer" @click="handleSelectUser(searchUser, 'enter')">
-                Rechercher "{{ debouncedSearchUser }}"
+                Searching "{{ debouncedSearchUser }}"
               </div>
             </ComboboxOption>
             <ComboboxOption

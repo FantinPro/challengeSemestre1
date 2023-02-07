@@ -7,7 +7,7 @@
       <div class="flex flex-col flex-1 border-r border-l border-[#4c5157]">
         <router-view></router-view>
       </div>
-      <div class="hidden top-0 lg:flex h-screen flex-col pt-4 pl-3">
+      <div class="hidden lg:flex flex-col pt-4 pl-4">
         <SearchButton />
       </div>
     </main>
