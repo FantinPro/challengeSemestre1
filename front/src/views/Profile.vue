@@ -33,9 +33,10 @@ import { useRouter } from 'vue-router';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import ProfilHeader from '../components/Profile/ProfileHeader.vue';
 import { useUserStore } from '../store/user';
-import { useFeedStore, getUserMessagesById } from '../store/feed';
+import { useFeedStore } from '../store/feed';
 
 const { getUserProfileByUsername } = useUserStore();
+const { getUserMessagesById } = useFeedStore();
 const router = useRouter();
 
 const profile = computed(() => useUserStore().profile);
