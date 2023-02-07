@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="flex flex-col overflow-auto h-full">
     <HeaderMenu>
@@ -45,21 +44,17 @@
 </template>
 <script setup>
 import { computed, onMounted } from "vue-demi";
-import { useUserStore } from "../store/user";
-import LayoutDefault from "../layouts/LayoutDefault.vue";
-import HeaderMenu from "../components/Menu/HeaderMenu.vue";
-import ProfilHeader from "../components/Profile/ProfileHeader.vue"
 import { useRouter } from "vue-router";
+import HeaderMenu from "../components/Menu/HeaderMenu.vue";
+import ProfilHeader from "../components/Profile/ProfileHeader.vue";
+import { useUserStore } from "../store/user";
 
-const { user, getUserProfileByUsername } = useUserStore();
+const { getUserProfileByUsername } = useUserStore();
 const router = useRouter();
-const emit = defineEmits(["update:layout"]);
 
 const profile = computed(() => useUserStore().profile);
 
 onMounted(async () => {
-  emit("update:layout", LayoutDefault);
-
   if (!router.currentRoute.value.params.pseudo) {
     router.push("/");
   }

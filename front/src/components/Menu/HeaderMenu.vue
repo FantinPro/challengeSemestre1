@@ -24,7 +24,7 @@
         </TabList>
       </div>
     </div>
-    <div>
+    <div class="flex-auto h-[0]">
       <slot name="panels" />
     </div>
   </TabGroup>

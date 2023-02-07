@@ -1,11 +1,11 @@
 <template>
-  <div class="flex h-full justify-center w-full">
+  <div class="flex h-full justify-center container mx-auto">
     <header class="flex">
       <SideMenu />
     </header>
-    <main class="flex relative">
-      <div class="flex flex-col border-r border-l border-[#4c5157]">
-        <slot />
+    <main class="flex flex-1 relative">
+      <div class="flex flex-col flex-1 border-r border-l border-[#4c5157]">
+        <router-view></router-view>
       </div>
       <div class="hidden top-0 lg:flex h-screen flex-col pt-4 pl-3">
         <SearchButton />

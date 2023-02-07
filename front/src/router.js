@@ -7,15 +7,22 @@ import Profile from './views/Profile.vue'
 import Search from './views/Search.vue'
 import Dashboard from './views/Dashboard.vue'
 import ManageUsers from './views/ManageUsers.vue'
+import LayoutDefault from "./layouts/LayoutDefault.vue";
 
 const routes = [
-  { path: '/home', redirect: '/' },
-  { path: '/', component: () => Timeline },
   { path: '/register', component: () => Register },
   { path: '/login', component: () => Login },
-  { path: '/messages', component: () => Messages },
-  { path: '/search', component: () => Search },
-  { path: '/profile/:pseudo', component: () => Profile },
+  { 
+    path: '/', 
+    component: LayoutDefault,
+    redirect: '/home',
+    children : [
+      { path: '/home', component: () => Timeline  },
+      { path: '/messages', component: () => Messages },
+      { path: '/search', component: () => Search },
+      { path: '/profile/:pseudo', component: () => Profile },
+    ]
+  },
   { 
     path: '/dashboard', 
     component: Dashboard,

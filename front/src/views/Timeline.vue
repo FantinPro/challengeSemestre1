@@ -74,6 +74,6 @@ const sendMessage = async () => {
 }
 
 const { isLoading, isError, refetch, data, error } = useQuery("feed", () =>
-  fetchFeed(1)
+  fetchFeed(1),
 );
 </script>
