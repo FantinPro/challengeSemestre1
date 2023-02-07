@@ -29,5 +29,22 @@ export const useFeedStore = defineStore('feed', {
       const data = await response.json();
       return data;
     },
+    async postMessage(values) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`
+          },
+          body: JSON.stringify(values),
+        });
+        const data = await response.json();
+        return data;
+      } catch (e) {
+        console.log(e);
+      }
+    }
   },
 });

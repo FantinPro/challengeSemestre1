@@ -4,7 +4,7 @@ import './style.css'
 import App from './App.vue'
 import { router } from './router.js'
 import { plugin, defaultConfig } from '@formkit/vue'
-import { fr } from '@formkit/i18n'
+import { en } from '@formkit/i18n'
 import '@formkit/themes/genesis'
 import { generateClasses } from '@formkit/themes'
 import { createPinia } from 'pinia'
@@ -26,16 +26,13 @@ const pinia = createPinia()
 
 app.use(router)
 app.use(VueQueryPlugin)
-
 app.use(pinia)
-
 app.use(VueCookies, { expires: '90d' })
-
 app.use(
   plugin,
   defaultConfig({
-    locales: { fr },
-    locale: 'fr',
+    locales: { en },
+    locale: 'en',
     config: {
       classes: generateClasses({
         global: {

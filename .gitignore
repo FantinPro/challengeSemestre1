@@ -1,6 +1,7 @@
 .idea
 .vscode
 .env
+.DS_Store
 ./back
 
 /back/config/secrets/prod/prod.decrypt.private.php
