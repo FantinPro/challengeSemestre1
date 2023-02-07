@@ -33,7 +33,7 @@ class FeedV2Controller extends AbstractController
 
         $follows = $user->getFollows()->map(fn (UserToUser $follow) => $follow->getOther()->getId())->toArray();
 
-        $messages = $this->messageRepository->getFeed($user->getId(), $page, self::PAGE_SIZE);
+        $messages = $this->messageRepository->getFeed($user->getId(), self::PAGE_SIZE, $page);
 
         foreach ($messages as $message) {
             $message->setWhoHasSharedFromMyFollows($follows);

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\UserToUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Message>
@@ -53,7 +54,7 @@ class MessageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getFeed($userId, $limit, $page = 1)
+    public function getFeed($userId, $limit, $page)
     {
         $qb = $this->createQueryBuilder('m');
         $qb->select('m')
@@ -68,8 +69,8 @@ class MessageRepository extends ServiceEntityRepository
             ->orderBy('m.created', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
-        $query = $qb->getQuery();
-        return $query->execute();
+        $paginator = new Paginator($qb, $fetchJoinCollection = true);
+        return $paginator;
     }
 
     private function getFollowingIds($userId)
