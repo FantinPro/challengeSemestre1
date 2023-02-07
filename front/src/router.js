@@ -7,6 +7,7 @@ import Profile from './views/Profile.vue'
 import Search from './views/Search.vue'
 import Dashboard from './views/Dashboard.vue'
 import ManageUsers from './views/ManageUsers.vue'
+import ManageReports from './views/ManageReports.vue'
 import LayoutDefault from "./layouts/LayoutDefault.vue";
 
 const routes = [
@@ -32,7 +33,7 @@ const routes = [
     children: [
       { path: 'stats', component: () => ManageUsers },
       { path: 'users', component: () => ManageUsers },
-      { path: 'reports', component: () => ManageUsers },
+      { path: 'reports', component: () => ManageReports },
       { path: 'calendar', component: () => ManageUsers },
       { path: 'manage_ads', component: () => ManageUsers },
     ]

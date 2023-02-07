@@ -6,7 +6,6 @@
 <script setup>
 import { computed, onMounted } from "vue-demi";
 import { useRouter } from "vue-router";
-import HeaderMenu from "../components/Menu/HeaderMenu.vue";
 import ProfilHeader from "../components/Profile/ProfileHeader.vue";
 import { useUserStore } from "../store/user";
 
