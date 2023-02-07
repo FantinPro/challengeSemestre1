@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { defineStore } from "pinia";
 
 export const useFeedStore = defineStore('feed', {

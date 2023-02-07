@@ -58,6 +58,7 @@ import { TabGroup, TabList, Tab } from '@headlessui/vue';
 defineProps({
   title: {
     type: String,
+    default: '',
   },
   customTitle: {
     type: Boolean,
@@ -69,7 +70,7 @@ defineProps({
   },
   tabs: {
     type: Array,
-    default: [],
+    default: () => [],
   },
 });
 </script>

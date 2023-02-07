@@ -1,5 +1,34 @@
 <template>
-  <div class="flex flex-col border-b border-[#4c5157]">
+  <div class="flex flex-col">
+    <HeaderMenu :customTitle="true">
+      <template #title>
+        <div class="flex gap-2 cursor-pointer">
+          <button
+            class="hover:bg-[#2f3336] font-semibold px-3 py-2 rounded-full"
+            @click="router.back()">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <div class="flex flex-col">
+            <h1 class="text-lg font-semibold">{{ profile?.pseudo }}</h1>
+            <p class="text-sm text-gray-500">
+              {{ profile?.messagesCount }} Echo{{
+                profile?.messagesCount > 1 ? 's' : ''
+              }}
+            </p>
+          </div>
+        </div>
+      </template>
+    </HeaderMenu>
     <div
       class="h-40 w-full relative"
       :style="{
@@ -156,15 +185,12 @@
         </div>
       </div>
     </div>
-    <HeaderMenu :tabs="tabs" />
   </div>
 </template>
 <script setup>
 import { computed } from 'vue';
 import HeaderMenu from '../Menu/HeaderMenu.vue';
 import { useUserStore } from '../../store/user';
-
-const tabs = ['Echoes', 'Media', 'Likes'];
 
 const { user } = useUserStore();
 
