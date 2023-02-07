@@ -17,11 +17,28 @@
             v-slot="{ selected }"
             class="focus-visible:outline-none w-full">
             <div
-              :class="[
-                'hover:bg-[#2f3336] text-white text-center font-semibold py-4 border-b-2',
-                selected ? 'border-primary-400' : 'border-transparent',
-              ]">
-              {{ tab }}
+              class="
+                hover:bg-[#2f3336]
+                hover:transition
+                hover:duration-600
+                hover:ease-in-out
+                text-white text-center
+                font-semibold
+                w-full
+                justify-center
+                flex
+              ">
+              <div class="flex flex-col items-center">
+                <span class="p-4">{{ tab }}</span>
+                <div
+                  class="
+                    rounded-md
+                    bg-primary-400
+                    h-[3px]
+                    w-full
+                  "
+                  v-if="selected" />
+              </div>
             </div>
           </Tab>
         </TabList>
