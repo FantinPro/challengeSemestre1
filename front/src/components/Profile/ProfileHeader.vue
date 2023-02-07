@@ -32,7 +32,6 @@
       <div class="flex flex-col items-end w-full">
         <div v-if="user?.pseudo !== profile?.pseudo" class="flex gap-2">
           <button
-            @click="editprofile()"
             class="
               hover:bg-[#2f3336]
               text-white
@@ -44,6 +43,7 @@
               transition-all
               duration-300
             "
+            @click="editprofile()"
           >
             <span class="">Edit profile</span>
           </button>
@@ -89,7 +89,6 @@
             </svg>
           </button>
           <button
-            @click="sendMessage()"
             class="
               font-semibold
               px-4
@@ -101,6 +100,7 @@
               transition-all
               duration-300
             "
+            @click="sendMessage()"
           >
             <svg
               class="h-6 w-6"
@@ -117,7 +117,6 @@
             </svg>
           </button>
           <button
-            @click="follow()"
             class="
               font-semibold
               px-4
@@ -130,6 +129,7 @@
               transition-all
               duration-300
             "
+            @click="follow()"
           >
             <span>Follow</span>
           </button>
