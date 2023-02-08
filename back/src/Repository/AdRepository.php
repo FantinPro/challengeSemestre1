@@ -39,6 +39,17 @@ class AdRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAmountEarned($startDate, $endDate): int
+    {
+        $qb = $this->createQueryBuilder('ad');
+        $qb->select('SUM(ad.price) as amount');
+        $qb->where('ad.createdAt BETWEEN :startDate AND :endDate');
+        $qb->setParameter('startDate', $startDate);
+        $qb->setParameter('endDate', $endDate);
+        $result = $qb->getQuery()->getSingleResult();
+        return $result['amount'] ?? 0;
+    }
+
 //    /**
 //     * @return Ad[] Returns an array of Ad objects
 //     */
