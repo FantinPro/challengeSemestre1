@@ -47,11 +47,14 @@ final class UserSubscriber implements EventSubscriberInterface
     {
         $user = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
+        $body = json_decode($event->getRequest()->getContent());
 
         if (!$user instanceof User || !in_array($method, [Request::METHOD_POST, Request::METHOD_PATCH, Request::METHOD_PUT])) {
             return;
         }
 
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
+        if (isset($body->password)) {
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $body->password));
+        }
     }
 }
