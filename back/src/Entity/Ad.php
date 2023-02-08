@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\RandomAdController;
 use App\Repository\AdRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,7 +26,13 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
         new GetCollection(
             paginationEnabled: true,
             paginationItemsPerPage: 20,
-            security: 'is_granted("ROLE_PREMIUM")',
+        ),
+        new Get(
+            ## ça s'apelle /pubs car sinon AdBlock il block tous les endpoints qui contiennent "ads" ou "ad"
+            uriTemplate: '/pubs/random',
+            controller: RandomAdController::class,
+            security: "is_granted('ROLE_USER')",
+            read: false,
         ),
         new Get(
             normalizationContext: ['groups' => ['read:ad', 'read:ad:stats']],

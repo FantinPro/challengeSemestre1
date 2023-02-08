@@ -92,6 +92,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
+        // component à remplacer
         component: () => ManageUsers,
       },
       {
@@ -103,6 +104,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
+        // component à remplacer
         component: () => ManageUsers,
       },
     ],
