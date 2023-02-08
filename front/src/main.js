@@ -19,6 +19,12 @@ app.config.globalProperties.$filters = {
     const mapped = role.replace('ROLE_', '')
     const roleCapitalized = mapped.charAt(0).toUpperCase() + mapped.slice(1).toLowerCase()
     return roleCapitalized
+  },
+  displayStat(statTitle) {
+    if (statTitle === 'nbUsers') return 'Number of users'
+    if (statTitle === 'nbAds') return 'Number of Ads'
+    if (statTitle === 'nbMessages') return 'Number of Messages'
+    if (statTitle === 'amountEarned') return 'Amount Earned'
   }
 }
 

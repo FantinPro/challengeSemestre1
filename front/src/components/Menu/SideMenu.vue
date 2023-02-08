@@ -79,19 +79,28 @@
         </svg>
         <p class="hidden md:flex">Profile</p>
       </MenuButton>
+      <MenuButton v-if="isAllowToGoToDashboard" v-slot="{ isActive }" :to="`/dashboard`">
+        <img class="h-6 w-6 text-white" :src="DashboardLogo" />
+        <p class="hidden md:flex">Dashboard</p>
+      </MenuButton>
     </div>
     <ProfileButton />
   </div>
 </template>
 <script setup>
-import { reactive, computed } from 'vue';
+import { computed } from 'vue';
 import { useUserStore } from '../../store/user';
-import MenuButton from '../Button/MenuButton.vue';
 import LogoButton from '../Button/LogoButton.vue';
+import MenuButton from '../Button/MenuButton.vue';
 import ProfileButton from '../Button/ProfileButton.vue';
 import Logo from '../Logo/Logo.vue';
-
+import DashboardLogo from '../../assets/dashboard.svg';
+import { ROLES } from '../../utils/constants';
 const userStore = useUserStore();
 
 const { user } = userStore;
+
+const isAllowToGoToDashboard = computed(() => {
+  return user.roles.some((role) => [ROLES.ROLE_ADMIN, ROLES.ROLE_MODERATOR, ROLES.ROLE_PREMIUM].includes(role))
+});
 </script>

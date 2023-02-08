@@ -88,11 +88,11 @@ class MessageRepository extends ServiceEntityRepository
 
     public function countMessagesBetween($startDate, $endDate)
     {
-        $qb = $this->createQueryBuilder('m')
-            ->select('COUNT(m.id)')
-            ->where('m.created BETWEEN :startDate AND :endDate')
-            ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate);
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('COUNT(m.id)');
+        $qb->where('m.created BETWEEN :startDate AND :endDate');
+        $qb->setParameter('startDate', $startDate);
+        $qb->setParameter('endDate', $endDate);
         return $qb->getQuery()->getSingleScalarResult();
     }
 

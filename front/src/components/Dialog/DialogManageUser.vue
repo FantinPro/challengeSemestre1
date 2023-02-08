@@ -82,24 +82,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import {
-  TransitionRoot,
-  TransitionChild,
   Dialog,
   DialogPanel,
   DialogTitle,
-  Listbox,
-  ListboxButton,
-  ListboxOptions,
-  ListboxOption,
+  TransitionChild,
+  TransitionRoot
 } from '@headlessui/vue';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
-import { ROLES } from '../../utils/constants';
-import { changeRoleByUserId } from '../../services/service.users';
+import { ref } from 'vue';
 import { useMutation } from 'vue-query';
-import Spin from '../Loader/Spin.vue';
 import { toast } from 'vue3-toastify';
+import { changeRoleByUserId } from '../../services/service.users';
+import { ROLES } from '../../utils/constants';
+import Spin from '../Loader/Spin.vue';
 import Select from '../Select/Select.vue';
 
 const props = defineProps({
