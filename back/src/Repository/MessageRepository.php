@@ -86,6 +86,16 @@ class MessageRepository extends ServiceEntityRepository
         return $qb->getQuery()->getScalarResult();
     }
 
+    public function countMessagesBetween($startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.created BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return Message[] Returns an array of Message objects
 //     */

@@ -27,28 +27,13 @@ class StatsController extends AbstractController
         $endDate = $request->query->get('endDate');
 
         // number registered users
-        $nbUsers = $this->userRepository->count([
-            'created' => [
-                'gte' => $startDate,
-                'lte' => $endDate
-            ]
-        ]);
+        $nbUsers = $this->userRepository->countUsersBetween($startDate, $endDate);
 
         // number ads
-        $nbAds = $this->adRepository->count([
-            'created' => [
-                'gte' => $startDate,
-                'lte' => $endDate
-            ]
-        ]);
+        $nbAds = $this->adRepository->countAdsBetween($startDate, $endDate);
 
         // number messages
-        $nbMessages = $this->messageRepository->count([
-            'created' => [
-                'gte' => $startDate,
-                'lte' => $endDate
-            ]
-        ]);
+        $nbMessages = $this->messageRepository->countMessagesBetween($startDate, $endDate);
 
         // get Amount of money earned by ads
         $amountEarned = $this->adRepository->getAmountEarned($startDate, $endDate);
