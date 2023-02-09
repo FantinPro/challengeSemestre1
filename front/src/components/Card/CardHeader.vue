@@ -14,11 +14,10 @@
     <Menu as="div" class="relative inline-block text-left">
       <div>
         <MenuButton
-          class="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+          class="inline-flex w-full justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95"
         >
-          Options
           <EllipsisVerticalIcon
-            class="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
+            class="h-5 w-5 rotate-90 text-violet-200 hover:text-violet-100"
             aria-hidden="true"
           />
         </MenuButton>

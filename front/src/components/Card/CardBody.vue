@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 font-medium text-base">
+  <div class="font-medium text-base">
     <div v-if="isDeleted" class="text-white">
       <span class="font-bold">[deleted]</span>
       <span class="ml-2">{{ content }}</span>
@@ -10,6 +10,8 @@
   </div>
 </template>
 <script setup>
+import { ref } from "vue-demi";
+
 const props = defineProps({
   item: {
     type: Object,
@@ -17,6 +19,7 @@ const props = defineProps({
   },
 });
 
-const { id, content, isDeleted } = props.item;
+const content = ref(props.item.content);
+const isDeleted = ref(props.item.isDeleted);
 
 </script>
