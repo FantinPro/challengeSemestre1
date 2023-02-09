@@ -1,5 +1,6 @@
 <template>
   <div
+    :key="username"
     class="
       flex flex-col
       overflow-auto
@@ -13,7 +14,7 @@
       <template #panels>
         <TabPanels>
           <TabPanel>
-            <div class="flex flex-col gap-2 p-4 mt-2">
+            <div class="flex flex-col gap-2">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="feed in data" :key="feed.id">
@@ -21,41 +22,55 @@
               </div>
             </div>
           </TabPanel>
-          <TabPanel>Content 2</TabPanel>
+          <TabPanel></TabPanel>
         </TabPanels>
       </template>
     </HeaderMenu>
   </div>
 </template>
 <script setup>
-import { computed, onMounted } from 'vue-demi';
+import { ref, watch } from 'vue-demi';
+import { useQuery } from 'vue-query';
 import { useRouter } from 'vue-router';
-import HeaderMenu from '../components/Menu/HeaderMenu.vue';
-import ProfilHeader from '../components/Profile/ProfileHeader.vue';
+import { TabPanel, TabPanels } from '@headlessui/vue';
 import { useUserStore } from '../store/user';
 import { useFeedStore } from '../store/feed';
+import HeaderMenu from '../components/Menu/HeaderMenu.vue';
+import ProfilHeader from '../components/Profile/ProfileHeader.vue';
+import Card from '../components/Card/Card.vue';
 
 const { getUserProfileByUsername } = useUserStore();
-const { getUserMessagesById } = useFeedStore();
+const { fetchMessages } = useFeedStore();
 const router = useRouter();
+const tabs = ['Echoes', 'Likes'];
 
-const profile = computed(() => useUserStore().profile);
+let username = ref(router.currentRoute.value.params.pseudo);
 
-const userMessages = computed(() => useFeedStore().userMessages);
-
-const tabs = ['Echoes', 'Media', 'Likes'];
-
-onMounted(async () => {
-  if (!router.currentRoute.value.params.pseudo) {
-    router.push('/');
+watch(
+  () => router.currentRoute.value.params.pseudo,
+  (newVal) => {
+    if (newVal !== username.value && newVal !== undefined) {
+      username.value = newVal;
+    }
   }
+);
 
-  if (!profile.value) {
-    router.push('/');
+const { isLoading, isError, data, error } = useQuery(
+  ['profile', username],
+  async () => {
+    try {
+      const res = await getUserProfileByUsername(username.value);
+      if (!res || res.error) {
+        router.push('/');
+      }
+      return fetchMessages(1, { creator: res.id });
+    } catch (e) {
+      console.log(e);
+      router.push('/');
+    }
+  },
+  {
+    keepPreviousData: true,
   }
-
-  await getUserProfileByUsername(router.currentRoute.value.params.pseudo);
-  // Add infinite scroll
-  await getUserMessagesById(profile.value.id, 1);
-});
+);
 </script>

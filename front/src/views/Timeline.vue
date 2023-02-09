@@ -26,7 +26,7 @@
                 />
               </div>
             </div>
-            <div class="flex flex-col gap-2 p-4 mt-2">
+            <div class="flex flex-col gap-2">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="feed in data" :key="feed.id">

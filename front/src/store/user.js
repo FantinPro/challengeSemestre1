@@ -84,6 +84,7 @@ export const useUserStore = defineStore('user', {
         );
         const profile = await response.json();
         this.profile = profile;
+        return profile;
       } catch (e) {
         console.log(e);
       }

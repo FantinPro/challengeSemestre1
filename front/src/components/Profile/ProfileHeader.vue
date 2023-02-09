@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <HeaderMenu :customTitle="true">
+    <HeaderMenu :custom-title="true">
       <template #title>
         <div class="flex gap-2 cursor-pointer">
           <button
@@ -56,7 +56,7 @@
     </div>
     <div class="flex gap-4 p-4">
       <div class="flex flex-col items-end w-full">
-        <div v-if="user?.pseudo !== profile?.pseudo" class="flex gap-2">
+        <div v-if="user?.pseudo === profile?.pseudo" class="flex gap-2">
           <button
             class="
               hover:bg-[#2f3336]
@@ -191,9 +191,10 @@
 import { computed } from 'vue';
 import HeaderMenu from '../Menu/HeaderMenu.vue';
 import { useUserStore } from '../../store/user';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { user } = useUserStore();
-
 const profile = computed(() => useUserStore().profile);
 
 const createdAt = computed(() => {
