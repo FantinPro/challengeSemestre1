@@ -82,7 +82,7 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:message', 'read:message:feed'])]
+    #[Groups(['read:message', 'read:message:feed', 'read:message:search'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
@@ -106,7 +106,7 @@ class Message
     private Collection $comments;
 
     #[ORM\Column]
-    #[Groups(['read:message', 'patch:message'])]
+    #[Groups(['read:message', 'patch:message', 'read:message:feed', 'read:message:search'])]
     private ?bool $isDeleted = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -365,7 +365,7 @@ class Message
         return $this;
     }
 
-    #[Groups(['read:message'])]
+    #[Groups(['read:message', 'read:message:search'])]
     public function getSharesCount()
     {
         return count($this->shares);
