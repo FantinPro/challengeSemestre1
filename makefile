@@ -24,7 +24,7 @@ schema-update:
 	cd ./back && php bin/console doctrine:schema:update --force
 
 fixtures:
-	cd ./back && php bin/console doctrine:fixtures:load
+	cd ./back && php bin/console doctrine:fixtures:load --no-interaction
 
 start: up
 	cd ./back && php bin/console cache:clear && symfony serve
