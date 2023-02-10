@@ -33,15 +33,15 @@ const routes = [
       // default redirection depending on user role
       const user = JSON.parse(localStorage.getItem('echoUser'));
       if (user.roles.includes(ROLES.ROLE_ADMIN)) {
-        return { path: 'dashboard/stats' };
+        return { path: '/dashboard/stats' };
       }
       if (user.roles.includes(ROLES.ROLE_MODERATOR)) {
-        return { path: 'dashboard/reports' };
+        return { path: '/dashboard/reports' };
       }
       if (user.roles.includes(ROLES.ROLE_PREMIUM)) {
-        return { path: 'dashboard/calendar' };
+        return { path: '/dashboard/calendar' };
       }
-      return { path: 'home' };
+      return { path: '/home' };
     },
     children: [
       {

@@ -1,6 +1,7 @@
 <template>
   <router-link
     v-slot="{ isActive }"
+    exact
     v-bind="buttonProps"
     class="group"
     :active-class="'text-primary-300 font-bold'">
@@ -23,6 +24,10 @@ const buttonProps = defineProps({
   to: {
     type: String,
     default: '',
+  },
+  exact: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
