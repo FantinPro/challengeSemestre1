@@ -1,15 +1,15 @@
 <template>
   <TabGroup>
-    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5' : '' " class="border-b border-[#212529]">
+    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5 pb-3' : '' " class="border-b border-[#212529]">
       <div v-if="customTitle" class="px-2">
         <slot name="title" />
       </div>
-      <div v-else-if="title" class="px-4">
+      <div v-else-if="title" class="px-4 pb-3">
         <h1 class="text-2xl font-bold cursor-pointer">
           {{ title }}
         </h1>
       </div>
-      <div v-if="type === 'tabs'" class="mt-3">
+      <div v-if="type === 'tabs'">
         <TabList class="flex">
           <Tab
             v-for="tab in tabs"

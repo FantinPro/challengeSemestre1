@@ -9,7 +9,7 @@
           alt="User avatar"
         />
         <div v-else class="w-7 h-7 bg-neutral-500 rounded-full" />
-        <span class="font-bold text-lg hidden md:block">{{ user?.pseudo }}</span>
+        <span class="font-bold text-lg hidden md:block">{{ pseudo }}</span>
       </MenuButton>
       <MenuItems class="absolute left-0 bottom-14 mt-2 w-40 origin-top-left divide-y divide-gray-100 rounded-md bg-neutral-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
         <div class="p-2">
@@ -28,10 +28,19 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUserStore } from '../../store/user'
 import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue-demi';
 
 const userStore = useUserStore()
 const { user } = userStore;
 const router = useRouter()
+let pseudo = ref(user.pseudo);
+
+watch(
+  () => useUserStore().user.pseudo,
+  (newPseudo) => {
+    pseudo.value = newPseudo;
+  }
+);
 
 const logout = () => {
   userStore.logout()
