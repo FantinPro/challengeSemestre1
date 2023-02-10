@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col overflow-auto h-full">
-    <HeaderMenu :tabs="tabs" title="Home">
+    <HeaderMenu :tabs="tabs" title="Home" :sticky="true">
       <template #panels>
         <TabPanels>
           <TabPanel>

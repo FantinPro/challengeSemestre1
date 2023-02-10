@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <div class="flex gap-1 items-center">
+      <div class="flex gap-1 items-baseline">
         <router-link
           :to="`/profile/${props.item.creator.pseudo}`"
           class="font-bold text-gray-200">
@@ -12,7 +12,7 @@
           class="text-sm text-gray-400">
           @{{ props.item.creator.pseudo }}
         </router-link>
-        ·
+        <span class="text-sm text-gray-400"> · </span>
         <span class="text-sm text-gray-400">{{ createdAt }}</span>
       </div>
     </div>

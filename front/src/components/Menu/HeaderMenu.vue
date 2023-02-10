@@ -1,10 +1,10 @@
 <template>
   <TabGroup>
-    <div class="mt-5 border-b border-[#4c5157]">
-      <div v-if="customTitle" class="px-6">
+    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5' : '' " class="border-b border-[#212529]">
+      <div v-if="customTitle" class="px-2">
         <slot name="title" />
       </div>
-      <div v-else-if="title" class="px-6">
+      <div v-else-if="title" class="px-4">
         <h1 class="text-2xl font-bold cursor-pointer">
           {{ title }}
         </h1>
@@ -31,13 +31,13 @@
               <div class="flex flex-col items-center">
                 <span class="p-4">{{ tab }}</span>
                 <div
+                  v-if="selected"
                   class="
                     rounded-md
                     bg-primary-400
                     h-[3px]
                     w-full
-                  "
-                  v-if="selected" />
+                  " />
               </div>
             </div>
           </Tab>
@@ -71,6 +71,10 @@ defineProps({
   tabs: {
     type: Array,
     default: () => [],
+  },
+  sticky: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
