@@ -107,7 +107,7 @@
                       focus-visible:ring-gray-500
                       focus-visible:ring-offset-1
                     "
-                    @click="save">
+                    @click="saveMutation">
                     <span>Save</span>
                     <Spin :is-loading="isLoading" />
                   </button>
@@ -215,13 +215,12 @@ import { ref } from 'vue';
 import { useMutation } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { createReport } from '../../services/service.reports';
 import { useUserStore } from '../../store/user';
-import { REPORT_TYPES } from '../../utils/constants';
 import Spin from '../Loader/Spin.vue';
 
 const router = useRouter();
 const { user, updateProfile } = useUserStore();
+const emit = defineEmits(['close']);
 
 const props = defineProps({
   isOpen: {
@@ -234,58 +233,39 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close']);
+let username = ref(user?.pseudo);
+let bio = ref(props.profile?.bio);
+let avatar = ref(props.profile?.avatar);
 
-const reportTypes = Object.values(REPORT_TYPES).map((type) => ({
-  value: type,
-  display: type,
-}));
-const selectedReport = ref(reportTypes[0]);
-
-const updateReport = (report) => {
-  selectedReport.value = report;
-};
 
 function closeModal() {
   emit('close');
 }
 
-const { isLoading, mutate: createReportMutation } = useMutation(
-  (data) => createReport(data),
+const { isLoading, mutate: saveMutation } = useMutation(
+  () => updateProfile({
+    userId: user.id,
+    pseudo: username.value,
+    bio: bio.value,
+    avatar: avatar.value,
+  }),
   {
     onSuccess: () => {
-      toast.success('Message has been reported !');
+      toast.success('Profile updated !');
       closeModal();
+      router.push(`/profile/${username.value}`);
     },
     onError: (err) => {
       if (err.message.match(/Access Denied/)) {
-        toast.error('You cannot report your own message !');
-      } else if (err.message.match(/You already reported it/)) {
-        toast.error('You already reported this message !');
+        toast.error('You are not allowed to do this !');
+      } else if (err.message.match(/Unique/)) {
+        toast.error('Username already taken !');
       } else {
         toast.error('Something went wrong !');
       }
     },
   }
 );
-
-let username = ref(user?.pseudo);
-let bio = ref(props.profile?.bio);
-let avatar = ref(props.profile?.avatar);
-
-const save = async () => {
-  const updated = await updateProfile({
-    userId: user.id,
-    pseudo: username.value,
-    bio: bio.value,
-    avatar: avatar.value,
-  });
-  if (updated) {
-    toast.success('Profile updated !');
-    closeModal();
-    router.push(`/profile/${username.value}`);
-  }
-};
 
 const openModalUploadAvatar = () => {
   console.log('openModalUploadAvatar');

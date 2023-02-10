@@ -4,6 +4,7 @@ import Register from './views/Register.vue';
 import Login from './views/Login.vue';
 import Messages from './views/Messages.vue';
 import Profile from './views/Profile.vue';
+import ProfileFollowers from './views/ProfileFollowers.vue';
 import Search from './views/Search.vue';
 import Dashboard from './views/Dashboard.vue';
 import ManageUsers from './views/ManageUsers.vue';
@@ -24,6 +25,7 @@ const routes = [
       { path: '/messages', component: Messages },
       { path: '/search', component: Search },
       { path: '/profile/:pseudo', component: Profile },
+      { path: '/profile/:pseudo/:tab', component: ProfileFollowers },
     ],
   },
   {

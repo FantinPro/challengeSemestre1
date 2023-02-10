@@ -86,89 +86,50 @@ export const useUserStore = defineStore('user', {
           }
         );
         const profile = await response.json();
+        if (!response.ok) {
+          throw new Error(profile.detail)
+        }
         this.profile = profile;
         return profile;
       } catch (e) {
         console.log(e);
       }
     },
-    // http://localhost:8000/api/user_to_users?me=67  == les gens que je follow
-    // http://localhost:8000/api/user_to_users?other=67  == les gens qui me follow
-    async getFollowers() {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user_to_users?other=${this.user.id
-          }`,
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-            },
-          }
-        );
-        const followers = await response.json();
-        return followers;
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    async getFollowings() {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user_to_users?me=${this.user.id
-          }`,
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-            },
-          }
-        );
-        const followings = await response.json();
-        return followings;
-      } catch (e) {
-        console.log(e);
-      }
-    },
     async fetchUsers(pseudo) {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/users?page=1&pseudo=${pseudo}`,
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-            },
-          }
-        );
-        const users = await response.json();
-        return users;
-      } catch (e) {
-        console.log(e);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users?page=1&pseudo=${pseudo}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        }
+      );
+      const users = await response.json();
+      if (!response.ok) {
+        throw new Error(users.detail)
       }
+      return users;
     },
     async fetchUsersPaginated(page = 1) {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/users?page=${page}`,
-          {
-            headers: {
-              // explicitly no set accept
-              // Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-            },
-          }
-        );
-        const { 'hydra:member': users, 'hydra:totalItems': total } =
-          await response.json();
-        return { users, total };
-      } catch (e) {
-        console.log(e);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users?page=${page}`,
+        {
+          headers: {
+            // explicitly no set accept
+            // Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        }
+      );
+      const { 'hydra:member': users, 'hydra:totalItems': total } =
+        await response.json();
+      if (!response.ok) {
+        throw new Error(users.detail)
       }
+      return { users, total };
     },
     async updateProfile({
       userId,
@@ -176,76 +137,105 @@ export const useUserStore = defineStore('user', {
       bio,
       avatar,
     }) {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+        },
+        body: JSON.stringify({
+          pseudo,
+          bio,
+          profilePicture: avatar,
+        }),
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        throw new Error(json.detail)
+      }
+      await this.getUserProfileByUsername(json.pseudo)
+      this.setLocalUser({
+        ...this.user,
+        pseudo: json.pseudo,
+        bio: json.bio,
+        profilePicture: json.profilePicture,
+      })
+      return json
+    },
+    async getFollowersPaginated(page = 1, userId) {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/followers?userId=${userId}&page=${page}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+        },
+      })
+
+      const json = await response.json()
+      if (!response.ok) {
+        throw new Error(json.detail)
+      }
+      return json
+    },
+    async getFollowingsPaginated(page = 1, userId) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
-          method: 'PUT',
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/follows?userId=${userId}&page=${page}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        })
+
+        const json = await response.json()
+        if (!response.ok) {
+          throw new Error(json.detail)
+        }
+        return json
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async followUserById(userId) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users`, {
+          method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
             Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
           },
           body: JSON.stringify({
-            pseudo,
-            bio,
-            profilePicture: avatar,
+            me: `/api/users/${this.user.id}`,
+            other: `/api/users/${userId}`,
+            status: 'following',
           }),
         })
         const json = await response.json()
         if (!response.ok) {
           throw new Error(json.detail)
         }
-        await this.getUserProfileByUsername(json.pseudo)
-        console.log(json);
-        this.setLocalUser({
-          ...this.user,
-          pseudo: json.pseudo,
-          bio: json.bio,
-          profilePicture: json.profilePicture,
-        })
         return json
       } catch (e) {
         console.log(e);
       }
     },
-    async getFollowersPaginated(page = 1, userId) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?other=${userId}&page=${page}`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-          },
-        })
-
-        const json = await response.json()
-        if (!response.ok) {
-          throw new Error(json.detail)
-        }
-        return json
-      } catch (e) {
-        console.log(e);
+    async unfollowUserById(userId) {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users/delete?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+        },
+      })
+      if (!response.ok) {
+        throw new Error('Error while unfollowing user')
       }
-    },
-    async getFollowingsPaginated(page = 1, userId) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?me=${userId}&page=${page}`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-          },
-        })
-
-        const json = await response.json()
-        if (!response.ok) {
-          throw new Error(json.detail)
-        }
-        return json
-      } catch (e) {
-        console.log(e);
-      }
+      return true
     }
   },
 });

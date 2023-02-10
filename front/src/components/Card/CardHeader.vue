@@ -32,8 +32,8 @@
           focus-visible:ring-white
           focus-visible:ring-opacity-95
         ">
-        <EllipsisVerticalIcon
-          class="h-5 w-5 rotate-90 text-violet-200 hover:text-violet-100"
+        <EllipsisHorizontalIcon
+          class="h-5 w-5 text-violet-200 hover:text-violet-100"
           aria-hidden="true" />
       </MenuButton>
 
@@ -105,7 +105,7 @@
   </div>
 </template>
 <script setup>
-import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { FlagIcon } from '@heroicons/vue/20/solid';
 import { formatDistance } from 'date-fns';

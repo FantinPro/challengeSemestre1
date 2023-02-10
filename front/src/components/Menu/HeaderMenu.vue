@@ -1,7 +1,7 @@
 <template>
-  <TabGroup>
-    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5 pb-3' : '' " class="border-b border-[#212529]">
-      <div v-if="customTitle" class="px-2">
+  <TabGroup :selected-index="selectedTab" @change="changeTab">
+    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5' : '' " class="border-b border-[#3b4043]">
+      <div v-if="customTitle" class="px-2 pb-3">
         <slot name="title" />
       </div>
       <div v-else-if="title" class="px-4 pb-3">
@@ -54,8 +54,9 @@
 </template>
 <script setup>
 import { TabGroup, TabList, Tab } from '@headlessui/vue';
+import { ref } from 'vue-demi';
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: '',
@@ -76,5 +77,18 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  selectedTab: {
+    type: Number,
+    default: 0,
+  },
 });
+
+const emit = defineEmits(['tabChange']);
+
+const selectedTab = ref(props.selectedTab);
+
+function changeTab(index) {
+  selectedTab.value = index
+  emit('tabChange', index)
+}
 </script>
