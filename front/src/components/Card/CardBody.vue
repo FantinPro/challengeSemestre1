@@ -1,9 +1,17 @@
 <template>
-  <div class="mt-4">
-    <span class="text-white">{{ text }}</span>
+  <div class="font-medium text-base">
+    <div v-if="isDeleted" class="text-white">
+      <span class="font-bold text-orange-400">[deleted]</span>
+      <span class="ml-2 text-gray-400">{{ content }}</span>
+    </div>
+    <div v-else>
+      <span>{{ content }}</span>
+    </div>
   </div>
 </template>
 <script setup>
+import { ref } from "vue-demi";
+
 const props = defineProps({
   item: {
     type: Object,
@@ -11,8 +19,7 @@ const props = defineProps({
   },
 });
 
-const { id, text } = props.item;
+const content = ref(props.item.content);
+const isDeleted = ref(props.item.isDeleted);
 
 </script>
-<style>
-</style>

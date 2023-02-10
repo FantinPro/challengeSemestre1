@@ -56,6 +56,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
+    public function countUsersBetween($startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->select('COUNT(u.id)');
+
+        if ($startDate && $endDate) {
+            $qb->where('u.created BETWEEN :startDate AND :endDate');
+            $qb->setParameter('startDate', $startDate);
+            $qb->setParameter('endDate', $endDate);
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

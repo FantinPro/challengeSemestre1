@@ -2,19 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
-use App\Controller\FeedController;
+use App\Controller\FollowersController;
+use App\Controller\FollowingController;
 use App\Controller\MeController;
-use App\Controller\PremiumSubscriptionController;
-use App\Controller\UserController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,36 +27,73 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
-        new Get(
-            uriTemplate: '/users/me',
-            controller: MeController::class,
-            security: 'is_granted("ROLE_USER")',
-            read: false,
-            name: 'me'
+        new GetCollection(
+            uriTemplate: '/users/followers',
+            controller: FollowersController::class,
+            paginationEnabled: true,
+            paginationItemsPerPage: 2,
+            normalizationContext: ['groups' => ['read:user', 'read:user:follow']],
+            security: "is_granted('ROLE_USER')",
+        ),
+        new GetCollection(
+            uriTemplate: '/users/follows',
+            controller: FollowingController::class,
+            paginationEnabled: true,
+            paginationItemsPerPage: 20,
+            normalizationContext: ['groups' => ['read:user', 'read:user:follow']],
+            security: "is_granted('ROLE_USER')",
         ),
         new Post(),
-        new Put(),
-        new Get(),
+        new Put(
+            uriTemplate: '/users/{id}/change_role',
+            denormalizationContext: ['groups' => ['put:user:change_role']],
+            securityPostDenormalize: "is_granted('ROLE_ADMIN')",
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['write:user']],
+            security: 'is_granted("ROLE_USER") and object == user',
+        ),
+        new Get(
+            uriTemplate: '/users/profile',
+            controller: MeController::class,
+            security: "is_granted('ROLE_USER')",
+            read: false,
+        ),
+        new Get(
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            paginationEnabled: true,
+            paginationItemsPerPage: 20,
+            normalizationContext: ['groups' => ['read:user', 'read:users:collection']],
+            security: "is_granted('ROLE_ADMIN')",
+        ),
     ],
 
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['pseudo' => 'ipartial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_MODERATOR = 'ROLE_MODERATOR';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_PREMIUM = 'ROLE_PREMIUM';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user_read','read:message:feed'])]
+    #[Groups(['read:user', 'read:user_to_user','read:message:feed', 'read:message', 'read:message:search', 'read:ad'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(message: 'Invalid email address')]
-    #[Groups(['write:user', 'read:user', 'read:user_to_user'])]
+    #[Groups(['write:user', 'read:message', 'read:users:collection'])]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['read:user'])]
+    #[Groups(['read:user', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'put:user:change_role', 'read:user_to_user'])]
     private array $roles = [];
 
     /**
@@ -73,16 +113,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: TokenResetPassword::class, orphanRemoval: true)]
     private Collection $tokenResetPasswords;
 
-    #[ORM\Column]
-    #[Groups(['read:user_to_user_read'])]
-    private ?bool $isPremium = false;
-
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user_to_user_read'])]
+    #[Groups(['read:user', 'read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(length: 25, nullable: true)]
-    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed'])]
+    #[ORM\Column(length: 25, unique: true)]
+    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
@@ -97,17 +133,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
     private Collection $messagesSharedByUser;
 
-    #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
-    private Collection $reports;
-
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
     private Collection $ads;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
+    #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
+    private Collection $reports;
 
     #[ORM\OneToMany(mappedBy: 'fromUser', targetEntity: Stat::class)]
     private Collection $stats;
 
+    #[Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
+    private $created;
+
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Timestampable(on: 'update')]
+    private $updated;
+
+    #[ORM\OneToMany(mappedBy: 'sharingBy', targetEntity: Share::class)]
+    private Collection $shares;
+
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $stripeCustomerId = null;
+    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
+    private ?string $bio = null;
+
+    #[Groups(['read:user:follow'])]
+    public bool $followed = false;
+
+    #[Groups(['read:user:follow'])]
+    public mixed $userToUserId = null;
 
     public function __construct()
     {
@@ -116,14 +173,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followers = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->messagesSharedByUser = new ArrayCollection();
-        $this->reports = new ArrayCollection();
         $this->ads = new ArrayCollection();
+        $this->reports = new ArrayCollection();
         $this->stats = new ArrayCollection();
+        $this->created = new \DateTime();
+        $this->updated = new \DateTime();
+        $this->shares = new ArrayCollection();
+        $random = random_int(1, 100);
+        $this->profilePicture = "https://avatars.dicebear.com/api/male/$random.svg";
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -229,18 +297,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $tokenResetPassword->setFromUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isIsPremium(): ?bool
-    {
-        return $this->isPremium;
-    }
-
-    public function setIsPremium(bool $isPremium): self
-    {
-        $this->isPremium = $isPremium;
 
         return $this;
     }
@@ -386,35 +442,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Report>
-     */
-    public function getReports(): Collection
-    {
-        return $this->reports;
-    }
-
-    public function addReport(Report $report): self
-    {
-        if (!$this->reports->contains($report)) {
-            $this->reports->add($report);
-            $report->setReportingUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReport(Report $report): self
-    {
-        if ($this->reports->removeElement($report)) {
-            // set the owning side to null (unless already changed)
-            if ($report->getReportingUser() === $this) {
-                $report->setReportingUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Ad>
@@ -440,6 +467,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($ad->getOwner() === $this) {
                 $ad->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): self
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReportingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReportingUser() === $this) {
+                $report->setReportingUser(null);
             }
         }
 
@@ -476,15 +545,97 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getStripeCustomerId(): ?string
+    public function getCreated(): \DateTime
     {
-        return $this->stripeCustomerId;
+        return $this->created;
     }
 
-    public function setStripeCustomerId(?string $stripeCustomerId): self
+    public function setCreated(\DateTime $created): self
     {
-        $this->stripeCustomerId = $stripeCustomerId;
+        $this->created = $created;
 
         return $this;
+    }
+
+    public function getUpdated(): \DateTime
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTime $updated): self
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Share>
+     */
+    public function getShares(): Collection
+    {
+        return $this->shares;
+    }
+
+    public function addShare(Share $share): self
+    {
+        if (!$this->shares->contains($share)) {
+            $this->shares->add($share);
+            $share->setSharingBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShare(Share $share): self
+    {
+        if ($this->shares->removeElement($share)) {
+            // set the owning side to null (unless already changed)
+            if ($share->getSharingBy() === $this) {
+                $share->setSharingBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Groups(['read:user'])]
+    public function getMessagesCount(): int
+    {
+        return count($this->messages);
+    }
+
+    #[Groups(['read:user'])]
+    public function getFollowsCount(): int
+    {
+        return count($this->follows);
+    }
+
+    #[Groups(['read:user'])]
+    public function getFollowersCount(): int
+    {
+        return count($this->followers);
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function setFollowed(bool $followed): void
+    {
+        $this->followed = $followed;
+    }
+
+    public function setUserToUserId(mixed $userToUserId): void
+    {
+        $this->userToUserId = $userToUserId;
     }
 }

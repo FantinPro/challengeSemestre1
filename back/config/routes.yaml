@@ -5,5 +5,10 @@ controllers:
     type: attribute
 
 auth:
-    path: /api/login
+    path: /auth
     methods: ['POST']
+
+docs:
+    path: /api/docs
+    controller: api_platform.swagger.action.ui
+    condition: "false"

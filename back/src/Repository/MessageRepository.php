@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\User;
+use App\Entity\UserToUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Message>
@@ -25,6 +28,7 @@ class MessageRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
+
         if ($flush) {
             $this->getEntityManager()->flush();
         }
@@ -37,6 +41,61 @@ class MessageRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findWithAtLeast2Reports($limit, $page, $isDeleted)
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->where('m.isDeleted = :isDeleted')
+            ->setParameter('isDeleted', $isDeleted)
+            ->innerJoin('m.reports', 'r')
+            ->groupBy('m.id')
+            ->having('COUNT(r.id) >= 2')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $paginator = new Paginator($qb);
+        return $paginator;
+    }
+
+    public function getFeed($userId, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m')
+            ->leftJoin('m.shares', 's')
+            ->leftJoin('s.sharingBy', 'u')
+            ->where('m.creator IN (:following)')
+            ->orWhere('u = :userId')
+            ->orWhere('m.creator = :userId')
+            ->orWhere('s.sharingBy IN (:following)')
+            ->setParameter('following', $this->getFollowingIds($userId))
+            ->setParameter('userId', $userId)
+            ->orderBy('m.created', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $paginator = new Paginator($qb, $fetchJoinCollection = true);
+        return $paginator;
+    }
+
+    private function getFollowingIds($userId)
+    {
+        $qb = $this->getEntityManager()->getRepository(UserToUser::class)->createQueryBuilder('u')
+            ->select('IDENTITY(u.other)')
+            ->where('u.me = :userId')
+            ->setParameter('userId', $userId);
+
+        return $qb->getQuery()->getScalarResult();
+    }
+
+    public function countMessagesBetween($startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('COUNT(m.id)');
+        if ($startDate && $endDate) {
+            $qb->where('m.created BETWEEN :startDate AND :endDate')
+                ->setParameter('startDate', $startDate)
+                ->setParameter('endDate', $endDate);
+        }
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
 //    /**

@@ -1,4 +1,4 @@
-.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start
+.PHONY: up stop restart init-jwt-keys backend-install frontend-install schema-update fixtures start resetdb setup
 
 up:
 	docker-compose up --detach
@@ -9,7 +9,7 @@ stop:
 restart: stop start
 
 init-jwt-keys:
-	cd ./back && php bin/console lexik:jwt:generate-keypair
+	cd ./back && php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
 backend-install:
 	cd ./back && composer install
@@ -17,14 +17,19 @@ backend-install:
 frontend-install:
 	docker-compose exec frontend yarn install
 
+resetdb:
+	cd ./back && php bin/console doctrine:database:drop --force && php bin/console doctrine:database:create && php bin/console doctrine:schema:update --force && php bin/console doctrine:fixtures:load
+
 schema-update:
 	cd ./back && php bin/console doctrine:schema:update --force
 
 fixtures:
-	cd ./back && php bin/console doctrine:fixtures:load
+	cd ./back && php bin/console doctrine:fixtures:load --no-interaction
 
 start: up
-	cd ./back && symfony serve
+	cd ./back && php bin/console cache:clear && symfony serve
 
 clear:
 	cd ./back && php bin/console cache:clear
+
+setup: clear backend-install frontend-install init-jwt-keys schema-update fixtures start

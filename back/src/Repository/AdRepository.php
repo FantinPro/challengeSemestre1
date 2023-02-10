@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Ad;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,9 +17,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AdRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
         parent::__construct($registry, Ad::class);
+        $this->em = $em;
     }
 
     public function save(Ad $entity, bool $flush = false): void
@@ -37,6 +39,48 @@ class AdRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getAmountEarned($startDate, $endDate): int
+    {
+        $qb = $this->createQueryBuilder('ad');
+        $qb->select('SUM(ad.price) as amount');
+        $qb->where('ad.status = :status');
+        $qb->setParameter('status', AD::STATUS_PAYED);
+        if ($startDate && $endDate) {
+            $qb->andWhere('ad.created BETWEEN :startDate AND :endDate');
+            $qb->setParameter('startDate', $startDate);
+            $qb->setParameter('endDate', $endDate);
+        }
+
+        $result = $qb->getQuery()->getSingleResult();
+        return $result['amount'] ?? 0;
+    }
+
+    public function countAdsBetween($startDate, $endDate): int
+    {
+        $qb = $this->createQueryBuilder('ad');
+        $qb->select('COUNT(ad.id) as total');
+        if ($startDate && $endDate) {
+            $qb->where('ad.created BETWEEN :startDate AND :endDate');
+            $qb->setParameter('startDate', $startDate);
+            $qb->setParameter('endDate', $endDate);
+        }
+        $result = $qb->getQuery()->getSingleResult();
+        return $result['total'] ?? 0;
+    }
+
+    public function getAdsFromToday()
+    {
+        return $this->createQueryBuilder('ad')
+            ->select('ad')
+            ->where('ad.status = :status')
+            ->andWhere('ad.endDate > :now')
+            ->andWhere('ad.startDate < :now')
+            ->setParameter('status', AD::STATUS_PAYED)
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

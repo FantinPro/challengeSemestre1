@@ -1,70 +1,145 @@
 <template>
-  <div class="flex gap-2">
-    <div class="w-3/12">
-      <SideMenu />
-    </div>
-    <div class="flex flex-col w-6/12">
-      <div v-for="item in feed" :key="item.id">
-        <Card :item="item" />
-      </div>
-    </div>
-    <div class="w-3/12">
-    </div>
+  <div class="flex flex-col overflow-auto h-full">
+    <HeaderMenu :tabs="tabs" title="Home" :sticky="true">
+      <template #panels>
+        <TabPanels>
+          <TabPanel>
+            <div class="flex gap-2 pt-2 px-2">
+              <img
+                v-if="user?.profilePicture"
+                :src="user?.profilePicture"
+                class="w-12 h-12 rounded-full"
+                alt="User avatar" />
+              <div class="flex flex-col w-full">
+                <FormKit
+                  id="textareaNewMessage"
+                  ref="textareaNewMessage"
+                  v-model="newMessage"
+                  name="Echo"
+                  :classes="{
+                    wrapper: '!max-w-full',
+                    input: `!text-white !h-auto !text-lg !min-h-[40px] !p-0 !resize-none ${messageHeight}`,
+                    inner: '!shadow-none',
+                  }"
+                  type="textarea"
+                  aria-multiline="true"
+                  placeholder="What's happening?"
+                  validation="length:1,255" />
+              </div>
+            </div>
+            <div class="flex justify-end pb-2 pr-2 border-b border-[#4c5157]">
+              <button
+                type="button"
+                class="
+                  inline-flex
+                  justify-center
+                  rounded-full
+                  border border-transparent
+                  bg-slate-200
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-slate-900
+                  hover:bg-slate-200
+                  focus:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-blue-500
+                  focus-visible:ring-offset-2
+                  disabled:opacity-50
+                "
+                :disabled="
+                  isLoading ||
+                  newMessage.length === 0 ||
+                  newMessage.trim().length === 0
+                "
+                @click="sendMessage">
+                Echo
+              </button>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
+              <span v-if="isLoading">Loading...</span>
+              <span v-else-if="isError">Error: {{ error.message }}</span>
+              <div v-for="feed in data" :key="feed.id">
+                <Card :item="feed" />
+              </div>
+            </div>
+          </TabPanel>
+          <TabPanel>Content 2</TabPanel>
+        </TabPanels>
+      </template>
+    </HeaderMenu>
   </div>
 </template>
 <script setup>
-import { reactive, computed } from "vue";
-import { useQuery } from "vue-query";
-import SideMenu from "../components/Menu/SideMenu.vue";
-import Card from "../components/Card/Card.vue";
-import { useUserStore } from "../store/user";
+import { TabPanel, TabPanels } from '@headlessui/vue';
+import { computed, ref, watch } from 'vue';
+import { useQuery } from 'vue-query';
+import { toast } from 'vue3-toastify';
+import Card from '../components/Card/Card.vue';
+import HeaderMenu from '../components/Menu/HeaderMenu.vue';
+
+import { useFeedStore } from '../store/feed';
+import { useUserStore } from '../store/user';
 
 const { user } = useUserStore();
+const newMessage = ref('');
 
-console.log(user)
+const tabs = ['For you', 'Following'];
+const { fetchFeed, postMessage, refetchFeed, setRefetchFeed } = useFeedStore();
 
-// const query = useQuery("feed", getFeed);
+let refetch = ref(refetchFeed);
 
-const feed = reactive([
-  {
-    id: 1,
-    username: "John Doe",
-    avatar: "https://i.pravatar.cc/150?img=9",
-    text: "This is a text",
-    time: "1 hour ago",
-    comments: 0,
-    shares: 0,
+watch(
+  () => useFeedStore().refetchFeed,
+  (newVal) => {
+    if (newVal !== refetch.value) {
+      setRefetchFeed(false);
+      refetch.value = newVal;
+    }
+  }
+);
+
+const sendMessage = async () => {
+  try {
+    if (newMessage.value.length === 0 || newMessage.value.trim().length === 0) {
+      return;
+    }
+    if (newMessage.value.length > 255) {
+      toast.error('Echo is too long');
+      return;
+    }
+    const sent = await postMessage({
+      content: newMessage.value,
+      creator: `/api/users/${user.id}`,
+    });
+    await setRefetchFeed(true);
+    if (!sent) {
+      toast.error('Error while sending echo');
+      return;
+    }
+    toast.success('Echo created!');
+    newMessage.value = '';
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const { isLoading, isError, data, error } = useQuery(
+  ['feed', refetch],
+  async () => {
+    await setRefetchFeed(false);
+    return fetchFeed(1);
   },
   {
-    id: 1,
-    username: "John Doe",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    text: "This is a text",
-    time: "1 hour ago",
-    comments: 0,
-    shares: 0,
-  },
-  {
-    id: 1,
-    username: "Jane Smith",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    time: "3 minutes ago",
-    comments: 3,
-    shares: 2,
-  },
-  {
-    id: 1,
-    username: "Emily Davis",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    text: "Feeling great! 5 miles in 40 minutes. #running #fitness",
-    time: "2 hours ago",
-    comments: 2,
-    shares: 1,
-  },
-]);
+    keepPreviousData: true,
+  }
+);
 
-const filteredFeed = computed(() => {
-  return this.$query(this.items, this.query);
+const messageHeight = computed(() => {
+  if (newMessage.value.length > 0) {
+    return '!h-36';
+  }
+  return '!h-12';
 });
 </script>

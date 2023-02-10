@@ -52,3 +52,4 @@ You get 3 users for test :
 admin@gmail.com / ROLE_ADMIN / password : password
 user@gmail.com / ROLE_USER / password : password 
 notverified@gmail.com / ROLE_USER / password : password (not verified by confirmation email)
+

@@ -1,13 +1,6 @@
 <template>
-  <div class="h-full">
-    <router-view />
-  </div>
-
+    <router-view/>
 </template>
 
 <script setup>
 </script>
-
-
-<style scoped>
-</style>

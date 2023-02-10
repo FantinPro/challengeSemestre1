@@ -10,20 +10,34 @@
   },
   "dependencies": {
     "@formkit/vue": "^1.0.0-beta.12",
+    "@headlessui/vue": "^1.7.7",
+    "@heroicons/vue": "^2.0.14",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@vueuse/core": "^9.11.0",
+    "date-fns": "^2.29.3",
+    "jwt-decode": "^3.1.2",
     "@tanstack/vue-query": "^4.22.0",
     "events": "^3.3.0",
     "pinia": "^2.0.29",
     "vue": "^3.2.45",
     "vue-cookies": "^1.8.2",
     "vue-query": "^1.26.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-toastify": "^0.0.5"
   },
   "devDependencies": {
     "@types/events": "^3.0.0",
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.9.0",
     "postcss": "^8.4.21",
+    "prettier": "^2.8.3",
+    "prettier-plugin-tailwindcss": "^0.2.2",
     "tailwindcss": "^3.2.4",
     "vite": "^4.0.0"
   }

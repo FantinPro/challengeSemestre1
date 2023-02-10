@@ -22,7 +22,7 @@ class UserToUserFixtures extends Fixture implements DependentFixtureInterface
 
         // filter admin@gmail.com
         $users = array_filter($users, function ($user) {
-            return $user->getEmail() !== 'admin@gmail.com';
+            return $user->getEmail() !== 'admin@gmail.com' && $user->getEmail() !== 'nobodyfollowme@gmail.com';
         });
 
         foreach ($users as $user) {
