@@ -101,12 +101,12 @@
           <div
             class="cursor-pointer rounded-[50%] p-3 hover:bg-row-table-hover"
             @click="previousPage">
-            <img class="h-4 rotate-180" :src="ArrowLogo" alt="" />
+            <img class="h-4 rotate-180" src="/arrow.svg" alt="" />
           </div>
           <div
             class="cursor-pointer rounded-[50%] p-3 hover:bg-row-table-hover"
             @click="nextPage">
-            <img class="h-4" :src="ArrowLogo" alt="" />
+            <img class="h-4" src="/arrow.svg" alt="" />
           </div>
         </div>
       </div>
@@ -116,7 +116,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
-import ArrowLogo from '/arrow.svg';
 import DialogManageReport from '../components/Dialog/DialogManageReport.vue';
 import { getAllMessagesWithAtLeast2Reports } from '../services/service.reports';
 import Select from '../components/Select/Select.vue';

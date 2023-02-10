@@ -5,7 +5,7 @@
         <h1 class="text-3xl font-bold mb-6">Login</h1>
         <div class="flex mb-6 items-center justify-center gap-3">
           <h2 class="text-2xl font-medium">Echo</h2>
-          <img src="logo.svg" alt="Logo" class="w-10 h-10 invert" />
+          <img src="/logo.svg" alt="Logo" class="w-10 h-10 invert" />
         </div>
       </div>
       <FormKit type="form" submit-label="Login" :submit-attrs="{ outerClass: 'pt-4', inputClass: '!w-full !bg-primary-500 !font-medium' }" @submit="submit" >

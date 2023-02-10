@@ -5,7 +5,7 @@
       <div
         class="flex flex-col items-center justify-center gap-2 border-b border-[#4c5157] p-8">
         <div class="flex">
-            <img class="h-6 w-6 text-white" :src="DashboardLogo" />
+            <img class="h-6 w-6 text-white" src="/dashboard.svg" />
             <div class="text-center text-xl font-bold">Dashboard</div>
         </div>
         <div class="text-left text-sm font-bold">Hello : {{ user.pseudo }} 👋</div>
@@ -84,7 +84,7 @@
         </div>
         <MenuButton class="mt-auto mb-4" :to="'/home'">
           <div class="group flex items-center gap-2">
-            <img class="h-6 w-6 rotate-180" :src="BackLogo" />
+            <img class="h-6 w-6 rotate-180" src="'/back.svg'" />
             <div>Back to App</div>
             <img class="ml-2 h-5" :src="user.profilePicture" alt="">
           </div>
@@ -97,8 +97,6 @@
   </div>
 </template>
 <script setup>
-import DashboardLogo from '/dashboard.svg';
-import BackLogo from '/back.svg';
 import { Menu } from '@headlessui/vue';
 import MenuButton from '../components/Button/MenuButton.vue';
 import { onMounted } from 'vue';

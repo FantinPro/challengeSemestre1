@@ -80,7 +80,7 @@
         <p class="hidden md:flex">Profile</p>
       </MenuButton>
       <MenuButton v-if="isAllowToGoToDashboard" v-slot="{ isActive }" :to="`/dashboard`">
-        <img class="h-6 w-6 text-white" :src="DashboardLogo" />
+        <img class="h-6 w-6 text-white" src="/dashboard.svg" />
         <p class="hidden md:flex">Dashboard</p>
       </MenuButton>
     </div>
@@ -94,7 +94,6 @@ import LogoButton from '../Button/LogoButton.vue';
 import MenuButton from '../Button/MenuButton.vue';
 import ProfileButton from '../Button/ProfileButton.vue';
 import Logo from '../Logo/Logo.vue';
-import DashboardLogo from '/dashboard.svg';
 import { ROLES } from '../../utils/constants';
 const userStore = useUserStore();
 
