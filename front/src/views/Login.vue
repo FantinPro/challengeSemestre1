@@ -10,6 +10,8 @@
         Pas encore de compte ?
         <router-link to="/register" class="text-primary-400">Créer son compte</router-link>
       </span>
+
+      <PremiumSubscribeButton/>
     </div>
   </div>
 </template>
@@ -20,6 +22,7 @@
 import { inject } from 'vue';
 import { useUserStore } from "../store/user";
 import { useRouter } from 'vue-router';
+import PremiumSubscribeButton from "../components/Button/PremiumSubscribeButton.vue";
 
 const $cookies = inject('$cookies');
 const userStore = useUserStore();

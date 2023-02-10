@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use App\Controller\FeedController;
 use App\Controller\MeController;
+use App\Controller\PremiumSubscriptionController;
 use App\Controller\UserController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
@@ -34,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(),
         new Get(),
     ],
+
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
 )]

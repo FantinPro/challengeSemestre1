@@ -24,5 +24,7 @@ services:
     App\Service\UserEmailService:
         arguments: ['%env(SENDINBLUE_KEY)%']
 
+    App\Service\PaymentService:
+        arguments: ['%env(STRIPE_PK)%', '%env(PREMIUM_PRICE_ID)%']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
