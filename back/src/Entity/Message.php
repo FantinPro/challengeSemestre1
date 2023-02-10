@@ -67,6 +67,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Delete(
             security: 'is_granted("ROLE_USER") and object.getCreator() == user',
+            securityMessage: 'You can only delete messages for yourself.',
         ),
         new Patch(
             denormalizationContext: ['groups' => ['patch:message']],

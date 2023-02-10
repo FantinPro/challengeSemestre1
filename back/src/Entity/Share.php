@@ -18,7 +18,7 @@ class Share
     #[ORM\ManyToOne(inversedBy: 'shares')]
     private ?User $sharingBy = null;
 
-    #[ORM\ManyToOne(inversedBy: 'shares')]
+    #[ORM\ManyToOne(inversedBy: 'shares', cascade: ['remove'])]
     private ?Message $sharedMessage = null;
 
     #[Timestampable(on: 'create')]
