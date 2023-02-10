@@ -94,7 +94,7 @@ import LogoButton from '../Button/LogoButton.vue';
 import MenuButton from '../Button/MenuButton.vue';
 import ProfileButton from '../Button/ProfileButton.vue';
 import Logo from '../Logo/Logo.vue';
-import DashboardLogo from '/assets/dashboard.svg';
+import DashboardLogo from '/dashboard.svg';
 import { ROLES } from '../../utils/constants';
 const userStore = useUserStore();
 
