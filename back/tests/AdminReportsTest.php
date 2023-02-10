@@ -122,7 +122,7 @@ class AdminReportsTest extends SetupTest
     {
         $token = $this->login('moderator@gmail.com', 'password');
         $client = static::createClient();
-        $response = $client->request('GET', '/api/messages/reports', [
+        $response = $client->request('GET', '/api/messages/reports?page=2', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json'
@@ -156,7 +156,7 @@ class AdminReportsTest extends SetupTest
         $em->persist($reportByUser);
         $em->flush();
 
-        $response2 = $client->request('GET', '/api/messages/reports', [
+        $response2 = $client->request('GET', '/api/messages/reports?page=2', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json'
@@ -172,7 +172,7 @@ class AdminReportsTest extends SetupTest
     {
         $token = $this->login('moderator@gmail.com', 'password');
         $client = static::createClient();
-        $response = $client->request('GET', '/api/messages/reports', [
+        $response = $client->request('GET', '/api/messages/reports?page=2', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json'
@@ -216,7 +216,7 @@ class AdminReportsTest extends SetupTest
         $em->persist($reportByModerator);
         $em->flush();
 
-        $response2 = $client->request('GET', '/api/messages/reports', [
+        $response2 = $client->request('GET', '/api/messages/reports?page=2', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Accept' => 'application/json'
