@@ -45,6 +45,9 @@ class Post
     #[Groups(['read:post', 'write:post'])]
     private ?Category $category = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $toto = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -124,6 +127,18 @@ class Post
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getToto(): ?string
+    {
+        return $this->toto;
+    }
+
+    public function setToto(string $toto): self
+    {
+        $this->toto = $toto;
 
         return $this;
     }
