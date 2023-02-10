@@ -116,7 +116,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
-import ArrowLogo from '../assets/arrow.svg';
+import ArrowLogo from '/assets/arrow.svg';
 import DialogManageReport from '../components/Dialog/DialogManageReport.vue';
 import { getAllMessagesWithAtLeast2Reports } from '../services/service.reports';
 import Select from '../components/Select/Select.vue';

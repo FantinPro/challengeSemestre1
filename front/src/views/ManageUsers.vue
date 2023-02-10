@@ -96,7 +96,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
-import ArrowLogo from '../assets/arrow.svg';
+import ArrowLogo from '/assets/arrow.svg';
 import DialogManageUser from '../components/Dialog/DialogManageUser.vue';
 import { useUserStore } from '../store/user';
 const { fetchUsersPaginated } = useUserStore();

@@ -97,8 +97,8 @@
   </div>
 </template>
 <script setup>
-import DashboardLogo from '../assets/dashboard.svg';
-import BackLogo from '../assets/back.svg';
+import DashboardLogo from '/assets/dashboard.svg';
+import BackLogo from '/assets/back.svg';
 import { Menu } from '@headlessui/vue';
 import MenuButton from '../components/Button/MenuButton.vue';
 import { onMounted } from 'vue';
