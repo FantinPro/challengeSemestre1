@@ -52,7 +52,7 @@ class FollowersController extends AbstractController
 
         $followers = [];
         foreach ($userToUsers as $userToUser) {
-            $followers[] = $userToUser->getOther();
+            $followers[] = $userToUser->getMe();
         }
 
         foreach ($followers as $follower) {
