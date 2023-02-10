@@ -13,17 +13,17 @@ import LayoutDefault from './layouts/LayoutDefault.vue';
 import { ROLES } from './utils/constants';
 
 const routes = [
-  { path: '/register', component: () => Register },
-  { path: '/login', component: () => Login },
+  { path: '/register', component: Register },
+  { path: '/login', component: Login },
   {
     path: '/',
     component: LayoutDefault,
     redirect: '/home',
     children: [
-      { path: '/home', component: () => Timeline },
-      { path: '/messages', component: () => Messages },
-      { path: '/search', component: () => Search },
-      { path: '/profile/:pseudo', component: () => Profile },
+      { path: '/home', component: Timeline },
+      { path: '/messages', component: Messages },
+      { path: '/search', component: Search },
+      { path: '/profile/:pseudo', component: Profile },
     ],
   },
   {
@@ -53,7 +53,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
-        component: () => AdminStats,
+        component: AdminStats,
       },
       {
         path: 'users',
@@ -64,7 +64,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
-        component: () => ManageUsers,
+        component: ManageUsers,
       },
       {
         path: 'reports',
@@ -78,7 +78,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
-        component: () => ManageReports,
+        component: ManageReports,
       },
       {
         path: 'calendar',
@@ -93,7 +93,7 @@ const routes = [
           return { path: 'dashboard' };
         },
         // component à remplacer
-        component: () => ManageUsers,
+        component: ManageUsers,
       },
       {
         path: 'manage_ads',
@@ -105,14 +105,14 @@ const routes = [
           return { path: 'dashboard' };
         },
         // component à remplacer
-        component: () => ManageUsers,
+        component: ManageUsers,
       },
     ],
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
-    component: () => import('./views/NotFound.vue'),
+    component: import('./views/NotFound.vue'),
   },
 ];
 
