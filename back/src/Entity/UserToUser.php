@@ -6,7 +6,9 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\DeleteRelationFollowController;
 use App\Controller\FollowersController;
 use App\Repository\UserToUserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,8 +24,11 @@ use Symfony\Component\Validator\Constraints\Choice;
         new Post(
             securityPostDenormalize: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
         ),
-        new Delete(
-            security: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
+        new Get(
+            uriTemplate: '/user_to_users/delete',
+            controller: DeleteRelationFollowController::class,
+            securityPostDenormalize: "is_granted('ROLE_USER')",
+            read: false,
         ),
     ],
     normalizationContext: ['groups' => ['read:user_to_user']],

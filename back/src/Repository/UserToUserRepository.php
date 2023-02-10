@@ -64,6 +64,18 @@ class UserToUserRepository extends ServiceEntityRepository
         return $paginator;
     }
 
+    public function deleteRelation($me, $userId)
+    {
+        $this->createQueryBuilder('u')
+            ->delete()
+            ->where('u.me = :me')
+            ->andWhere('u.other = :userId')
+            ->setParameter('me', $me)
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->execute();
+    }
+
 //    /**
 //     * @return UserToUser[] Returns an array of UserToUser objects
 //     */
