@@ -4,28 +4,60 @@
       <template #panels>
         <TabPanels>
           <TabPanel>
-            <div class="flex border-b border-[#4c5157] gap-6 px-6 pt-6 pb-3">
+            <div class="flex gap-2 pt-2 px-2">
               <img
                 v-if="user?.profilePicture"
                 :src="user?.profilePicture"
-                class="w-8 h-8 rounded-full"
+                class="w-12 h-12 rounded-full"
                 alt="User avatar" />
               <div class="flex flex-col w-full">
                 <FormKit
+                  id="textareaNewMessage"
                   ref="textareaNewMessage"
                   v-model="newMessage"
+                  name="Echo"
                   :classes="{
                     wrapper: '!max-w-full',
-                    input:
-                      '!text-white !h-auto !text-xl !min-h-[19px] !p-0 !resize-none',
+                    input: `!text-white !h-auto !text-lg !min-h-[40px] !p-0 !resize-none ${messageHeight}`,
                     inner: '!shadow-none',
                   }"
                   type="textarea"
+                  aria-multiline="true"
                   placeholder="What's happening?"
-                  @keydown.enter="sendMessage()" />
+                  validation="length:1,255" />
               </div>
             </div>
-            <div class="flex flex-col gap-2">
+            <div class="flex justify-end pb-2 pr-2 border-b border-[#4c5157]">
+              <button
+                type="button"
+                class="
+                  inline-flex
+                  justify-center
+                  rounded-full
+                  border border-transparent
+                  bg-slate-200
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-slate-900
+                  hover:bg-slate-200
+                  focus:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-blue-500
+                  focus-visible:ring-offset-2
+                  disabled:opacity-50
+                "
+                :disabled="
+                  isLoading ||
+                  newMessage.length === 0 ||
+                  newMessage.trim().length === 0
+                "
+                @click="sendMessage">
+                Echo
+              </button>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="feed in data" :key="feed.id">
@@ -41,7 +73,7 @@
 </template>
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
@@ -76,11 +108,22 @@ watch(
 
 const sendMessage = async () => {
   try {
-    await postMessage({
+    if (newMessage.value.length === 0 || newMessage.value.trim().length === 0) {
+      return;
+    }
+    if (newMessage.value.length > 255) {
+      toast.error('Echo is too long');
+      return;
+    }
+    const sent = await postMessage({
       content: newMessage.value,
       creator: `/api/users/${user.id}`,
     });
     await setRefetchFeed(true);
+    if (!sent) {
+      toast.error('Error while sending echo');
+      return;
+    }
     toast.success('Echo created!');
     newMessage.value = '';
   } catch (e) {
@@ -91,11 +134,18 @@ const sendMessage = async () => {
 const { isLoading, isError, data, error } = useQuery(
   ['feed', refetch],
   async () => {
-    await setRefetchFeed(false)
+    await setRefetchFeed(false);
     return fetchFeed(1);
   },
   {
     keepPreviousData: true,
   }
 );
+
+const messageHeight = computed(() => {
+  if (newMessage.value.length > 0) {
+    return '!h-36';
+  }
+  return '!h-12';
+});
 </script>

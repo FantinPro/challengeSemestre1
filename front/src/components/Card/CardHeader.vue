@@ -1,41 +1,41 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <div class="flex items-baseline gap-2">
+      <div class="flex gap-1 items-center">
         <router-link
           :to="`/profile/${props.item.creator.pseudo}`"
-          class="font-bold text-gray-200"
-          >{{ props.item.creator.pseudo }}</router-link
-        >
+          class="font-bold text-gray-200">
+          {{ props.item.creator.pseudo }}
+        </router-link>
         <router-link
           :to="`/profile/${props.item.creator.pseudo}`"
-          class="text-sm text-gray-400"
-          >@{{ props.item.creator.pseudo }}</router-link
-        >
+          class="text-sm text-gray-400">
+          @{{ props.item.creator.pseudo }}
+        </router-link>
+        ·
+        <span class="text-sm text-gray-400">{{ createdAt }}</span>
       </div>
-      <span class="text-sm text-gray-400">{{ createdAt }}</span>
     </div>
-    <Menu as="div" class="relative inline-block text-left">
-      <div>
-        <MenuButton
-          class="
-            inline-flex
-            w-full
-            justify-center
-            rounded-full
-            bg-opacity-20
-            p-2
-            hover:bg-[#4c5157]
-            focus:outline-none
-            focus-visible:ring-2
-            focus-visible:ring-white
-            focus-visible:ring-opacity-95
-          ">
-          <EllipsisVerticalIcon
-            class="h-5 w-5 rotate-90 text-violet-200 hover:text-violet-100"
-            aria-hidden="true" />
-        </MenuButton>
-      </div>
+    <Menu as="div" class="relative text-left">
+      <MenuButton
+        class="
+          absolute
+          -top-2
+          right-0
+          justify-center
+          rounded-full
+          bg-opacity-20
+          p-2
+          hover:bg-[#4c5157]
+          focus:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-white
+          focus-visible:ring-opacity-95
+        ">
+        <EllipsisVerticalIcon
+          class="h-5 w-5 rotate-90 text-violet-200 hover:text-violet-100"
+          aria-hidden="true" />
+      </MenuButton>
 
       <transition
         enter-active-class="transition duration-100 ease-out"

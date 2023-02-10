@@ -40,11 +40,12 @@ import ProfilHeader from '../components/Profile/ProfileHeader.vue';
 import Card from '../components/Card/Card.vue';
 
 const { getUserProfileByUsername } = useUserStore();
-const { fetchMessages } = useFeedStore();
+const { fetchMessages, refetchFeed } = useFeedStore();
 const router = useRouter();
 const tabs = ['Echoes', 'Likes'];
 
 let username = ref(router.currentRoute.value.params.pseudo);
+let refetch = ref(refetchFeed)
 
 watch(
   () => router.currentRoute.value.params.pseudo,
@@ -56,7 +57,7 @@ watch(
 );
 
 const { isLoading, isError, data, error } = useQuery(
-  ['profile', username],
+  ['profile', username, refetch],
   async () => {
     try {
       const res = await getUserProfileByUsername(username.value);

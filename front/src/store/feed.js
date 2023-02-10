@@ -44,6 +44,12 @@ export const useFeedStore = defineStore('feed', {
     },
     async postMessage(values) {
       try {
+        if (!values.content && !values.content.length < 255 && !values.content.length > 0) {
+          throw new Error('Invalid message');
+        }
+        if (values.content.trim().length === 0) {
+          throw new Error('Invalid message');
+        }
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages`, {
           method: 'POST',
           headers: {
