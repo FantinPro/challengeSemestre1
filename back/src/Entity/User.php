@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use App\Controller\FollowersController;
+use App\Controller\FollowingController;
 use App\Controller\MeController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
@@ -25,6 +27,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            uriTemplate: '/users/followers',
+            controller: FollowersController::class,
+            paginationEnabled: true,
+            paginationItemsPerPage: 2,
+            normalizationContext: ['groups' => ['read:user', 'read:user:follow']],
+            security: "is_granted('ROLE_USER')",
+        ),
+        new GetCollection(
+            uriTemplate: '/users/follows',
+            controller: FollowingController::class,
+            paginationEnabled: true,
+            paginationItemsPerPage: 20,
+            normalizationContext: ['groups' => ['read:user', 'read:user:follow']],
+            security: "is_granted('ROLE_USER')",
+        ),
         new Post(),
         new Put(
             uriTemplate: '/users/{id}/change_role',
@@ -49,7 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:user', 'read:users:collection']],
             security: "is_granted('ROLE_ADMIN')",
-        )
+        ),
     ],
     normalizationContext: ['groups' => ['read:user']],
     denormalizationContext: ['groups' => ['write:user']],
@@ -65,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:user', 'read:user_to_user','read:message:feed', 'read:message', 'read:message:search'])]
+    #[Groups(['read:user', 'read:user_to_user','read:message:feed', 'read:message', 'read:message:search', 'read:ad'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -140,6 +158,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $bio = null;
+
+    #[Groups(['read:user:follow'])]
+    public bool $followed = false;
 
     public function __construct()
     {
@@ -602,5 +623,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->bio = $bio;
 
         return $this;
+    }
+
+    public function setFollowed(bool $followed): void
+    {
+        $this->followed = $followed;
     }
 }

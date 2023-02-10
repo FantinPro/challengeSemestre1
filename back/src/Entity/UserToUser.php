@@ -7,9 +7,11 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\FollowersController;
 use App\Repository\UserToUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Post;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Choice;
@@ -17,9 +19,6 @@ use Symfony\Component\Validator\Constraints\Choice;
 #[ORM\Entity(repositoryClass: UserToUserRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(
-            security: "is_granted('ROLE_USER')",
-        ),
         new Post(
             securityPostDenormalize: "is_granted('ROLE_USER') and object.getMe().getId() == user.getId()",
         ),
@@ -108,4 +107,5 @@ class UserToUser
 
         return $this;
     }
+
 }

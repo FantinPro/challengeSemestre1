@@ -131,7 +131,7 @@ class Message
     private Collection $shares;
 
     #[Groups('read:message:feedV2')]
-    private array $whoHasSharedFromMyFollows = [];
+    public array $whoHasSharedFromMyFollows = [];
 
     #[Groups(['read:message:reports'])]
     private String $showContent = '';

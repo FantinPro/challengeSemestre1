@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use App\Entity\UserToUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,30 @@ class UserToUserRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getFollows($userId, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.me = :userId')
+            ->setParameter('userId', $userId)
+            ->innerJoin('u.other', 'o')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $paginator = new Paginator($qb);
+        return $paginator;
+    }
+
+    public function getFollowers($userId, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.other = :userId')
+            ->setParameter('userId', $userId)
+            ->innerJoin('u.me', 'm')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        $paginator = new Paginator($qb);
+        return $paginator;
     }
 
 //    /**
