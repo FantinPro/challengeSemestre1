@@ -28,7 +28,7 @@ jobs:
         echo JWT_PASSPHRASE=${{ secrets.JWT_PASSPHRASE }} >> .env
         echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
         echo "FRONT_END_URL=http://localhost:5000" >> .env
-        echo "ALLOW_DOCS=false" >> .env
+        echo "ALLOW_DOCS=true" >> .env
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
