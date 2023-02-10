@@ -73,12 +73,11 @@
 </template>
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
-import LayoutDefault from '../layouts/LayoutDefault.vue';
 
 import { useFeedStore } from '../store/feed';
 import { useUserStore } from '../store/user';
@@ -88,11 +87,6 @@ const newMessage = ref('');
 
 const tabs = ['For you', 'Following'];
 const { fetchFeed, postMessage, refetchFeed, setRefetchFeed } = useFeedStore();
-const emit = defineEmits(['update:layout']);
-
-onMounted(() => {
-  emit('update:layout', LayoutDefault);
-});
 
 let refetch = ref(refetchFeed);
 

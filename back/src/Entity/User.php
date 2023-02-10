@@ -162,6 +162,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read:user:follow'])]
     public bool $followed = false;
 
+    #[Groups(['read:user:follow'])]
+    public mixed $userToUserId = null;
+
     public function __construct()
     {
         $this->tokenResetPasswords = new ArrayCollection();
@@ -628,5 +631,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFollowed(bool $followed): void
     {
         $this->followed = $followed;
+    }
+
+    public function setUserToUserId(mixed $userToUserId): void
+    {
+        $this->userToUserId = $userToUserId;
     }
 }
