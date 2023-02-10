@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-test
 
-    environment: dev
+    environment: prod
 
     steps:
       - uses: actions/checkout@v3
