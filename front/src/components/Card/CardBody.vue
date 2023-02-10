@@ -1,8 +1,8 @@
 <template>
   <div class="font-medium text-base">
     <div v-if="isDeleted" class="text-white">
-      <span class="font-bold">[deleted]</span>
-      <span class="ml-2">{{ content }}</span>
+      <span class="font-bold text-orange-400">[deleted]</span>
+      <span class="ml-2 text-gray-400">{{ content }}</span>
     </div>
     <div v-else>
       <span>{{ content }}</span>
