@@ -9,6 +9,10 @@ export const useUserStore = defineStore('user', {
     profile: null,
   }),
   actions: {
+    setLocalUser(user) {
+      this.user = user;
+      localStorage.setItem('echoUser', JSON.stringify(user));
+    },
     async signUp(values) {
       try {
         await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
@@ -55,7 +59,7 @@ export const useUserStore = defineStore('user', {
 
           if (user) {
             this.user = user;
-            localStorage.setItem('echoUser', JSON.stringify(user));
+            this.setLocalUser(user);
             router.push('/home');
           }
         }
@@ -71,8 +75,7 @@ export const useUserStore = defineStore('user', {
     async getUserProfileByUsername(username) {
       try {
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL
+          `${import.meta.env.VITE_API_URL
           }/api/users/profile?pseudo=${username}`,
           {
             headers: {
@@ -94,8 +97,7 @@ export const useUserStore = defineStore('user', {
     async getFollowers() {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user_to_users?other=${
-            this.user.id
+          `${import.meta.env.VITE_API_URL}/api/user_to_users?other=${this.user.id
           }`,
           {
             headers: {
@@ -114,8 +116,7 @@ export const useUserStore = defineStore('user', {
     async getFollowings() {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/user_to_users?me=${
-            this.user.id
+          `${import.meta.env.VITE_API_URL}/api/user_to_users?me=${this.user.id
           }`,
           {
             headers: {
@@ -169,5 +170,82 @@ export const useUserStore = defineStore('user', {
         console.log(e);
       }
     },
+    async updateProfile({
+      userId,
+      pseudo,
+      bio,
+      avatar,
+    }) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+          body: JSON.stringify({
+            pseudo,
+            bio,
+            profilePicture: avatar,
+          }),
+        })
+        const json = await response.json()
+        if (!response.ok) {
+          throw new Error(json.detail)
+        }
+        await this.getUserProfileByUsername(json.pseudo)
+        console.log(json);
+        this.setLocalUser({
+          ...this.user,
+          pseudo: json.pseudo,
+          bio: json.bio,
+          profilePicture: json.profilePicture,
+        })
+        return json
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getFollowersPaginated(page = 1, userId) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?other=${userId}&page=${page}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        })
+
+        const json = await response.json()
+        if (!response.ok) {
+          throw new Error(json.detail)
+        }
+        return json
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getFollowingsPaginated(page = 1, userId) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user_to_users?me=${userId}&page=${page}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        })
+
+        const json = await response.json()
+        if (!response.ok) {
+          throw new Error(json.detail)
+        }
+        return json
+      } catch (e) {
+        console.log(e);
+      }
+    }
   },
 });

@@ -10,22 +10,24 @@
       h-full
     ">
     <ProfilHeader />
-    <HeaderMenu :tabs="tabs">
-      <template #panels>
-        <TabPanels>
-          <TabPanel>
-            <div class="flex flex-col gap-2">
-              <span v-if="isLoading">Loading...</span>
-              <span v-else-if="isError">Error: {{ error.message }}</span>
-              <div v-for="feed in data" :key="feed.id">
-                <Card :item="feed" />
+    <div class="mt-4">
+      <HeaderMenu :tabs="tabs">
+        <template #panels>
+          <TabPanels>
+            <TabPanel>
+              <div class="flex flex-col gap-2 border-t border-[#3b4043]">
+                <span v-if="isLoading">Loading...</span>
+                <span v-else-if="isError">Error: {{ error.message }}</span>
+                <div v-for="feed in data" :key="feed.id">
+                  <Card :item="feed" />
+                </div>
               </div>
-            </div>
-          </TabPanel>
-          <TabPanel></TabPanel>
-        </TabPanels>
-      </template>
-    </HeaderMenu>
+            </TabPanel>
+            <TabPanel></TabPanel>
+          </TabPanels>
+        </template>
+      </HeaderMenu>
+    </div>
   </div>
 </template>
 <script setup>
@@ -40,18 +42,28 @@ import ProfilHeader from '../components/Profile/ProfileHeader.vue';
 import Card from '../components/Card/Card.vue';
 
 const { getUserProfileByUsername } = useUserStore();
-const { fetchMessages, refetchFeed } = useFeedStore();
+const { fetchMessages, refetchFeed, setRefetchFeed } = useFeedStore();
 const router = useRouter();
 const tabs = ['Echoes', 'Likes'];
 
 let username = ref(router.currentRoute.value.params.pseudo);
-let refetch = ref(refetchFeed)
+let refetch = ref(refetchFeed);
 
 watch(
   () => router.currentRoute.value.params.pseudo,
   (newVal) => {
     if (newVal !== username.value && newVal !== undefined) {
       username.value = newVal;
+    }
+  }
+);
+
+watch(
+  () => useFeedStore().refetchFeed,
+  (newVal) => {
+    if (newVal !== refetch.value) {
+      setRefetchFeed(false);
+      refetch.value = newVal;
     }
   }
 );
