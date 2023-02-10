@@ -81,6 +81,19 @@ const filtersDates = [
       },
     },
   },
+  {
+    display: 'All',
+    value: {
+      current: {
+        startDate: null,
+        endDate: null
+      },
+      previous: {
+        startDate: null,
+        endDate: null,
+      },
+    },
+  },
 ];
 
 const selectedDate = ref(filtersDates[0]);

@@ -90,9 +90,11 @@ class MessageRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
         $qb->select('COUNT(m.id)');
-        $qb->where('m.created BETWEEN :startDate AND :endDate');
-        $qb->setParameter('startDate', $startDate);
-        $qb->setParameter('endDate', $endDate);
+        if ($startDate && $endDate) {
+            $qb->where('m.created BETWEEN :startDate AND :endDate')
+                ->setParameter('startDate', $startDate)
+                ->setParameter('endDate', $endDate);
+        }
         return $qb->getQuery()->getSingleScalarResult();
     }
 

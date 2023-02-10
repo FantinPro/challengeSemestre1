@@ -1,6 +1,10 @@
 export const getStats = async ({ startDate, endDate }) => {
+  let params = '';
+  if (startDate && endDate) {
+    params = `?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
+  }
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/stats?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`,
+    `${import.meta.env.VITE_API_URL}/api/stats${params}`,
     {
       method: 'GET',
       headers: {

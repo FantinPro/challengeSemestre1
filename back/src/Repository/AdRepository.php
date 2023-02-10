@@ -45,11 +45,14 @@ class AdRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('ad');
         $qb->select('SUM(ad.price) as amount');
-        $qb->where('ad.created BETWEEN :startDate AND :endDate');
-        $qb->andWhere('ad.status = :status');
-        $qb->setParameter('startDate', $startDate);
-        $qb->setParameter('endDate', $endDate);
+        $qb->where('ad.status = :status');
         $qb->setParameter('status', AD::STATUS_PAYED);
+        if ($startDate && $endDate) {
+            $qb->andWhere('ad.created BETWEEN :startDate AND :endDate');
+            $qb->setParameter('startDate', $startDate);
+            $qb->setParameter('endDate', $endDate);
+        }
+
         $result = $qb->getQuery()->getSingleResult();
         return $result['amount'] ?? 0;
     }
@@ -58,9 +61,11 @@ class AdRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('ad');
         $qb->select('COUNT(ad.id) as total');
-        $qb->where('ad.created BETWEEN :startDate AND :endDate');
-        $qb->setParameter('startDate', $startDate);
-        $qb->setParameter('endDate', $endDate);
+        if ($startDate && $endDate) {
+            $qb->where('ad.created BETWEEN :startDate AND :endDate');
+            $qb->setParameter('startDate', $startDate);
+            $qb->setParameter('endDate', $endDate);
+        }
         $result = $qb->getQuery()->getSingleResult();
         return $result['total'] ?? 0;
     }
