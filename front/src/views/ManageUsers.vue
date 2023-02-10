@@ -15,7 +15,7 @@
               Role
             </th>
             <th scope="col" class="px-6 py-4 font-medium text-white">
-              Total tweets
+              Total echoes
             </th>
             <th scope="col" class="px-6 py-4 font-medium text-white"></th>
           </tr>
