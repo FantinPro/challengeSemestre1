@@ -4,20 +4,26 @@
       <template #panels>
         <TabPanels>
           <TabPanel>
-            <div class="flex flex-col gap-2 p-4 mt-2">
+            <div class="flex flex-col text-center text-xl gap-2 p-4 mt-2">
               <span v-if="isLoadingFeed">Loading...</span>
               <span v-else-if="isErrorFeed">Error: {{ error.message }}</span>
-              <div v-for="msg in feed" :key="msg.id">
+              <div v-for="msg in feed" :key="msg.id" class="text-left text-base">
                 <Card :item="msg" />
+              </div>
+              <div v-if="!feed?.length && !isLoadingFeed">
+                No results
               </div>
             </div>
           </TabPanel>
           <TabPanel>
-            <div class="flex flex-col">
+            <div class="flex flex-col text-center text-xl mt-6">
               <span v-if="isLoadingUsers">Loading...</span>
               <span v-else-if="isErrorUsers">Error: {{ error.message }}</span>
-              <div v-for="user in users" :key="user.id">
-                <UserCard :user="user" @click="router.push(`/${user.pseudo}`)" />
+              <div v-for="user in users" :key="user.id" class="text-left text-base">
+                <UserCard :user="user" @click="router.push(`/profile/${user.pseudo}`)" />
+              </div>
+              <div v-if="!users?.length && !isLoadingFeed">
+                No results
               </div>
             </div>
           </TabPanel>
