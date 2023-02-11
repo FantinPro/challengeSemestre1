@@ -25,7 +25,7 @@ services:
         arguments: ['%env(SENDINBLUE_KEY)%']
 
     App\Service\PaymentService:
-        arguments: ['%env(STRIPE_PK)%', '%env(PREMIUM_PRICE_ID)%']
+        arguments: ['%env(STRIPE_PK)%', '%env(PREMIUM_PRICE_ID)%', '%env(FRONT_END_URL)%']
 
     acme_api.event.jwt_created_listener:
             class: App\EventListener\JWTCreatedListener
