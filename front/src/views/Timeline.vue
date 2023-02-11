@@ -132,10 +132,12 @@ const { isLoading, isError } = useQuery({
   onSuccess: ([dataFeed, dataRandomAd]) => {
     const tab = [...feed.value, ...dataFeed];
     // insert dataRandomAd at random position
-    tab.splice(Math.floor(Math.random() * tab.length), 0, {
-      ...dataRandomAd,
-      isAd: true,
-    });
+    if (dataRandomAd) {
+      tab.splice(Math.floor(Math.random() * tab.length), 0, {
+        ...dataRandomAd,
+        isAd: true,
+      });
+    }
     feed.value = tab;
   },
 });
