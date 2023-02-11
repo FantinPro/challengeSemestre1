@@ -90,7 +90,7 @@ const { isLoading, isError } = useQuery({
       return;
     }
     hasHit80.value = false;
-    echoes.value = [...echoes.value, ...dataEchoes].map(item => [item.id, item]);
+    echoes.value = [...echoes.value, ...dataEchoes]
   },
   keepPreviousData: true,
   refetchOnWindowFocus: false,
