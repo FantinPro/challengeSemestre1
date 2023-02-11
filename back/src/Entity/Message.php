@@ -136,6 +136,9 @@ class Message
     #[Groups(['read:message:reports'])]
     private String $showContent = '';
 
+    #[Groups('read:message:feedV2')]
+    public bool $shared;
+
     public function __construct(
     )
     {
@@ -387,6 +390,13 @@ class Message
     public function getShowContent()
     {
         return $this->content;
+    }
+
+    public function setShared(bool $shared): self
+    {
+        $this->shared = $shared;
+
+        return $this;
     }
 
 }

@@ -5,7 +5,7 @@
       <div class="ml-2 flex-1">
         <CardHeader :item="props.item" @delete-one-message-from-feed="deleteOneMessageFromFeed" />
         <CardBody :item="{ id, content, isDeleted }" />
-        <CardFooter :item="{ id, commentsCount, sharesCount }" />
+        <CardFooter :item="props.item" @update-message-from-feed="updateMessageFromFeed" />
       </div>
     </div>
   </div>
@@ -23,17 +23,19 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["deleteOneMessageFromFeed"]);
+const emit = defineEmits(["deleteOneMessageFromFeed", "updateMessageFromFeed"]);
 
 const deleteOneMessageFromFeed = (message) => {
   emit("deleteOneMessageFromFeed", message);
 };
 
+const updateMessageFromFeed = (message) => {
+  emit("updateMessageFromFeed", message);
+};
+
 const id = ref(props.item.id);
 const content = ref(props.item.content);
 const isDeleted = ref(props.item.isDeleted);
-const commentsCount = ref(props.item.commentsCount);
-const sharesCount = ref(props.item.sharesCount);
 const creator = ref(props.item.creator);
 
 </script>

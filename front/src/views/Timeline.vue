@@ -80,7 +80,8 @@
                 <Card
                   v-else
                   :item="message"
-                  @delete-one-message-from-feed="deleteOneMessageFromFeed" />
+                  @delete-one-message-from-feed="deleteOneMessageFromFeed"
+                  @update-message-from-feed="updateMessageFromFeed" />
               </div>
             </div>
           </TabPanel>
@@ -178,6 +179,15 @@ const sendMessage = async () => {
 
 const deleteOneMessageFromFeed = (message) => {
   feed.value = feed.value.filter((m) => m.id !== message.id);
+};
+
+const updateMessageFromFeed = (message) => {
+  feed.value = feed.value.map((m) => {
+    if (m.id === message.id) {
+      return message;
+    }
+    return m;
+  });
 };
 
 const messageHeight = computed(() => {
