@@ -2,6 +2,8 @@ import * as VueRouter from 'vue-router';
 import Timeline from './views/Timeline.vue';
 import Register from './views/Register.vue';
 import Login from './views/Login.vue';
+import ForgotPassword from './views/ForgotPassword.vue';
+import ResetPassword from './views/ResetPassword.vue';
 import Messages from './views/Messages.vue';
 import Profile from './views/Profile.vue';
 import ProfileFollowers from './views/ProfileFollowers.vue';
@@ -16,6 +18,8 @@ import { ROLES } from './utils/constants';
 const routes = [
   { path: '/register', component: Register },
   { path: '/login', component: Login },
+  { path: '/forgot-password', component: ForgotPassword },
+  { path: '/reset_password', component: ResetPassword },
   {
     path: '/',
     component: LayoutDefault,
@@ -130,10 +134,10 @@ function isAuthenticated() {
 }
 
 router.beforeEach(async (to, _, next) => {
-  if ((to.path === '/login' || to.path === '/register') && isAuthenticated()) {
+  if ((to.path === '/login' || to.path === '/register' || to.path === '/forgot-password' || to.path === '/reset_password') && isAuthenticated()) {
     next('/home');
   } else if (
-    !(to.path === '/login' || to.path === '/register') &&
+    !(to.path === '/login' || to.path === '/register' || to.path === '/forgot-password' || to.path === '/reset_password') &&
     !isAuthenticated()
   ) {
     next('/login');
