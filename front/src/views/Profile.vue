@@ -72,8 +72,7 @@ onMounted(() => {
 const echoes = ref([]);
 
 const deleteOneMessageFromFeed = (echo) => {
-  echoes.value.filter((e) => e.id !== echo.id);
-  queryClient.invalidateQueries(['profile']);
+  echoes.value = echoes.value.filter((m) => m.id !== echo.id);
 };
 
 const { isLoading, isError } = useQuery({
