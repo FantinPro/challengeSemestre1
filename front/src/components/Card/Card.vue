@@ -5,7 +5,7 @@
         <div class="flex items-center">
           <img
             class="ml-3 h-6 w-6 rounded-full"
-            :src="props.item.creator.profilePicture"
+            :src="props.item.parent.creator.profilePicture"
             alt="avatar" />
           <div class="text-xs text-gray-200 ml-5">from @{{ props.item.parent.creator.pseudo }}</div>
         </div>
