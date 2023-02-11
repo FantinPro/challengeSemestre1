@@ -3,7 +3,7 @@
     <div class="p-2 flex">
       <img class="w-12 h-12 rounded-full" :src="creator.profilePicture" alt="avatar" />
       <div class="ml-2 flex-1">
-        <CardHeader :item="props.item" />
+        <CardHeader :item="props.item" @delete-one-message-from-feed="deleteOneMessageFromFeed" />
         <CardBody :item="{ id, content, isDeleted }" />
         <CardFooter :item="{ id, commentsCount, sharesCount }" />
       </div>
@@ -22,6 +22,12 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emit = defineEmits(["deleteOneMessageFromFeed"]);
+
+const deleteOneMessageFromFeed = (message) => {
+  emit("deleteOneMessageFromFeed", message);
+};
 
 const id = ref(props.item.id);
 const content = ref(props.item.content);

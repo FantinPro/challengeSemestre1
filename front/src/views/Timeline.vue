@@ -1,16 +1,16 @@
 <template>
-  <div class="flex flex-col overflow-auto h-full">
+  <div ref="containerElement" class="flex h-full flex-col overflow-auto">
     <HeaderMenu :tabs="tabs" title="Home" :sticky="true">
       <template #panels>
         <TabPanels>
           <TabPanel>
-            <div class="flex gap-2 pt-2 px-2">
+            <div class="flex gap-2 px-2 pt-2">
               <img
                 v-if="user?.profilePicture"
                 :src="user?.profilePicture"
-                class="w-12 h-12 rounded-full"
+                class="h-12 w-12 rounded-full"
                 alt="User avatar" />
-              <div class="flex flex-col w-full">
+              <div class="flex w-full flex-col">
                 <FormKit
                   id="textareaNewMessage"
                   ref="textareaNewMessage"
@@ -27,27 +27,10 @@
                   validation="length:1,255" />
               </div>
             </div>
-            <div class="flex justify-end pb-2 pr-2 border-b border-[#4c5157]">
+            <div class="flex justify-end border-b border-[#4c5157] pb-2 pr-2">
               <button
                 type="button"
-                class="
-                  inline-flex
-                  justify-center
-                  rounded-full
-                  border border-transparent
-                  bg-slate-200
-                  px-4
-                  py-2
-                  text-sm
-                  font-medium
-                  text-slate-900
-                  hover:bg-slate-200
-                  focus:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-blue-500
-                  focus-visible:ring-offset-2
-                  disabled:opacity-50
-                "
+                class="inline-flex justify-center rounded-full border border-transparent bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50"
                 :disabled="
                   isLoading ||
                   newMessage.length === 0 ||
@@ -57,11 +40,47 @@
                 Echo
               </button>
             </div>
-            <div class="flex flex-col gap-2 mt-2">
+            <div class="mt-2 flex flex-col gap-2">
               <span v-if="isLoading">Loading...</span>
-              <span v-else-if="isError">Error: {{ error.message }}</span>
-              <div v-for="feed in data" :key="feed.id">
-                <Card :item="feed" />
+              <span v-else-if="isError">Error occured</span>
+              <div v-for="message in feed" :key="message.id">
+                <div v-if="message.isAd" class="border-b border-[#4c5157]">
+                  <div class="flex flex-col gap-2 p-2">
+                    <div class="flex">
+                      <img
+                        class="h-12 w-12 rounded-full"
+                        :src="message.owner.profilePicture"
+                        alt="avatar" />
+                      <div class="ml-2 flex-1 flex flex-col">
+                        <div class="flex gap-1 items-center">
+                          <router-link
+                            :to="`/profile/${message.owner.pseudo}`"
+                            class="font-bold text-gray-200">
+                            {{ message.owner.pseudo }}
+                          </router-link>
+                          <CheckBadgeIcon class="h-4 w-4 text-green-500" />
+                          <router-link
+                            :to="`/profile/${message.owner.pseudo}`"
+                            class="text-sm text-gray-400">
+                            @{{message.owner.pseudo }}
+                          </router-link>
+                        </div>
+                        <div>
+                            {{message.message }}
+                        </div>
+                      </div>
+                    </div>
+                    <span
+                      class="ease flex w-max cursor-pointer items-center rounded-lg bg-gray-200 p-1 text-[10px] font-semibold text-gray-500 opacity-60 transition duration-300 active:bg-gray-300">
+                      Sponsored
+                      <ArrowUpRightIcon class="ml-1 h-4 w-4" />
+                    </span>
+                  </div>
+                </div>
+                <Card
+                  v-else
+                  :item="message"
+                  @delete-one-message-from-feed="deleteOneMessageFromFeed" />
               </div>
             </div>
           </TabPanel>
@@ -73,68 +92,91 @@
 </template>
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { computed, ref, watch } from 'vue';
-import { useQuery } from 'vue-query';
+import { ArrowUpRightIcon, CheckBadgeIcon } from '@heroicons/vue/20/solid';
+import { computed, onMounted, ref } from 'vue';
+import { useMutation, useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
+import { getRandomAd } from '../services/service.ads';
 
 import { useFeedStore } from '../store/feed';
 import { useUserStore } from '../store/user';
+
+const containerElement = ref();
+
+const hasHit80 = ref(false);
+const page = ref(1);
+
+const onScroll = () => {
+  const { scrollTop, scrollHeight, clientHeight } = containerElement.value;
+  const scrollableHeight = scrollHeight - clientHeight;
+  const scrollPercentage = scrollTop / scrollableHeight;
+  if (scrollPercentage >= 0.8 && !hasHit80.value) {
+    hasHit80.value = true;
+    page.value += 1;
+  }
+};
+
+onMounted(() => {
+  containerElement.value.addEventListener('scroll', onScroll);
+});
+
+const feed = ref([]);
+
+const { isLoading, isError } = useQuery({
+  queryKey: ['feedv2', page],
+  queryFn: () => Promise.all([fetchFeed(page.value), getRandomAd()]),
+  keepPreviousData: true,
+  refetchOnWindowFocus: false,
+  onSuccess: ([dataFeed, dataRandomAd]) => {
+    const tab = [...feed.value, ...dataFeed];
+    // insert dataRandomAd at random position
+    tab.splice(Math.floor(Math.random() * tab.length), 0, {
+      ...dataRandomAd,
+      isAd: true,
+    });
+    feed.value = tab;
+  },
+});
 
 const { user } = useUserStore();
 const newMessage = ref('');
 
 const tabs = ['For you', 'Following'];
-const { fetchFeed, postMessage, refetchFeed, setRefetchFeed } = useFeedStore();
+const { fetchFeed, postMessage } = useFeedStore();
 
-let refetch = ref(refetchFeed);
-
-watch(
-  () => useFeedStore().refetchFeed,
-  (newVal) => {
-    if (newVal !== refetch.value) {
-      setRefetchFeed(false);
-      refetch.value = newVal;
-    }
+const { mutate: postMessageMutation } = useMutation(
+  (data) => postMessage(data),
+  {
+    onSuccess: (message) => {
+      toast.success('Echo created!');
+      feed.value = [message, ...feed.value];
+      newMessage.value = '';
+    },
+    onError: () => {
+      toast.error('Something went wrongeeee');
+    },
   }
 );
 
 const sendMessage = async () => {
-  try {
-    if (newMessage.value.length === 0 || newMessage.value.trim().length === 0) {
-      return;
-    }
-    if (newMessage.value.length > 255) {
-      toast.error('Echo is too long');
-      return;
-    }
-    const sent = await postMessage({
-      content: newMessage.value,
-      creator: `/api/users/${user.id}`,
-    });
-    await setRefetchFeed(true);
-    if (!sent) {
-      toast.error('Error while sending echo');
-      return;
-    }
-    toast.success('Echo created!');
-    newMessage.value = '';
-  } catch (e) {
-    console.log(e);
+  if (newMessage.value.length === 0 || newMessage.value.trim().length === 0) {
+    return;
   }
+  if (newMessage.value.length > 255) {
+    toast.error('Echo is too long');
+    return;
+  }
+  postMessageMutation({
+    content: newMessage.value,
+    creator: `/api/users/${user.id}`,
+  });
 };
 
-const { isLoading, isError, data, error } = useQuery(
-  ['feed', refetch],
-  async () => {
-    await setRefetchFeed(false);
-    return fetchFeed(1);
-  },
-  {
-    keepPreviousData: true,
-  }
-);
+const deleteOneMessageFromFeed = (message) => {
+  feed.value = feed.value.filter((m) => m.id !== message.id);
+};
 
 const messageHeight = computed(() => {
   if (newMessage.value.length > 0) {

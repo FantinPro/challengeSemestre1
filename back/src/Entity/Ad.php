@@ -31,6 +31,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
             ## ça s'apelle /pubs car sinon AdBlock il block tous les endpoints qui contiennent "ads" ou "ad"
             uriTemplate: '/pubs/random',
             controller: RandomAdController::class,
+            normalizationContext: ['groups' => ['read:ad:random']],
             security: "is_granted('ROLE_USER')",
             read: false,
         ),
@@ -75,7 +76,7 @@ class Ad
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read:ad'])]
+    #[Groups(['read:ad', 'read:ad:random'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
@@ -87,7 +88,7 @@ class Ad
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:ad', 'put:ad', 'post:ad'])]
+    #[Groups(['read:ad', 'put:ad', 'post:ad', 'read:ad:random'])]
     private ?string $message = null;
 
     #[ORM\Column]
@@ -97,7 +98,7 @@ class Ad
 
     #[ORM\ManyToOne(inversedBy: 'ads')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['read:ad', 'post:ad'])]
+    #[Groups(['read:ad', 'read:ad:random', 'post:ad'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Stat::class)]

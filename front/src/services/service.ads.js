@@ -10,6 +10,10 @@ export const getRandomAd = async () => {
       },
     }
   );
+  if (response.status === 204) {
+    console.info('No ads available')
+    return null;
+  }
   const json = await response.json();
   if (!response.ok) {
     throw new Error(json.detail);

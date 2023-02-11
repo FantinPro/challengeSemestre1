@@ -20,6 +20,10 @@ class RandomAdController extends AbstractController
     {
         $ads = $this->adRepository->getAdsFromToday();
 
+        if (count($ads) === 0) {
+            return new JsonResponse(null, 204);
+        }
+
         return $this->getRandomAd($ads);
     }
 
@@ -31,6 +35,7 @@ class RandomAdController extends AbstractController
         }
 
         $random = mt_rand(0, $total - 1);
+
         $current = 0;
         foreach ($ads as $ad) {
             $current += $ad->getPrice();
