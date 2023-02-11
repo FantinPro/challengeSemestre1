@@ -36,8 +36,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new GetCollection(
             uriTemplate: '/messages/reports',
-            paginationEnabled: true,
             controller: MessageWithAtLeast2ReportsController::class,
+            paginationEnabled: true,
             normalizationContext: ['groups' => ['read:message', 'read:message:reports']],
             security: 'is_granted("ROLE_MODERATOR")',
         ),
@@ -58,6 +58,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')",
         ),
         new Post(
+            normalizationContext: ['groups' => ['read:message', 'read:message:feed']],
             securityPostDenormalize: 'is_granted("ROLE_USER") and object.getCreator() == user',
             securityPostDenormalizeMessage: 'You can only create messages for yourself.',
         ),
@@ -99,7 +100,7 @@ class Message
     private Collection $usersSharingMessage;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
-    #[Groups(['read:message:feed'])]
+    #[Groups(['read:message:feed', 'write:message'])]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
@@ -127,7 +128,7 @@ class Message
     #[Groups(['read:message', 'read:message:search'])]
     private $updated;
 
-    #[ORM\OneToMany(mappedBy: 'sharedMessage', targetEntity: Share::class)]
+    #[ORM\OneToMany(mappedBy: 'sharedMessage', targetEntity: Share::class, cascade: ['remove'])]
     private Collection $shares;
 
     #[Groups('read:message:feedV2')]

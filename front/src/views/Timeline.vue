@@ -81,7 +81,7 @@
                   v-else
                   :item="message"
                   @delete-one-message-from-feed="deleteOneMessageFromFeed"
-                  @update-message-from-feed="updateMessageFromFeed" />
+                  @upsert-message-from-feed="upsertMessageFromFeed" />
               </div>
             </div>
           </TabPanel>
@@ -135,14 +135,13 @@ const { isLoading, isError } = useQuery({
       return;
     }
     hasHit80.value = false;
-    const tab = [...feed.value, ...dataFeed];
-    // insert dataRandomAd at random position
     if (dataRandomAd) {
-      tab.splice(Math.floor(Math.random() * tab.length), 0, {
+      dataFeed.splice(Math.floor(Math.random() * dataFeed.length), 0, {
         ...dataRandomAd,
         isAd: true,
       });
     }
+    const tab = [...feed.value, ...dataFeed];
     feed.value = tab;
   },
 });
@@ -185,13 +184,13 @@ const deleteOneMessageFromFeed = (message) => {
   feed.value = feed.value.filter((m) => m.id !== message.id);
 };
 
-const updateMessageFromFeed = (message) => {
-  feed.value = feed.value.map((m) => {
-    if (m.id === message.id) {
-      return message;
-    }
-    return m;
-  });
+const upsertMessageFromFeed = (message) => {
+  const idx = feed.value.findIndex((m) => m.id === message.id);
+  if (idx > -1) {
+    feed.value[idx] = message;
+  } else {
+    feed.value = [message, ...feed.value];
+  }
 };
 
 const messageHeight = computed(() => {

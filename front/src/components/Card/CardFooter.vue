@@ -1,7 +1,9 @@
 <template>
   <div class="mt-2 ml-[-10px] flex">
     <button
-      class="flex cursor-pointer items-center rounded-full px-2 py-1 hover:bg-[#4c5157]">
+      v-if="!props.item.parent"
+      class="flex cursor-pointer items-center rounded-full px-2 py-1 hover:bg-[#4c5157]"
+      @click="openReplyMessageDialog">
       <svg
         class="h-6 w-6"
         fill="rgb(156, 163, 175)"
@@ -16,12 +18,10 @@
     </button>
     <Menu as="div" class="relative">
       <MenuButton
-        class="flex justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95">
+        class="flex items-center justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95">
         <ArrowPathRoundedSquareIcon
-                  class="mr-2 h-5 w-5"
-                  :class="[
-                    props.item.shared ? 'text-green-400' : 'text-[#9ca3af]',
-                  ]" />
+          class="mr-2 h-5 w-5"
+          :class="[props.item.shared ? 'text-green-400' : 'text-[#9ca3af]']" />
         <span class="ml-1 text-gray-400">{{ props.item.sharesCount }}</span>
       </MenuButton>
 
@@ -54,6 +54,12 @@
         </MenuItems>
       </transition>
     </Menu>
+
+    <DialogReplyMessage
+      :message="props.item"
+      :is-open="isOpenReplyMessageDialog"
+      @close="closeReplyMessageDialog"
+      @upsert-message-from-feed="upsertMessageFromFeed" />
   </div>
 </template>
 <script setup>
@@ -63,6 +69,8 @@ import { createShare, deleteShare } from '../../services/service.shares';
 import { useMutation } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '../../store/user';
+import DialogReplyMessage from '../Dialog/DialogReplyMessage.vue';
+import { ref } from 'vue';
 
 const { user } = useUserStore();
 
@@ -73,45 +81,64 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['updateMessageFromFeed']);
+const emit = defineEmits(['upsertMessageFromFeed']);
 
-const { mutate: createShareMutation } = useMutation((data) => createShare(data), {
-  onSuccess: () => {
-    toast.success('Echo has been shared');
-    emit('updateMessageFromFeed', {
-      ...props.item,
-      sharesCount: props.item.sharesCount + 1,
-      shared: true
-    });
-  },
-  onError: () => {
-    toast.error('Something went wrong');
-  },
-});
+const upsertMessageFromFeed = (message) => {
+  emit('upsertMessageFromFeed', message);
+};
 
-const { mutate: deleteShareMutation } = useMutation((message) => deleteShare(message), {
-  onSuccess: () => {
-    toast.success('Shared canceled!');
-    emit('updateMessageFromFeed', {
-      ...props.item,
-      sharesCount: props.item.sharesCount - 1,
-      shared: false
-    });
-  },
-  onError: () => {
-    toast.error('Something went wrong');
-  },
-});
+const { mutate: createShareMutation } = useMutation(
+  (data) => createShare(data),
+  {
+    onSuccess: () => {
+      toast.success('Echo has been shared');
+      upsertMessageFromFeed({
+        ...props.item,
+        sharesCount: props.item.sharesCount + 1,
+        shared: true,
+      });
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
+  }
+);
+
+const { mutate: deleteShareMutation } = useMutation(
+  (message) => deleteShare(message),
+  {
+    onSuccess: () => {
+      toast.success('Shared canceled!');
+      emit('upsertMessageFromFeed', {
+        ...props.item,
+        sharesCount: props.item.sharesCount - 1,
+        shared: false,
+      });
+    },
+    onError: () => {
+      toast.error('Something went wrong');
+    },
+  }
+);
 
 const onClickShare = () => {
   if (!props.item.shared) {
     createShareMutation({
       message: props.item,
-      user 
+      user,
     });
   } else {
     deleteShareMutation(props.item);
   }
 };
 
+const isOpenReplyMessageDialog = ref(false);
+
+const closeReplyMessageDialog = () => {
+  isOpenReplyMessageDialog.value = false;
+};
+
+const openReplyMessageDialog = () => {
+  isOpenReplyMessageDialog.value = true;
+};
 </script>
