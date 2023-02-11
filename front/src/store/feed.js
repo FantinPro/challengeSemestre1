@@ -7,21 +7,6 @@ export const useFeedStore = defineStore('feed', {
     userMessages: [],
   }),
   actions: {
-    async fetchFeed(page) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages/feed/v2?page=${page}`, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
-          },
-        });
-  
-        const data = await response.json();
-        return data;
-      } catch (e) {
-        console.log(e);
-      }
-    },
     async fetchMessages(page, options = {}) {
       try {
         const { content, creator } = options;

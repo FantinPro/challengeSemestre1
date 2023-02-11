@@ -100,6 +100,7 @@ import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import { getRandomAd } from '../services/service.ads';
+import { fetchFeed } from '../services/service.messages';
 
 import { useFeedStore } from '../store/feed';
 import { useUserStore } from '../store/user';
@@ -150,7 +151,7 @@ const { user } = useUserStore();
 const newMessage = ref('');
 
 const tabs = ['For you', 'Following'];
-const { fetchFeed, postMessage } = useFeedStore();
+const { postMessage } = useFeedStore();
 
 const { mutate: postMessageMutation } = useMutation(
   (data) => postMessage(data),
