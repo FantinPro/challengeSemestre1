@@ -17,8 +17,7 @@ class FeedController extends AbstractController
     const PAGE_SIZE = 10;
 
     public function __construct(private readonly MessageRepository $messageRepository)
-    {
-    }
+    {}
     public function __invoke(Request $request): array
     {
 
