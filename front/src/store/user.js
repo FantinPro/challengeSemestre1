@@ -14,58 +14,73 @@ export const useUserStore = defineStore('user', {
       localStorage.setItem('echoUser', JSON.stringify(user));
     },
     async signUp(values) {
-      try {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-      } catch (e) {
-        console.log(e);
-      }
+      return await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
     },
     async signIn(values) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
-        const userToken = await response.json();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-        if (userToken && userToken.token) {
-          $cookies.set('echo_user_token', userToken.token);
+      const userToken = await response.json();
 
-          const decoded = jwt_decode(userToken.token);
+      if (userToken && userToken.token) {
+        $cookies.set('echo_user_token', userToken.token);
 
-          const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,
-            {
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userToken.token}`,
-              },
-            }
-          );
+        const decoded = jwt_decode(userToken.token);
 
-          const user = await res.json();
-
-          if (user) {
-            this.user = user;
-            this.setLocalUser(user);
-            router.push('/home');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken.token}`,
+            },
           }
+        );
+
+        const user = await res.json();
+
+        if (user) {
+          this.user = user;
+          this.setLocalUser(user);
+          router.push('/home');
         }
-      } catch (e) {
-        console.log(e);
       }
+
+      return response;
+    },
+    async forgotPassword(values) {
+      return await fetch(`${import.meta.env.VITE_API_URL}/forgot_password`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+    },
+    async resetPassword(values, token) {
+      return await fetch(`${import.meta.env.VITE_API_URL}/reset_password?token=${token}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
     },
     async logout() {
       this.user = null;
