@@ -3,26 +3,26 @@
     <div class="p-2 flex">
       <img
         class="w-12 h-12 rounded-full"
-        :src="user.profilePicture"
+        :src="props.user.profilePicture"
         alt="avatar" />
       <div class="ml-2 flex-1">
         <div class="flex flex-col">
           <div class="flex justify-between">
             <div class="flex flex-col items-baseline">
               <router-link
-                :to="`/profile/${user.pseudo}`"
+                :to="`/profile/${props.user.pseudo}`"
                 class="font-bold text-white text-lg hover:underline">
-                {{ user.pseudo }}
+                {{ props.user.pseudo }}
               </router-link>
               <router-link
-                :to="`/profile/${user.pseudo}`"
+                :to="`/profile/${props.user.pseudo}`"
                 class="text-base text-gray-400 -mt-1">
-                @{{ user.pseudo }}
+                @{{ props.user.pseudo }}
               </router-link>
             </div>
             <div v-if="!isMe" class="flex items-center p-1 gap-2">
               <button
-                v-if="!user.followed"
+                v-if="!props.user.followed"
                 class="
                   bg-[#fff]
                   text-black
@@ -67,7 +67,7 @@
               <Menu
                 v-if="isMyProfile && isFollowersTab"
                 as="div"
-                class="relative p-2">
+                class="relative p-2 ml-5">
                 <MenuButton
                   class="
                     absolute
@@ -131,26 +131,6 @@
                           Remove Follower
                         </button>
                       </MenuItem>
-                      <MenuItem
-                        v-slot="{ active }">
-                        <button
-                          :class="[
-                            active
-                              ? 'bg-primary-300 text-white'
-                              : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                          ]"
-                          @click="openReportDialog">
-                          <FlagIcon
-                            :active="active"
-                            class="mr-2 h-5 w-5"
-                            :class="[
-                              active ? 'text-white-400' : 'text-primary-300',
-                            ]"
-                            aria-hidden="true" />
-                          Report
-                        </button>
-                      </MenuItem>
                     </div>
                   </MenuItems>
                 </transition>
@@ -158,13 +138,9 @@
             </div>
           </div>
           <span class="text-base font-medium text-white mt-1">{{
-            user.bio
+            props.user.bio
           }}</span>
         </div>
-        <!-- // name
-        // Follow button (if not the current user) and if not already followed
-        // Unfollow button (if not the current user) and if already followed
-        // options button (if not the current user) -->
       </div>
     </div>
   </div>
@@ -179,13 +155,12 @@ import { ref } from 'vue-demi';
 import { useUserStore } from '../../store/user';
 
 const props = defineProps({
-  item: {
+  user: {
     type: Object,
     required: true,
   },
 });
 
-const user = ref(props.item);
 const me = ref(useUserStore().user);
 const router = useRouter();
 const { followUserById, unfollowUserById } = useUserStore();
@@ -196,28 +171,26 @@ const isMyProfile = ref(
 const isFollowersTab = ref(
   router.currentRoute.value.params.tab === 'followers'
 );
-const isMe = ref(useUserStore().user.pseudo === props.item.pseudo);
+const isMe = ref(useUserStore().user.pseudo === props.pseudo);
 const showUnfollowOnHover = ref(false);
 
 const emit = defineEmits(['updateFollowersList']);
 
 const followUser = async () => {
-  emit('updateFollowersList', 1);
-  console.log('followUser');
-  console.log('jai pas emit jsuis un pd');
-  // const res = await followUserById(user.value.id);
-  // if (res) {
-  //   toast.success(`You are now following ${user.value.pseudo} 🙌`);
-  // } else {
-  //   toast.error(`Something went wrong 😢`);
-  // }
+  const res = await followUserById(props.user.id);
+  if (res) {
+    toast.success(`You are now following ${props.user.pseudo} 🙌`);
+    emit('updateFollowersList');
+  } else {
+    toast.error(`Something went wrong 😢`);
+  }
 };
 
 const unfollowUser = async () => {
-  const res = await unfollowUserById(user.value.id);
+  const res = await unfollowUserById(props.user.id);
   if (res) {
-    toast.success(`You are no longer following ${user.value.pseudo} 😢`);
-    emit('updateFollowersList', user);
+    toast.success(`You are no longer following ${props.user.pseudo} 😢`);
+    emit('updateFollowersList');
   } else {
     toast.error(`Something went wrong 😢`);
   }
