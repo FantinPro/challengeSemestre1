@@ -1,6 +1,6 @@
 <template>
   <TabGroup :selected-index="selectedTab" @change="changeTab">
-    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95 pt-5' : '' " class="border-b border-[#3b4043]">
+    <div :class="sticky ? 'sticky top-0 z-10 bg-[#212529] opacity-95' : '' " class="border-b border-[#3b4043] pt-5">
       <div v-if="customTitle" class="px-2 pb-3">
         <slot name="title" />
       </div>

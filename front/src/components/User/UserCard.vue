@@ -30,20 +30,20 @@
 </template>
 
 <script setup>
-  import { toRefs } from "vue";
+import { toRefs } from "vue";
 
 
-  const props = defineProps({
-    user: {
-      type: Object,
-      required: true,
-    },
-    type: {
-      type: String,
-      default: 'default'
-    },
-  })
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
+  type: {
+    type: String,
+    default: 'default'
+  },
+})
 
-  const { profilePicture, pseudo, bio } = toRefs(props.user)
+const { profilePicture, pseudo, bio } = toRefs(props.user)
 
 </script>
