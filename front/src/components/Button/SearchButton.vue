@@ -32,7 +32,7 @@
         <template v-else>
           <ComboboxOptions>
             <ComboboxOption :value="debouncedSearchUser">
-              <div class="pl-3 py-4 bg-neutral-800 hover:bg-neutral-700/60 hover:cursor-pointer" @click="handleSelectUser(searchUser, 'enter')">
+              <div class="pl-3 py-4 bg-neutral-800 hover:bg-neutral-600 hover:cursor-pointer" @click="handleSelectUser(searchUser, 'enter')">
                 Searching "{{ debouncedSearchUser }}"
               </div>
             </ComboboxOption>
@@ -69,10 +69,6 @@ const searchUser = ref(route.query.q || '');
 const debouncedSearchUser = refDebounced(searchUser, 200);
 const isSearchUserNotEmpty = computed(() => debouncedSearchUser.value !== '');
 
-function useUsersQuery(search , { enabled }) {
-  return useQuery(["users", search], async () => await fetchUsers(search), { enabled });
-}
-
 function handleSelectUser(userPseudo, type) {
   if (type === 'select') {
     router.push(`/profile/${userPseudo}`);
@@ -82,5 +78,8 @@ function handleSelectUser(userPseudo, type) {
   }
 }
 
-const { isLoading, isError, data, error } = useUsersQuery(debouncedSearchUser.value, { enabled: isSearchUserNotEmpty });
+const { isLoading, data } = useQuery(['users_search_button', debouncedSearchUser], () => 
+  fetchUsers(debouncedSearchUser.value),
+{ enabled: isSearchUserNotEmpty }
+);
 </script>
