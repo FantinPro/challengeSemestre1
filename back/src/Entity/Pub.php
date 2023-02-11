@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -26,6 +28,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
         new GetCollection(
             paginationEnabled: true,
             paginationItemsPerPage: 20,
+            security: "is_granted('ROLE_PREMIUM')",
         ),
         new Get(
             ## ça s'apelle /pubs car sinon AdBlock il block tous les endpoints qui contiennent "ads" ou "ad"
@@ -58,6 +61,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
     normalizationContext: ['groups' => ['read:ad']],
     denormalizationContext: ['groups' => ['write:ad']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
 class Pub
 {
 

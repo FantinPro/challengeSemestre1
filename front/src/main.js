@@ -27,6 +27,12 @@ app.config.globalProperties.$filters = {
     if (statTitle === 'nbAds') return 'Number of Ads'
     if (statTitle === 'nbMessages') return 'Number of Messages'
     if (statTitle === 'amountEarned') return 'Amount Earned'
+  },
+  shortText(text, length) {
+    if (text.length > length) {
+      return text.substring(0, length) + '...'
+    }
+    return text
   }
 }
 

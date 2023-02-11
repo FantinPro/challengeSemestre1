@@ -29,7 +29,7 @@
         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
           <span v-if="isLoading"> Loading...</span>
           <tr
-            v-for="(message, index) in messagesWithReports"
+            v-for="message in messagesWithReports"
             :key="message.id"
             class="bg-row-table hover:bg-row-table-hover">
             <th class="flex gap-3 px-6 py-4 font-normal text-white">
@@ -175,7 +175,7 @@ const previousPage = () => {
   page.value--;
 };
 
-const updateMessagesWithReportsList = (message) => {
+const updateMessagesWithReportsList = () => {
   queryClient.invalidateQueries('messagesWithReports');
 };
 </script>
