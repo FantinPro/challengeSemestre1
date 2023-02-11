@@ -70,6 +70,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function findSuggestionsNotIn($usersIds)
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->where('u.id NOT IN (:usersIds)');
+        $qb->setParameter('usersIds', $usersIds);
+        $qb->setMaxResults(5);
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
