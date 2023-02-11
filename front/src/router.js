@@ -12,6 +12,7 @@ import Dashboard from './views/Dashboard.vue';
 import ManageUsers from './views/ManageUsers.vue';
 import ManageReports from './views/ManageReports.vue';
 import AdminStats from './views/AdminStats.vue';
+import ManageAds from './views/ManageAds.vue';
 import LayoutDefault from './layouts/LayoutDefault.vue';
 import { ROLES } from './utils/constants';
 import Calendar from './views/Calendar.vue';
@@ -110,8 +111,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
-        // component à remplacer
-        component: ManageUsers,
+        component: ManageAds,
       },
     ],
   },

@@ -12,3 +12,22 @@ export const REPORT_TYPES = {
   HARASSMENT : 'harassment',
   OTHER : 'other'
 }
+
+export const AD_STATUS = [
+  {
+    value: 'pending',
+    display: 'Pending',
+  },
+  {
+    value: 'accepted',
+    display: 'Accepted',
+  },
+  {
+    value: 'rejected',
+    display: 'Rejected',
+  },
+  {
+    value: 'payed',
+    display: 'Payed',
+  },
+];
