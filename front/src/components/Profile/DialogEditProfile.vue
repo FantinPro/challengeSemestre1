@@ -27,7 +27,6 @@
               class="
                 absolute
                 flex
-                max-h-[50%]
                 w-full
                 max-w-2xl
                 transform
