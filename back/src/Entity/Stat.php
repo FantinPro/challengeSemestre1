@@ -45,7 +45,7 @@ class Stat
     private ?bool $click = null;
 
     #[ORM\ManyToOne(inversedBy: 'stats')]
-    private ?Ad $ad = null;
+    private ?Pub $ad = null;
 
     #[ORM\ManyToOne(inversedBy: 'stats')]
     private ?User $fromUser = null;
@@ -76,12 +76,12 @@ class Stat
         return $this;
     }
 
-    public function getAd(): ?Ad
+    public function getAd(): ?Pub
     {
         return $this->ad;
     }
 
-    public function setAd(?Ad $ad): self
+    public function setAd(?Pub $ad): self
     {
         $this->ad = $ad;
 

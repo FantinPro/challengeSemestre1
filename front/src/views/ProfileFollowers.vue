@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="containerElement"
     :key="username"
     class="
       flex flex-col
@@ -32,10 +33,12 @@
                 d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
-          <div class="flex flex-col">
+          <router-link
+            class="flex flex-col"
+            :to="`/profile/${profile?.pseudo}`">
             <h1 class="text-lg font-semibold">{{ profile?.pseudo }}</h1>
             <p class="text-sm text-gray-500">@{{ profile?.pseudo }}</p>
-          </div>
+          </router-link>
         </div>
       </template>
       <template #panels>
@@ -44,8 +47,10 @@
             <div class="flex flex-col gap-2 border-t border-[#3b4043]">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
-              <div v-for="user in data" :key="user.id">
-                <UserCard :item="user" />
+              <div v-for="user in followers" :key="user.id">
+                <UserCard
+                  :user="user"
+                  @update-followers-list="updateFollowersList" />
               </div>
             </div>
           </TabPanel>
@@ -53,8 +58,10 @@
             <div class="flex flex-col gap-2 border-t border-[#3b4043]">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
-              <div v-for="user in data" :key="user.id">
-                <UserCard :item="user" @update-followers-list="updateFollowersList" />
+              <div v-for="user in following" :key="user.id">
+                <UserCard
+                  :user="user"
+                  @update-followers-list="updateFollowersList" />
               </div>
             </div>
           </TabPanel>
@@ -95,8 +102,7 @@ let selectedTab = ref(
 
 const profile = computed(() => useUserStore().profile);
 
-const updateFollowersList = (data) => {
-  console.log('updateFollowersList', data);
+const updateFollowersList = () => {
   queryClient.invalidateQueries(['followers']);
 };
 
@@ -141,28 +147,54 @@ const handleTabChange = (tab) => {
   }
 };
 
-const { isLoading, isError, data, error } = useQuery(
-  ['followers', username, currentTab],
-  async () => {
-    try {
-      let res = null;
-      const profile = await getUserProfileByUsername(username.value);
-      if (currentTab.value === 'followers') {
-        res = await getFollowersPaginated(1, profile.id);
-      } else if (currentTab.value === 'following') {
-        res = await getFollowingsPaginated(1, profile.id);
-      }
-      if (!res || res.error) {
-        router.push('/');
-      }
-      return res;
-    } catch (e) {
-      console.log(e);
-      router.push('/');
-    }
-  },
-  {
-    keepPreviousData: true,
+const containerElement = ref();
+
+const hasHit80 = ref(false);
+const page = ref(1);
+
+const onScroll = () => {
+  const { scrollTop, scrollHeight, clientHeight } = containerElement.value;
+  const scrollableHeight = scrollHeight - clientHeight;
+  const scrollPercentage = scrollTop / scrollableHeight;
+  if (scrollPercentage >= 0.8 && !hasHit80.value) {
+    hasHit80.value = true;
+    page.value += 1;
   }
-);
+};
+
+onMounted(() => {
+  containerElement.value.addEventListener('scroll', onScroll);
+});
+
+const followers = ref([]);
+const following = ref([]);
+
+const { isLoading, isError } = useQuery({
+  queryKey: ['followers', page, username],
+  queryFn: async () => {
+    const profile = await getUserProfileByUsername(username.value);
+    const dataFollowers = await getFollowersPaginated(page.value, profile.id);
+    const dataFollowing = await getFollowingsPaginated(page.value, profile.id);
+
+    // update followers list with unique values only
+    const updatedFollowers = [
+      ...new Map(
+        [...followers.value, ...dataFollowers].map((item) => [item.id, item])
+      ).values(),
+    ];
+    followers.value = updatedFollowers;
+
+    // update following list with unique values only
+    const updatedFollowing = [
+      ...new Map(
+        [...following.value, ...dataFollowing].map((item) => [item.id, item])
+      ).values(),
+    ];
+    following.value = updatedFollowing;
+
+    hasHit80.value = false;
+  },
+  keepPreviousData: true,
+  refetchOnWindowFocus: false,
+});
 </script>

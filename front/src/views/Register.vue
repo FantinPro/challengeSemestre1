@@ -20,11 +20,21 @@
 <script setup>
 
 import { useUserStore } from "../store/user";
+import { toast } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userStore = useUserStore();
 
 const submit = async (values) => {
-  await userStore.signUp(values);
+  const response = await userStore.signUp(values);
+
+  if (response.ok) {
+    toast.success('Your account has been successfully created!')
+    router.push('/login')
+  } else {
+    toast.error('Error in the request')
+  }
 }
 
 </script>

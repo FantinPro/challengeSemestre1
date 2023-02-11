@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Ad;
+use App\Entity\Pub;
 use App\Entity\Message;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -29,13 +29,13 @@ class AdFixtures extends Fixture implements DependentFixtureInterface
         $endTime = new \DateTime();
         $endTime->add(new \DateInterval('P2D'));
 
-        $adThatStartNow = (new Ad())
+        $adThatStartNow = (new Pub())
             ->setOwner($premium)
             ->setMessage($faker->paragraph(2))
             ->setPrice($faker->numberBetween(100, 1000))
             ->setStartDate($startTime)
             ->setEndDate($endTime)
-            ->setStatus(Ad::STATUS_ACCEPTED);
+            ->setStatus(Pub::STATUS_ACCEPTED);
 
         // use reference
         $this->addReference('adThatStartNow', $adThatStartNow);
@@ -46,13 +46,13 @@ class AdFixtures extends Fixture implements DependentFixtureInterface
         $endTime2 = new \DateTime();
         $endTime2->add(new \DateInterval('P20D'));
 
-        $adThatStartIn10Days = (new Ad())
+        $adThatStartIn10Days = (new Pub())
             ->setOwner($premium2)
             ->setMessage($faker->paragraph(2))
             ->setPrice($faker->numberBetween(100, 1000))
             ->setStartDate($startTime2)
             ->setEndDate($endTime2)
-            ->setStatus(Ad::STATUS_ACCEPTED);
+            ->setStatus(Pub::STATUS_ACCEPTED);
 
         $manager->persist($adThatStartNow);
         $manager->persist($adThatStartIn10Days);

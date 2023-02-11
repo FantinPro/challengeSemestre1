@@ -103,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['write:user'])]
     private ?string $password = null;
 
+    #[Groups(['read:ad:random'])]
     #[ORM\Column(
         options: [
             'default' => false
@@ -114,11 +115,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tokenResetPasswords;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['read:user', 'read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
+    #[Groups(['read:user', 'read:ad:random', 'read:user_to_user_read', 'read:message', 'read:message:search', 'read:user:search', 'read:message:feed', 'read:user_to_user'])]
     private ?string $profilePicture = null;
 
     #[ORM\Column(length: 25, unique: true)]
-    #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
+    #[Groups(['read:user', 'read:ad:random', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $pseudo = null;
 
     #[ORM\OneToMany(mappedBy: 'me', targetEntity: UserToUser::class)]
@@ -133,7 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
     private Collection $messagesSharedByUser;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pub::class)]
     private Collection $ads;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -444,14 +445,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
-     * @return Collection<int, Ad>
+     * @return Collection<int, Pub>
      */
     public function getAds(): Collection
     {
         return $this->ads;
     }
 
-    public function addAd(Ad $ad): self
+    public function addAd(Pub $ad): self
     {
         if (!$this->ads->contains($ad)) {
             $this->ads->add($ad);
@@ -461,7 +462,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeAd(Ad $ad): self
+    public function removeAd(Pub $ad): self
     {
         if ($this->ads->removeElement($ad)) {
             // set the owning side to null (unless already changed)

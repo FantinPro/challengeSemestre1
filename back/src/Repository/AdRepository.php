@@ -2,28 +2,28 @@
 
 namespace App\Repository;
 
-use App\Entity\Ad;
+use App\Entity\Pub;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Ad>
+ * @extends ServiceEntityRepository<Pub>
  *
- * @method Ad|null find($id, $lockMode = null, $lockVersion = null)
- * @method Ad|null findOneBy(array $criteria, array $orderBy = null)
- * @method Ad[]    findAll()
- * @method Ad[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Pub|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Pub|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Pub[]    findAll()
+ * @method Pub[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AdRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
-        parent::__construct($registry, Ad::class);
+        parent::__construct($registry, Pub::class);
         $this->em = $em;
     }
 
-    public function save(Ad $entity, bool $flush = false): void
+    public function save(Pub $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ class AdRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Ad $entity, bool $flush = false): void
+    public function remove(Pub $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -46,7 +46,7 @@ class AdRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('ad');
         $qb->select('SUM(ad.price) as amount');
         $qb->where('ad.status = :status');
-        $qb->setParameter('status', AD::STATUS_PAYED);
+        $qb->setParameter('status', Pub::STATUS_PAYED);
         if ($startDate && $endDate) {
             $qb->andWhere('ad.created BETWEEN :startDate AND :endDate');
             $qb->setParameter('startDate', $startDate);
@@ -77,14 +77,14 @@ class AdRepository extends ServiceEntityRepository
             ->where('ad.status = :status')
             ->andWhere('ad.endDate > :now')
             ->andWhere('ad.startDate < :now')
-            ->setParameter('status', AD::STATUS_PAYED)
+            ->setParameter('status', Pub::STATUS_PAYED)
             ->setParameter('now', new \DateTime())
             ->getQuery()
             ->getResult();
     }
 
 //    /**
-//     * @return Ad[] Returns an array of Ad objects
+//     * @return Pub[] Returns an array of Pub objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -98,7 +98,7 @@ class AdRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Ad
+//    public function findOneBySomeField($value): ?Pub
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')

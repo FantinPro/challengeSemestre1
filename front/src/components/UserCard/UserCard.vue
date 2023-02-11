@@ -65,9 +65,9 @@
                 <template v-else>Following</template>
               </button>
               <Menu
-                v-if="isMyProfile && isFollowersTab"
+                v-if="router.currentRoute.value.params.pseudo === useUserStore().user.pseudo && router.currentRoute.value.params.tab === 'followers'"
                 as="div"
-                class="relative p-2">
+                class="relative p-2 ml-5">
                 <MenuButton
                   class="
                     absolute
@@ -131,26 +131,6 @@
                           Remove Follower
                         </button>
                       </MenuItem>
-                      <MenuItem
-                        v-slot="{ active }">
-                        <button
-                          :class="[
-                            active
-                              ? 'bg-primary-300 text-white'
-                              : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                          ]"
-                          @click="openReportDialog">
-                          <FlagIcon
-                            :active="active"
-                            class="mr-2 h-5 w-5"
-                            :class="[
-                              active ? 'text-white-400' : 'text-primary-300',
-                            ]"
-                            aria-hidden="true" />
-                          Report
-                        </button>
-                      </MenuItem>
                     </div>
                   </MenuItems>
                 </transition>
@@ -161,10 +141,6 @@
             user.bio
           }}</span>
         </div>
-        <!-- // name
-        // Follow button (if not the current user) and if not already followed
-        // Unfollow button (if not the current user) and if already followed
-        // options button (if not the current user) -->
       </div>
     </div>
   </div>
@@ -172,52 +148,52 @@
 <script setup>
 import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { FlagIcon } from '@heroicons/vue/20/solid';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { ref } from 'vue-demi';
+import { computed, ref, watch } from 'vue-demi';
 import { useUserStore } from '../../store/user';
 
 const props = defineProps({
-  item: {
+  user: {
     type: Object,
     required: true,
   },
 });
 
-const user = ref(props.item);
-const me = ref(useUserStore().user);
+const user = ref(props.user);
+
+watch(
+  () => props.user,
+  (newVal) => {
+    user.value = newVal;
+  },
+);
+
 const router = useRouter();
 const { followUserById, unfollowUserById } = useUserStore();
 
-const isMyProfile = ref(
-  router.currentRoute.value.params.pseudo === useUserStore().user.pseudo
-);
-const isFollowersTab = ref(
-  router.currentRoute.value.params.tab === 'followers'
-);
-const isMe = ref(useUserStore().user.pseudo === props.item.pseudo);
+const isMe = computed(() => {
+  return useUserStore().user.id === user.value.id;
+});
 const showUnfollowOnHover = ref(false);
 
 const emit = defineEmits(['updateFollowersList']);
 
 const followUser = async () => {
-  emit('updateFollowersList', 1);
-  console.log('followUser');
-  console.log('jai pas emit jsuis un pd');
-  // const res = await followUserById(user.value.id);
-  // if (res) {
-  //   toast.success(`You are now following ${user.value.pseudo} 🙌`);
-  // } else {
-  //   toast.error(`Something went wrong 😢`);
-  // }
+  const res = await followUserById(user.value.id);
+  if (res) {
+    toast.success(`You are now following ${user.value.pseudo} 🙌`);
+    emit('updateFollowersList');
+  } else {
+    toast.error(`Something went wrong 😢`);
+  }
 };
 
 const unfollowUser = async () => {
   const res = await unfollowUserById(user.value.id);
   if (res) {
     toast.success(`You are no longer following ${user.value.pseudo} 😢`);
-    emit('updateFollowersList', user);
+    emit('updateFollowersList');
   } else {
     toast.error(`Something went wrong 😢`);
   }
