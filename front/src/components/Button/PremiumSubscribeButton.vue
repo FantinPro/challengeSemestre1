@@ -45,6 +45,7 @@
 import {inject, onMounted, ref} from 'vue';
 import {useMutation, useQuery} from "vue-query";
 import {toast} from "vue3-toastify";
+import {useUserStore} from "../../store/user.js";
 
 const $cookies = inject('$cookies');
 
@@ -95,13 +96,17 @@ const $cookies = inject('$cookies');
     }
   })
 
+  const store = useUserStore()
+
   const premiumLink = useQuery(['premiumLink'], fetchPremiumPK, {
     onSuccess: (data) => {
       if (data?.premium === "active") {
         isPremium.value = true
+        store.setPremium()
       }
       if (data?.premium === "link") {
         isPremium.value = false
+        store.unsetPremium()
         href.value = data.url
       }
     }
@@ -109,12 +114,15 @@ const $cookies = inject('$cookies');
 
   const cancel = useMutation(cancelSubscribtion, {
     onSuccess: async () => {
+
+      store.unsetPremium()
       await premiumLink.refetch.value()
       toast.success('Premium subscription canceled')
     },
     onError: async () => {
       toast.error('Failed to cancel premium subscription')
     }
+
   })
   // handle payment
 </script>

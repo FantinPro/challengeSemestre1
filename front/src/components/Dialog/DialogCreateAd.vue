@@ -35,11 +35,11 @@
                 <div class="flex items-center">
                   <div>
                     from :
-                    <strong>{{ new Date().toLocaleDateString() }}</strong>
+                    <strong>{{ props.startDate.toLocaleDateString() }}</strong>
                   </div>
                   <ArrowLongRightIcon class="mx-4 h-4 w-4" />
                   <div>
-                    to : <strong>{{ new Date().toLocaleDateString() }}</strong>
+                    to : <strong>{{ props.endDate.toLocaleDateString() }}</strong>
                   </div>
                 </div>
 
@@ -117,7 +117,7 @@ import {
   TransitionRoot,
 } from '@headlessui/vue';
 import { ArrowLongRightIcon } from '@heroicons/vue/20/solid';
-import { useMutation } from 'vue-query';
+import {useMutation, useQueryClient} from 'vue-query';
 import { toast } from 'vue3-toastify';
 import { createAd } from '../../services/service.ads';
 import { useUserStore } from '../../store/user';
@@ -142,14 +142,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-
+const client = useQueryClient();
 function closeModal() {
   emit('close');
 }
 
 const { isLoading, mutate: createAdMutation } = useMutation((newAd) => createAd(newAd), {
-  onSuccess: () => {
+  onSuccess: async () => {
     toast.success('Ad created');
+    await client.invalidateQueries('ads');
     closeModal();
   },
   onError: (error) => {

@@ -9,6 +9,16 @@ export const useUserStore = defineStore('user', {
     profile: null,
   }),
   actions: {
+    setPremium() {
+      this.user.roles.push('ROLE_PREMIUM');
+      localStorage.setItem('echoUser', JSON.stringify(this.user));
+    },
+
+    unsetPremium() {
+        this.user.roles = this.user.roles.filter((role) => role !== 'ROLE_PREMIUM');
+        localStorage.setItem('echoUser', JSON.stringify(this.user));
+    },
+
     setLocalUser(user) {
       this.user = user;
       localStorage.setItem('echoUser', JSON.stringify(user));

@@ -10,6 +10,8 @@ import { generateClasses } from '@formkit/themes'
 import { createPinia } from 'pinia'
 import VueCookies from 'vue-cookies'
 import 'vue3-toastify/dist/index.css';
+import 'v-calendar/dist/style.css';
+import VCalendar from 'v-calendar';
 
 const app = createApp(App)
 
@@ -34,6 +36,7 @@ app.use(router)
 app.use(VueQueryPlugin)
 app.use(pinia)
 app.use(VueCookies, { expires: '90d' })
+app.use(VCalendar, {})
 app.use(
   plugin,
   defaultConfig({
