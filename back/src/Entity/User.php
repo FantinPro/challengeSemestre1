@@ -136,9 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
     private Collection $ads;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $stripeCustomerId = null;
-
     #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
     private Collection $reports;
 
@@ -469,18 +466,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $ad->setOwner(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getStripeCustomerId(): ?string
-    {
-        return $this->stripeCustomerId;
-    }
-
-    public function setStripeCustomerId(?string $stripeCustomerId): self
-    {
-        $this->stripeCustomerId = $stripeCustomerId;
 
         return $this;
     }

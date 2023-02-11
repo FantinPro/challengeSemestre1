@@ -58,6 +58,7 @@
       <div class="flex gap-4 p-4">
         <div class="flex flex-col items-end w-full">
           <div v-if="user?.pseudo === profile?.pseudo" class="flex gap-2">
+            <PremiumSubscribeButton/>
             <button
               class="
                 hover:bg-[#2f3336]
@@ -203,6 +204,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '../../store/user';
 import HeaderMenu from '../Menu/HeaderMenu.vue';
 import DialogEditProfile from './DialogEditProfile.vue';
+import PremiumSubscribeButton from "../Button/PremiumSubscribeButton.vue";
 
 const props = defineProps({
   disableInfos: {
