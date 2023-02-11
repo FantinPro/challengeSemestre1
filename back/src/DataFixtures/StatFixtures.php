@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Ad;
+use App\Entity\Pub;
 use App\Entity\Message;
 use App\Entity\Stat;
 use App\Entity\User;

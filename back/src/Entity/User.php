@@ -133,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Message::class, mappedBy: 'usersSharingMessage')]
     private Collection $messagesSharedByUser;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Ad::class)]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pub::class)]
     private Collection $ads;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -444,14 +444,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
-     * @return Collection<int, Ad>
+     * @return Collection<int, Pub>
      */
     public function getAds(): Collection
     {
         return $this->ads;
     }
 
-    public function addAd(Ad $ad): self
+    public function addAd(Pub $ad): self
     {
         if (!$this->ads->contains($ad)) {
             $this->ads->add($ad);
@@ -461,7 +461,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeAd(Ad $ad): self
+    public function removeAd(Pub $ad): self
     {
         if ($this->ads->removeElement($ad)) {
             // set the owning side to null (unless already changed)

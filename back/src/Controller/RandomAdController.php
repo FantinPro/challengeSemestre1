@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Ad;
+use App\Entity\Pub;
 use App\Repository\AdRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

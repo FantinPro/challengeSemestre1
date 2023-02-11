@@ -58,7 +58,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
     normalizationContext: ['groups' => ['read:ad']],
     denormalizationContext: ['groups' => ['write:ad']],
 )]
-class Ad
+class Pub
 {
 
     const STATUS_PENDING = 'pending';
