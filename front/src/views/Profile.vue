@@ -96,8 +96,6 @@ const { isLoading, isError } = useQuery({
   refetchOnWindowFocus: false,
 });
 
-let username = ref(router.currentRoute.value.params.pseudo);
-
 watch(
   () => router.currentRoute.value.params.pseudo,
   (newVal) => {
