@@ -77,7 +77,7 @@ const deleteOneMessageFromFeed = (echo) => {
 const { isLoading, isError } = useQuery({
   queryKey: ['profile', page],
   queryFn: async () => {
-    const [profile] = await Promise.all([getUserProfileByUsername(username.value)]);
+    const profile = await getUserProfileByUsername(username.value);
     const dataEchoes = await fetchMessages(page.value, {
       creator: profile.id,
     });
@@ -88,7 +88,7 @@ const { isLoading, isError } = useQuery({
       return;
     }
     hasHit80.value = false;
-    echoes.value = [...new Map([...echoes.value, ...dataEchoes].map(item => [item.id, item])).values()];
+    echoes.value = [...echoes.value, ...dataEchoes].map(item => [item.id, item]);
   },
   keepPreviousData: true,
   refetchOnWindowFocus: false,
