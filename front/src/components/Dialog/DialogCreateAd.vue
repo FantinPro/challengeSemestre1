@@ -31,7 +31,7 @@
                 Create ad
               </DialogTitle>
 
-              <div class="flex flex-col gap-2 text-black">
+              <div class="flex flex-col gap-2 text-black mt-4">
                 <div class="flex items-center">
                   <div>
                     from :
@@ -45,7 +45,6 @@
 
                 <FormKit
                   v-slot="{ state: { valid }}"
-                  v-model="newAd"
                   type="form"
                   :actions="false"
                   :submit-attrs="{
@@ -57,7 +56,7 @@
                   <FormKit
                     type="textarea"
                     placeholder="Content"
-                    name="content"
+                    name="message"
                     label="Content of the Ad"
                     validation="required|length:1,255"
                     :validation-messages="{
@@ -67,6 +66,7 @@
                   <FormKit
                     type="number"
                     name="price"
+                    :value="5"
                     placeholder="€"
                     :max="1000"
                     :min="1"
@@ -77,6 +77,12 @@
                     }"
                     label="Price of the Ad"
                     help="The higher your offer, the more likely it is to appear, (max 1000€)" />
+
+
+                    <div class="text-xs text-primary-400 my-3">
+                        Once created, your ad will be pending validation. Your ad will be processed as soon as possible by our teams.
+                    </div>
+
                   <div class="mt-auto flex justify-end gap-2">
                     <button
                       type="button"
@@ -89,6 +95,7 @@
                       :disabled="!valid"
                       class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                       <span>Create</span>
+                      <Spin :is-loading="isLoading" />
                     </button>
                   </div>
                 </FormKit>
@@ -110,12 +117,14 @@ import {
   TransitionRoot,
 } from '@headlessui/vue';
 import { ArrowLongRightIcon } from '@heroicons/vue/20/solid';
-import { reactive } from 'vue';
+import { useMutation } from 'vue-query';
+import { toast } from 'vue3-toastify';
+import { createAd } from '../../services/service.ads';
+import { useUserStore } from '../../store/user';
+import Spin from '../Loader/Spin.vue';
 
-const newAd = reactive({
-  content: '',
-  price: 5,
-});
+const userStore = useUserStore()
+const { user } = userStore;
 
 const props = defineProps({
   isOpen: {
@@ -138,8 +147,24 @@ function closeModal() {
   emit('close');
 }
 
+const { isLoading, mutate: createAdMutation } = useMutation((newAd) => createAd(newAd), {
+  onSuccess: () => {
+    toast.success('Ad created');
+    closeModal();
+  },
+  onError: (error) => {
+    toast.error('Something went wrong');
+  },
+});
+
 const handleSubmit = (values) => {
-  console.log(values)
+  createAdMutation({
+    ...values,
+    price: +values.price,
+    startDate: props.startDate,
+    endDate: props.endDate,
+    owner: `/api/users/${user.id}`
+  })
 };
 
 </script>
