@@ -12,6 +12,7 @@ import ManageReports from './views/ManageReports.vue';
 import AdminStats from './views/AdminStats.vue';
 import LayoutDefault from './layouts/LayoutDefault.vue';
 import { ROLES } from './utils/constants';
+import Calendar from './views/Calendar.vue';
 
 const routes = [
   { path: '/register', component: Register },
@@ -94,8 +95,7 @@ const routes = [
           }
           return { path: 'dashboard' };
         },
-        // component à remplacer
-        component: ManageUsers,
+        component: Calendar,
       },
       {
         path: 'manage_ads',
