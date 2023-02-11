@@ -137,9 +137,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pub::class)]
     private Collection $ads;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $stripeCustomerId = null;
-
     #[ORM\OneToMany(mappedBy: 'reportingUser', targetEntity: Report::class)]
     private Collection $reports;
 
@@ -166,6 +163,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['read:user:follow'])]
     public mixed $userToUserId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
 
     public function __construct()
     {
@@ -474,18 +474,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getStripeCustomerId(): ?string
-    {
-        return $this->stripeCustomerId;
-    }
-
-    public function setStripeCustomerId(?string $stripeCustomerId): self
-    {
-        $this->stripeCustomerId = $stripeCustomerId;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Report>
      */
@@ -638,5 +626,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserToUserId(mixed $userToUserId): void
     {
         $this->userToUserId = $userToUserId;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): self
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
     }
 }
