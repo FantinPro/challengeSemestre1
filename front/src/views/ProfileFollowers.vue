@@ -45,7 +45,7 @@
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="user in data" :key="user.id">
-                <UserCard :item="user" />
+                <UserCard :user="user" @update-followers-list="updateFollowersList" />
               </div>
             </div>
           </TabPanel>
@@ -54,7 +54,7 @@
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="user in data" :key="user.id">
-                <UserCard :item="user" @update-followers-list="updateFollowersList" />
+                <UserCard :user="user" @update-followers-list="updateFollowersList" />
               </div>
             </div>
           </TabPanel>
@@ -95,8 +95,7 @@ let selectedTab = ref(
 
 const profile = computed(() => useUserStore().profile);
 
-const updateFollowersList = (data) => {
-  console.log('updateFollowersList', data);
+const updateFollowersList = () => {
   queryClient.invalidateQueries(['followers']);
 };
 
