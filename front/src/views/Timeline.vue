@@ -130,6 +130,10 @@ const { isLoading, isError } = useQuery({
   keepPreviousData: true,
   refetchOnWindowFocus: false,
   onSuccess: ([dataFeed, dataRandomAd]) => {
+    if (dataFeed.length === 0) {
+      return;
+    }
+    hasHit80.value = false;
     const tab = [...feed.value, ...dataFeed];
     // insert dataRandomAd at random position
     if (dataRandomAd) {

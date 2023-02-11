@@ -5,12 +5,8 @@ export const useFeedStore = defineStore('feed', {
   state: () => ({
     feed: [],
     userMessages: [],
-    refetchFeed: false,
   }),
   actions: {
-    async setRefetchFeed(value) {
-      this.refetchFeed = value;
-    },
     async fetchFeed(page) {
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages/feed/v2?page=${page}`, {
