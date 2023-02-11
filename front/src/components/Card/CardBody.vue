@@ -1,25 +1,19 @@
 <template>
   <div class="font-medium text-base">
-    <div v-if="isDeleted" class="text-white">
+    <div v-if="props.item.isDeleted" class="text-white">
       <span class="font-bold text-orange-400">[deleted]</span>
-      <span class="ml-2 text-gray-400">{{ content }}</span>
+      <span class="ml-2 text-gray-400">{{ props.item.content }}</span>
     </div>
     <div v-else>
-      <span>{{ content }}</span>
+      <span>{{ props.item.content }}</span>
     </div>
   </div>
 </template>
 <script setup>
-import { ref } from "vue-demi";
-
 const props = defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
-
-const content = ref(props.item.content);
-const isDeleted = ref(props.item.isDeleted);
-
 </script>

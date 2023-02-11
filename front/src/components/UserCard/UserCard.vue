@@ -3,26 +3,26 @@
     <div class="p-2 flex">
       <img
         class="w-12 h-12 rounded-full"
-        :src="props.user.profilePicture"
+        :src="user.profilePicture"
         alt="avatar" />
       <div class="ml-2 flex-1">
         <div class="flex flex-col">
           <div class="flex justify-between">
             <div class="flex flex-col items-baseline">
               <router-link
-                :to="`/profile/${props.user.pseudo}`"
+                :to="`/profile/${user.pseudo}`"
                 class="font-bold text-white text-lg hover:underline">
-                {{ props.user.pseudo }}
+                {{ user.pseudo }}
               </router-link>
               <router-link
-                :to="`/profile/${props.user.pseudo}`"
+                :to="`/profile/${user.pseudo}`"
                 class="text-base text-gray-400 -mt-1">
-                @{{ props.user.pseudo }}
+                @{{ user.pseudo }}
               </router-link>
             </div>
             <div v-if="!isMe" class="flex items-center p-1 gap-2">
               <button
-                v-if="!props.user.followed"
+                v-if="!user.followed"
                 class="
                   bg-[#fff]
                   text-black
@@ -65,7 +65,7 @@
                 <template v-else>Following</template>
               </button>
               <Menu
-                v-if="isMyProfile && isFollowersTab"
+                v-if="router.currentRoute.value.params.pseudo === useUserStore().user.pseudo && router.currentRoute.value.params.tab === 'followers'"
                 as="div"
                 class="relative p-2 ml-5">
                 <MenuButton
@@ -138,7 +138,7 @@
             </div>
           </div>
           <span class="text-base font-medium text-white mt-1">{{
-            props.user.bio
+            user.bio
           }}</span>
         </div>
       </div>
@@ -148,10 +148,9 @@
 <script setup>
 import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { FlagIcon } from '@heroicons/vue/20/solid';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { ref } from 'vue-demi';
+import { computed, ref, watch } from 'vue-demi';
 import { useUserStore } from '../../store/user';
 
 const props = defineProps({
@@ -161,25 +160,29 @@ const props = defineProps({
   },
 });
 
-const me = ref(useUserStore().user);
+const user = ref(props.user);
+
+watch(
+  () => props.user,
+  (newVal) => {
+    user.value = newVal;
+  },
+);
+
 const router = useRouter();
 const { followUserById, unfollowUserById } = useUserStore();
 
-const isMyProfile = ref(
-  router.currentRoute.value.params.pseudo === useUserStore().user.pseudo
-);
-const isFollowersTab = ref(
-  router.currentRoute.value.params.tab === 'followers'
-);
-const isMe = ref(useUserStore().user.pseudo === props.pseudo);
+const isMe = computed(() => {
+  return useUserStore().user.id === user.value.id;
+});
 const showUnfollowOnHover = ref(false);
 
 const emit = defineEmits(['updateFollowersList']);
 
 const followUser = async () => {
-  const res = await followUserById(props.user.id);
+  const res = await followUserById(user.value.id);
   if (res) {
-    toast.success(`You are now following ${props.user.pseudo} 🙌`);
+    toast.success(`You are now following ${user.value.pseudo} 🙌`);
     emit('updateFollowersList');
   } else {
     toast.error(`Something went wrong 😢`);
@@ -187,9 +190,9 @@ const followUser = async () => {
 };
 
 const unfollowUser = async () => {
-  const res = await unfollowUserById(props.user.id);
+  const res = await unfollowUserById(user.value.id);
   if (res) {
-    toast.success(`You are no longer following ${props.user.pseudo} 😢`);
+    toast.success(`You are no longer following ${user.value.pseudo} 😢`);
     emit('updateFollowersList');
   } else {
     toast.error(`Something went wrong 😢`);
