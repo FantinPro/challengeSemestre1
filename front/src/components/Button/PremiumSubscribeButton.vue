@@ -54,7 +54,7 @@ const $cookies = inject('$cookies');
 
 
   async function fetchPremiumPK() {
-    const res = await fetch('http://localhost:8000/api/premium_subscription',{
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/premium_subscription`,{
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const $cookies = inject('$cookies');
   }
 
   async function cancelSubscribtion() {
-    const res = await fetch('http://localhost:8000/api/premium_subscription',{
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/premium_subscription`,{
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
