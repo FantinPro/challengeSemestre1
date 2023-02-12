@@ -117,10 +117,13 @@ const { isLoading, mutate: createReportMutation } = useMutation(
     onError: (err) => {
       if (err.message.match(/Access Denied/)) {
         toast.error('You cannot report your own message !');
+        closeModal();
       } else if (err.message.match(/You already reported it/)) {
         toast.error('You already reported this message !');
+        closeModal();
       } else {
         toast.error('Something went wrong !');
+        closeModal();
       }
     },
   }

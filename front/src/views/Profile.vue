@@ -16,7 +16,7 @@
         <template #panels>
           <TabPanels>
             <TabPanel>
-              <div class="flex flex-col gap-2 border-t border-[#3b4043]">
+              <div class="flex flex-col border-t border-[#3b4043]">
                 <span v-if="isLoading">Loading...</span>
                 <span v-else-if="isError">Error: {{ error.message }}</span>
                 <div v-for="echo in echoes" :key="echo.id">
@@ -45,7 +45,6 @@ import Card from '../components/Card/Card.vue';
 const { getUserProfileByUsername } = useUserStore();
 const { fetchMessages } = useFeedStore();
 const router = useRouter();
-const queryClient = useQueryClient();
 const tabs = ['Echoes', 'Likes'];
 
 const containerElement = ref();

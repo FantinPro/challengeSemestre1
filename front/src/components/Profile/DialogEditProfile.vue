@@ -116,9 +116,7 @@
                 <div
                   class="h-40 w-full relative"
                   :style="{
-                    backgroundColor: `#${Math.floor(
-                      Math.random() * 16777215
-                    ).toString(16)}`,
+                    backgroundColor: `#${randomColor}`,
                   }">
                   <div
                     class="
@@ -135,7 +133,7 @@
                     <img
                       class="h-full w-full rounded-full object-cover"
                       :src="
-                        profile?.avatar || 'https://i.pravatar.cc/160?img=40'
+                        profile?.profilePicture
                       "
                       alt="" />
                     <button
@@ -220,6 +218,7 @@ import Spin from '../Loader/Spin.vue';
 const router = useRouter();
 const { user, updateProfile } = useUserStore();
 const emit = defineEmits(['close']);
+const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 
 const props = defineProps({
   isOpen: {

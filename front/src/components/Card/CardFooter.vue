@@ -1,9 +1,8 @@
 <template>
   <div class="mt-2 ml-[-10px] flex">
     <button
-      v-if="!props.item.parent"
       class="flex cursor-pointer items-center rounded-full px-2 py-1 hover:bg-[#4c5157]"
-      @click="openReplyMessageDialog">
+      @click.stop="openReplyMessageDialog">
       <svg
         class="h-6 w-6"
         fill="rgb(156, 163, 175)"
@@ -18,7 +17,8 @@
     </button>
     <Menu as="div" class="relative">
       <MenuButton
-        class="flex items-center justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95">
+        class="flex items-center justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95"
+        @click.stop>
         <ArrowPathRoundedSquareIcon
           class="mr-2 h-5 w-5"
           :class="[props.item.shared ? 'text-green-400' : 'text-[#9ca3af]']" />
@@ -41,7 +41,7 @@
                   active ? 'bg-primary-300 text-white' : 'text-gray-900',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                 ]"
-                @click="onClickShare">
+                @click.stop="onClickShare">
                 <ArrowPathRoundedSquareIcon
                   :active="active"
                   class="mr-2 h-5 w-5"

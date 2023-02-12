@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export const maskMessage = async ({ messageId }) => {
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/api/messages/${messageId}`,
@@ -34,3 +35,18 @@ export const fetchFeed = async (page) => {
   }
   return json;
 }
+
+export const fetchMessage = async (messageId) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages/${messageId}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+    },
+  });
+  const json = await response.json();
+  if (!response.ok) {
+    throw new Error(json.detail);
+  }
+  return json;
+};

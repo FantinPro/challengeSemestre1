@@ -33,9 +33,7 @@
       <div
         class="h-40 w-full relative"
         :style="{
-          backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(
-            16
-          )}`,
+          backgroundColor: `#${randomColor}`,
         }">
         <div
           class="
@@ -51,7 +49,7 @@
           ">
           <img
             class="h-full w-full rounded-full object-cover"
-            :src="profile?.avatar || 'https://i.pravatar.cc/160?img=40'"
+            :src="profile?.profilePicture"
             alt="" />
         </div>
       </div>
@@ -234,4 +232,6 @@ const editProfile = () => {
 const closeReportDialog = () => {
   isOpenReportDialog.value = false;
 };
+
+const randomColor = Math.floor(Math.random() * 16777215).toString(16);
 </script>

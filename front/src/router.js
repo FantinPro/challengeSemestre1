@@ -14,6 +14,7 @@ import ManageReports from './views/ManageReports.vue';
 import AdminStats from './views/AdminStats.vue';
 import ManageAds from './views/ManageAds.vue';
 import LayoutDefault from './layouts/LayoutDefault.vue';
+import Echo from './views/Echo.vue';
 import { ROLES } from './utils/constants';
 import Calendar from './views/Calendar.vue';
 
@@ -32,6 +33,7 @@ const routes = [
       { path: '/search', component: Search },
       { path: '/profile/:pseudo', component: Profile },
       { path: '/profile/:pseudo/:tab', component: ProfileFollowers },
+      { path: '/profile/:pseudo/status/:id', component: Echo },
     ],
   },
   {

@@ -1,18 +1,18 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <div class="flex gap-1 items-center">
-        <router-link
-          :to="`/profile/${props.item.creator.pseudo}`"
-          class="font-bold text-gray-200">
+      <div class="flex gap-1 items-baseline">
+        <button
+          class="font-bold text-gray-200 hover:underline"
+          @click.stop="handleGoToProfile">
           {{ props.item.creator.pseudo }}
-        </router-link>
+        </button>
         <CheckBadgeIcon v-if="props.item.creator.isVerified" class="h-4 w-4 text-green-500" />
-        <router-link
-          :to="`/profile/${props.item.creator.pseudo}`"
-          class="text-sm text-gray-400">
+        <button
+          class="text-sm text-gray-400"
+          @click.stop="handleGoToProfile">
           @{{ props.item.creator.pseudo }}
-        </router-link>
+        </button>
         <span class="text-sm text-gray-400"> · </span>
         <span class="text-sm text-gray-400">{{ createdAt }}</span>
       </div>
@@ -32,7 +32,8 @@
           focus-visible:ring-2
           focus-visible:ring-white
           focus-visible:ring-opacity-95
-        ">
+        "
+        @click.stop>
         <EllipsisHorizontalIcon
           class="h-5 w-5 text-violet-200 hover:text-violet-100"
           aria-hidden="true" />
@@ -69,7 +70,7 @@
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                 ]"
                 :disabled="isLoadingMask"
-                @click="deleteMessageMutation">
+                @click.stop="deleteMessageMutation">
                 <TrashIcon
                   :active="active"
                   class="mr-2 h-5 w-5"
@@ -86,7 +87,7 @@
                   active ? 'bg-primary-300 text-white' : 'text-gray-900',
                   'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                 ]"
-                @click="openReportDialog">
+                @click.stop="openReportDialog">
                 <FlagIcon
                   :active="active"
                   class="mr-2 h-5 w-5"
@@ -112,6 +113,7 @@ import { EllipsisHorizontalIcon, TrashIcon, CheckBadgeIcon } from '@heroicons/vu
 import { formatDistance } from 'date-fns';
 import { ref } from 'vue';
 import { useMutation } from 'vue-query';
+import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
 import DialogReport from '../../components/Dialog/DialogReport.vue';
 import { useFeedStore } from '../../store/feed';
@@ -119,6 +121,7 @@ import { useUserStore } from '../../store/user';
 
 const { user } = useUserStore();
 const { deleteMessage } = useFeedStore();
+const router = useRouter();
 
 const props = defineProps({
   item: {
@@ -155,4 +158,8 @@ const { isLoading: isLoadingMask, mutate: deleteMessageMutation } = useMutation(
     },
   }
 );
+
+const handleGoToProfile = () => {
+  router.push('/profile/' + props.item.creator.pseudo);
+};
 </script>
