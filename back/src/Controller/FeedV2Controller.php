@@ -50,7 +50,7 @@ class FeedV2Controller extends AbstractController
                 $message->setShared(true);
             }
 
-            // $message->setWhoHasSharedFromMyFollows($follows);
+            $message->setWhoHasSharedFromMyFollows($follows);
         }
 
         return $messages;
