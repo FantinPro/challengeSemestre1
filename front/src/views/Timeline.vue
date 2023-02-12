@@ -40,7 +40,7 @@
                 Echo
               </button>
             </div>
-            <div class="mt-2 flex flex-col gap-2">
+            <div class="flex flex-col">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error occured</span>
               <div v-for="message in feed" :key="message.id">
@@ -85,7 +85,7 @@
               </div>
             </div>
           </TabPanel>
-          <TabPanel>Content 2</TabPanel>
+          <TabPanel>Available soon</TabPanel>
         </TabPanels>
       </template>
     </HeaderMenu>

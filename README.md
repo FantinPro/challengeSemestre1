@@ -53,3 +53,7 @@ admin@gmail.com / ROLE_ADMIN / password : password
 user@gmail.com / ROLE_USER / password : password 
 notverified@gmail.com / ROLE_USER / password : password (not verified by confirmation email)
 
+## migrations
+
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate --no-interaction
