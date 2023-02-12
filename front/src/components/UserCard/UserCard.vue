@@ -1,5 +1,5 @@
 <template>
-  <div class="border-[#4c5157] border-b">
+  <div :class="!suggestions && 'border-[#4c5157] border-b'">
     <div class="p-2 flex">
       <img
         class="w-12 h-12 rounded-full"
@@ -137,7 +137,7 @@
               </Menu>
             </div>
           </div>
-          <span class="text-base font-medium text-white mt-1">{{
+          <span v-if="!suggestions" class="text-base font-medium text-white mt-1">{{
             user.bio
           }}</span>
         </div>
@@ -158,6 +158,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  suggestions: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const user = ref(props.user);
@@ -177,11 +181,12 @@ const isMe = computed(() => {
 });
 const showUnfollowOnHover = ref(false);
 
-const emit = defineEmits(['updateFollowersList']);
+const emit = defineEmits(['updateFollowersList', 'onFollowUser']);
 
 const followUser = async () => {
   const res = await followUserById(user.value.id);
   if (res) {
+    emit('onFollowUser');
     toast.success(`You are now following ${user.value.pseudo} 🙌`);
     emit('updateFollowersList');
   } else {

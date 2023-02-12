@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\FollowersController;
 use App\Controller\FollowingController;
 use App\Controller\MeController;
+use App\Controller\UserSuggestionsController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,6 +44,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ['read:user', 'read:user:follow']],
             security: "is_granted('ROLE_USER')",
         ),
+        new GetCollection(
+            uriTemplate: '/users/suggestions',
+            controller: UserSuggestionsController::class,
+            normalizationContext: ['groups' => ['read:user']],
+            security: "is_granted('ROLE_USER')",
+        ),
         new Post(),
         new Put(
             uriTemplate: '/users/{id}/change_role',
@@ -66,7 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             paginationEnabled: true,
             paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:user', 'read:users:collection']],
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_USER')",
         ),
     ],
 

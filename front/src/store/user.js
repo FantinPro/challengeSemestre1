@@ -15,8 +15,8 @@ export const useUserStore = defineStore('user', {
     },
 
     unsetPremium() {
-        this.user.roles = this.user.roles.filter((role) => role !== 'ROLE_PREMIUM');
-        localStorage.setItem('echoUser', JSON.stringify(this.user));
+      this.user.roles = this.user.roles.filter((role) => role !== 'ROLE_PREMIUM');
+      localStorage.setItem('echoUser', JSON.stringify(this.user));
     },
 
     setLocalUser(user) {
@@ -155,6 +155,23 @@ export const useUserStore = defineStore('user', {
         throw new Error(users.detail)
       }
       return { users, total };
+    },
+    async fetchUsersSuggestions() {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/suggestions`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          },
+        }
+      );
+      const users = await response.json();
+      if (!response.ok) {
+        throw new Error(users.detail)
+      }
+      return users;
     },
     async updateProfile({
       userId,

@@ -9,9 +9,21 @@
             alt="avatar" />
           <div class="text-xs text-gray-200 ml-5">from @{{ props.item.parent.creator.pseudo }}</div>
         </div>
-
         <div
           class="mr-auto ml-[21px] h-full min-h-[20px] border border-slate-500"></div>
+      </div>
+      <div v-if="props.item.whoHasSharedFromMyFollows?.length" class="flex items-center text-gray-400 px-[50px]">
+        <ArrowUturnDownIcon class="w-4 h-4" />
+        <span class="text-sm ml-2">
+          <template v-for="(userPseudo, index) in props.item.whoHasSharedFromMyFollows.slice(0, 3)" :key="userPseudo">
+            <router-link
+              :to="`/profile/${userPseudo}`"
+              class="text-gray-400 hover:underline"
+            >
+              {{ userPseudo }}</router-link>{{ index != 2 ? index < props.item.whoHasSharedFromMyFollows?.length - 1 ? ', ' : '' : '...' }}
+          </template>
+          shared 
+        </span>
       </div>
       <div class="flex">
         <img
@@ -35,6 +47,7 @@
 import CardBody from './CardBody.vue';
 import CardFooter from './CardFooter.vue';
 import CardHeader from './CardHeader.vue';
+import { ArrowUturnDownIcon } from "@heroicons/vue/24/solid/index.js";
 
 const props = defineProps({
   item: {
