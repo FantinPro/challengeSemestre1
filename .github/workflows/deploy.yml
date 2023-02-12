@@ -29,6 +29,8 @@ jobs:
         echo SENDINBLUE_KEY=${{ secrets.SENDINBLUE_KEY }} >> .env
         echo "FRONT_END_URL=http://localhost:5000" >> .env
         echo "ALLOW_DOCS=true" >> .env
+        echo "STRIPE_PK=toto" >> .env
+        echo "PREMIUM_PRICE_ID=toto" >> .env
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
