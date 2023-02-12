@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Pub;
 use App\Entity\User;
 use App\Service\PaymentService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use http\Env\Request;
+use Psr\Log\LoggerInterface;
+use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +26,8 @@ class PremiumSubscriptionController extends AbstractController
 {
     public function __construct(
         private readonly PaymentService $paymentService,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+
     )
     {
     }
@@ -104,6 +109,28 @@ class PremiumSubscriptionController extends AbstractController
                         $this->em->flush();
                      }
                 }
+                break;
+            case 'payment_intent.succeeded':
+                $paymentIntent = $event->data->object; // contains a \Stripe\PaymentIntent
+                // Then define and call a method to handle the successful payment intent.
+                // handlePaymentIntentSucceeded($paymentIntent);
+                $checkouts = Session::all([
+                    'payment_intent' => $paymentIntent->id,
+                ])->data;
+
+                if (!$checkouts) {
+                    return new Response('Invalid payload', 400);
+                }
+
+                foreach ($checkouts as $checkout) {
+                    $pub = $this->em->getRepository(Pub::class)->findOneBy(['paymentIntentId' => $checkout->id]);
+                    if ($pub) {
+                        $pub->setStatus(Pub::STATUS_PAYED);
+                        $this->em->persist($pub);
+                        $this->em->flush();
+                    }
+                }
+
                 break;
             default:
                 // Unexpected event type

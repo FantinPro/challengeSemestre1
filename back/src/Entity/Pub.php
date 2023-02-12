@@ -123,6 +123,9 @@ class Pub
     #[Groups(['read:ad'])]
     private $updated;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paymentIntentId = null;
+
     public function __construct()
     {
         $this->stats = new ArrayCollection();
@@ -233,7 +236,7 @@ class Pub
     public function setStatus(string $status): self
     {
         $this->status = $status;
-
+        
         return $this;
     }
 
@@ -271,6 +274,18 @@ class Pub
         return count(array_filter($this->stats->toArray(), function (Stat $stat) {
             return $stat->isClick();
         }));
+    }
+
+    public function getPaymentIntentId(): ?string
+    {
+        return $this->paymentIntentId;
+    }
+
+    public function setPaymentIntentId(?string $paymentIntentId): self
+    {
+        $this->paymentIntentId = $paymentIntentId;
+
+        return $this;
     }
 
 }
