@@ -72,4 +72,3 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "api-platform-challenge"
           appdir: back
-          procfile: "web: heroku-php-apache2 public/"
