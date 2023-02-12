@@ -2,7 +2,7 @@
   <div
     :class="[
       'flex items-center px-3 py-4 hover:cursor-pointer',
-      type === 'searchBar' ? 'bg-neutral-800 hover:bg-neutral-700/60' : ''
+      type === 'searchBar' ? 'bg-neutral-800 hover:bg-neutral-600' : ''
     ]"
   >
     <img

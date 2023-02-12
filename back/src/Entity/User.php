@@ -73,7 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             paginationEnabled: true,
             paginationItemsPerPage: 20,
             normalizationContext: ['groups' => ['read:user', 'read:users:collection']],
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_USER')",
         ),
     ],
 
