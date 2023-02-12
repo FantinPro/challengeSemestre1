@@ -189,6 +189,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->shares = new ArrayCollection();
         $random = random_int(1, 100);
         $this->profilePicture = "https://avatars.dicebear.com/api/male/$random.svg";
+        $this->setRoles([self::ROLE_USER]);
     }
 
     public function getId(): ?int
