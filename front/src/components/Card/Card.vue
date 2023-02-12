@@ -7,17 +7,18 @@
     "
     @click.stop="onClickEcho">
     <div class="flex flex-col p-2 pt-3">
-      <div v-if="props.item.whoHasSharedFromMyFollows?.length" class="flex items-center text-gray-400 px-[50px]">
+      <div v-if="props.item.whoHasSharedFromMyFollows?.length" class="flex items-center text-gray-400 ml-[50px]">
         <ArrowUturnDownIcon class="w-4 h-4" />
-        <span class="text-sm ml-2">
+        <span class="flex text-sm ml-2 gap-1">
           <div v-for="(userPseudo, index) in props.item.whoHasSharedFromMyFollows.slice(0, 3)" :key="userPseudo">
-            <router-link
-              :to="`/profile/${userPseudo}`"
+            <button
               class="text-gray-400 hover:underline"
+              @click.stop="handleGoToProfile(userPseudo)"
             >
-              {{ userPseudo }}</router-link>{{ index != 2 ? index < props.item.whoHasSharedFromMyFollows?.length - 1 ? ', ' : '' : '...' }}
+              {{ userPseudo }}
+            </button>{{ index != 2 ? index < props.item.whoHasSharedFromMyFollows?.length - 1 ? ', ' : '' : '...' }}
           </div>
-          shared 
+          shared
         </span>
       </div>
       <div class="flex">
@@ -66,5 +67,9 @@ const upsertMessageFromFeed = (message) => {
 
 const onClickEcho = () => {
   router.push(`/profile/${props.item.creator.pseudo}/status/${props.item.id}`);
+};
+
+const handleGoToProfile = (pseudo) => {
+  router.push(`/profile/${pseudo}`);
 };
 </script>

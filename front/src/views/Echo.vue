@@ -53,8 +53,8 @@
                       border border-slate-500
                     " />
                 </div>
-                <div class="ml-2 flex flex-col w-full" @click.stop="onClickProfile">
-                  <CardHeader :item="echo.parent" @delete-one-message-from-feed="onClickProfile" />
+                <div class="ml-2 flex flex-col w-full">
+                  <CardHeader :item="echo.parent" @delete-one-message-from-feed="onClickProfile(echo.parent.creator.pseudo)" />
                   <span class="text-base font-medium">
                     {{ echo.parent.content }}
                   </span>
@@ -179,9 +179,9 @@
                     v-if="echo.parent"
                     class="flex text-base font-medium text-gray-400">
                     Replying to
-                    <div class="ml-1 text-primary-400 hover:underline cursor-pointer" @click.stop="onClickProfile">
+                    <router-link class="ml-1 text-primary-400 hover:underline cursor-pointer" :to="`/profile/${echo.parent.creator.pseudo}`">
                       @{{ echo.parent.creator.pseudo }}
-                    </div>
+                    </router-link>
                   </div>
                   <span class="text-lg font-medium">{{ echo.content }}</span>
                   <span class="text-base text-gray-400 mt-2">{{
@@ -354,7 +354,7 @@ const { isLoading: isLoadingMask, mutate: deleteMessageMutation } = useMutation(
   }
 );
 
-const onClickProfile = () => {
-  router.push('/profile/' + echo.value.creator.pseudo);
+const onClickProfile = (pseudo) => {
+  router.push('/profile/' + pseudo ? pseudo : echo.value.creator.pseudo);
 };
 </script>

@@ -100,7 +100,7 @@ class Message
     private Collection $usersSharingMessage;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'comments')]
-    #[Groups(['read:message:feed', 'write:message', 'read:message+thread'])]
+    #[Groups(['read:message:feed', 'write:message', 'read:message+thread', 'read:message:search'])]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class, cascade: ['remove'])]
