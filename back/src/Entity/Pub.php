@@ -49,7 +49,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
         ),
         new Put(
             denormalizationContext: ['groups' => ['put:ad']],
-            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user and object.getStatus() != 'accepted'",
+            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user and object.getStatus() == 'pending'",
         ),
         new Patch(
             denormalizationContext: ['groups' => ['patch:ad']],

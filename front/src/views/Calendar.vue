@@ -44,7 +44,7 @@
                       </p>
                     </div>
                     <button
-                      v-if="ad.status !== 'payed' && ad.status !== 'rejected'"
+                      v-if="ad.status === 'pending'"
                       type="button"
                       class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       @click="editAd(ad)">
