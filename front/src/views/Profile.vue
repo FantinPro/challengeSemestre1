@@ -17,10 +17,17 @@
           <TabPanels>
             <TabPanel>
               <div class="flex flex-col border-t border-[#3b4043]">
-                <span v-if="isLoading">Loading...</span>
-                <span v-else-if="isError">Error: {{ error.message }}</span>
+                <span v-if="isLoading">
+                  <EchoLoader :quantity="10" />
+                </span>
+                <span v-else-if="isError">
+                  <div class="text-base text-gray-400 font-medium flex justify-center p-4">{{ error ? error : 'Please try again later.' }}</div>
+                </span>
                 <div v-for="echo in echoes" :key="echo.id">
                   <Card :item="echo" @delete-one-message-from-feed="deleteOneMessageFromFeed" />
+                </div>
+                <div v-if="isFetching" class="mt-4">
+                  <EchoLoader :quantity="1" />
                 </div>
               </div>
             </TabPanel>
@@ -37,6 +44,7 @@ import { onMounted, ref, watch } from 'vue-demi';
 import { useQuery, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import Card from '../components/Card/Card.vue';
+import EchoLoader from '../components/Loader/EchoLoader.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import ProfilHeader from '../components/Profile/ProfileHeader.vue';
 import { useFeedStore } from '../store/feed';
@@ -78,7 +86,7 @@ const updateFollow = () => {
   queryClient.invalidateQueries(['profile']);
 };
 
-const { isLoading, isError } = useQuery({
+const { isLoading, isError, isFetching } = useQuery({
   queryKey: ['profile', page],
   queryFn: async () => {
     const [profile] = await Promise.all([getUserProfileByUsername(username.value)]);
@@ -100,6 +108,7 @@ const { isLoading, isError } = useQuery({
   },
   keepPreviousData: true,
   refetchOnWindowFocus: false,
+  maxRetries: 5,
 });
 
 watch(

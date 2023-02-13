@@ -62,8 +62,8 @@
                 <EchoLoader />
               </span>
               <span v-else-if="isError">
-                <div class="flex p-4 justify-center bg-slate-600">
-                  <span class="text-lg font-bold">Something went wrong</span>
+                <div class="flex p-4 justify-center">
+                  <span class="text-base font-medium">Please try again later.</span>
                 </div>
               </span>
               <div v-for="message in feed" :key="message.id">
@@ -75,6 +75,9 @@
                   :item="message"
                   @delete-one-message-from-feed="deleteOneMessageFromFeed"
                   @upsert-message-from-feed="upsertMessageFromFeed" />
+              </div>
+              <div v-if="isFetching" class="mt-4">
+                <EchoLoader :quantity="1" />
               </div>
             </div>
           </TabPanel>
@@ -94,8 +97,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useMutation, useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
-import Ad from '../components/Card/Ad.vue';
 import EchoLoader from '../components/Loader/EchoLoader.vue';
+import Ad from '../components/Card/Ad.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import { getRandomAd, createImpressionForAd } from '../services/service.ads';
 import { fetchFeed } from '../services/service.messages';
