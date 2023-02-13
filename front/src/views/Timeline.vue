@@ -131,6 +131,7 @@ onMounted(() => {
 
 userStore.$subscribe(async (mutation) => {
   if(mutation.events.key === "refetchFeed") {
+    console.log('refecth feed')
     feed.value = [];
     page.value = 1;
     hasHit80.value = false;
