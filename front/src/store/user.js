@@ -37,7 +37,6 @@ export const useUserStore = defineStore('user', {
       const userToken = await response.json();
 
       if (userToken && userToken.token) {
-        console.log(userToken);
         $cookies.set('echo_user_token', userToken.token);
         localStorage.setItem('refreshToken', userToken.refresh_token);
         const decoded = jwt_decode(userToken.token);
@@ -83,8 +82,6 @@ export const useUserStore = defineStore('user', {
         localStorage.setItem('refreshToken', userToken.refresh_token);
 
         const decoded = jwt_decode(userToken.token);
-
-        console.log(decoded);
 
         const userRes = await fetch(
           `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,

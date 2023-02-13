@@ -266,6 +266,5 @@ const { isLoading, mutate: saveMutation } = useMutation(
 );
 
 const openModalUploadAvatar = () => {
-  console.log('openModalUploadAvatar');
 };
 </script>

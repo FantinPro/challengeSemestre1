@@ -40,9 +40,6 @@ onMounted(() => {
 
 const submit = async (values) => {
   const response = await userStore.signIn(values);
-  console.log('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩')
-  console.log(response)
-  console.log('🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦')
   if (response.ok) {
     toast.success('Login successfull!')
   } else {

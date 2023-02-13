@@ -152,7 +152,6 @@ const { isLoading: isLoadingMessages, data: messages } = useQuery(
   ['messages_search_button', debouncedSearch],
   () => fetchMessages(1, { content: debouncedSearch.value })
     .then((res) => {
-      console.log(res);
       if (!res) return [];
       if (res.length > 5) return res.slice(0, 5);
       return res;
