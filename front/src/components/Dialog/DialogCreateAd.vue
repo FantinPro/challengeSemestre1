@@ -27,19 +27,21 @@
               class="flex w-full max-w-md transform flex-col overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
               <DialogTitle
                 as="h3"
-                class="text-lg font-medium leading-6 text-gray-900">
+                class="text-lg font-medium leading-6 text-gray-900 mb-2">
                 Create ad
               </DialogTitle>
+
+              <v-date-picker :min-date="new Date()" is-expanded mode="date" :attributes="attributes" @dayclick="onDayClick"/>
 
               <div class="flex flex-col gap-2 text-black mt-4">
                 <div class="flex items-center">
                   <div>
                     from :
-                    <strong>{{ props.startDate.toLocaleDateString() }}</strong>
+                    <strong>{{ getStartDate().toLocaleDateString() }}</strong>
                   </div>
                   <ArrowLongRightIcon class="mx-4 h-4 w-4" />
                   <div>
-                    to : <strong>{{ props.endDate.toLocaleDateString() }}</strong>
+                    to : <strong>{{ getEndDate().toLocaleDateString() }}</strong>
                   </div>
                 </div>
 
@@ -122,9 +124,41 @@ import { toast } from 'vue3-toastify';
 import { createAd } from '../../services/service.ads';
 import { useUserStore } from '../../store/user';
 import Spin from '../Loader/Spin.vue';
+import {ref} from "vue";
 
 const userStore = useUserStore()
 const { user } = userStore;
+
+const attributes = ref([{
+  highlight: true,
+  dates: [{start: new Date(), span: 7}],
+}]);
+
+function getStartDate() {
+  console.log('getStart', new Date(attributes.value[0].dates[0].start));
+  return new Date(attributes.value[0].dates[0].start);
+}
+
+function getEndDate() {
+
+  const date = getStartDate();
+  date.setDate(date.getDate() + 7);
+  console.log('getEnd', date);
+  return date;
+}
+
+function onDayClick(day) {
+
+
+  const clickedDate = new Date(day.id);
+  const today = new Date();
+
+  if(clickedDate.getDate() < today.getDate() && clickedDate.getMonth() <= today.getMonth() && clickedDate.getFullYear() <= today.getFullYear()) {
+    return;
+  }
+
+  attributes.value[0].dates = [{start: new Date(day.id), span: 7}];
+}
 
 const props = defineProps({
   isOpen: {
@@ -162,8 +196,8 @@ const handleSubmit = (values) => {
   createAdMutation({
     ...values,
     price: +values.price,
-    startDate: props.startDate,
-    endDate: props.endDate,
+    startDate: getStartDate(),
+    endDate: getEndDate(),
     owner: `/api/users/${user.id}`
   })
 };

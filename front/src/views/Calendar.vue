@@ -3,7 +3,7 @@
     <div class="w-full flex flex-col justify-center">
 
       <div class="flex-[0.5] mb-2">
-        <v-date-picker :min-date="new Date()" is-expanded mode="date" :attributes="attributes" @dayclick="onDayClick"/>
+
       </div>
 
       <button
@@ -13,7 +13,7 @@
         <span>Create ad</span>
       </button>
 
-      <DialogCreateAd :is-open="isCreateAdDialogOpen" :start-date="getStartDate()" :end-date="getEndDate()" @close="closeDialog" />
+      <DialogCreateAd :is-open="isCreateAdDialogOpen" @close="closeDialog" />
     </div>
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-md">
@@ -65,10 +65,7 @@ const date = ref(null);
 const isCreateAdDialogOpen = ref(false);
 import {CreditCardIcon, CalendarIcon} from "@heroicons/vue/24/solid/index.js";
 
-const attributes = ref([{
-  highlight: true,
-  dates: [{start: new Date(), span: 7}],
-}]);
+
 
 
 function getBgColor(status) {
@@ -84,18 +81,7 @@ function getBgColor(status) {
   }
 }
 
-function getStartDate() {
-  console.log('getStart', new Date(attributes.value[0].dates[0].start));
-  return new Date(attributes.value[0].dates[0].start);
-}
 
-function getEndDate() {
-
-  const date = getStartDate();
-  date.setDate(date.getDate() + 7);
-  console.log('getEnd', date);
-  return date;
-}
 
 async function fetchAds() {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs`, {
@@ -114,18 +100,6 @@ async function fetchAds() {
 
 const ads = useQuery('ads', fetchAds);
 
-function onDayClick(day) {
-
-
-  const clickedDate = new Date(day.id);
-  const today = new Date();
-
-  if(clickedDate.getDate() < today.getDate() && clickedDate.getMonth() <= today.getMonth() && clickedDate.getFullYear() <= today.getFullYear()) {
-    return;
-  }
-
-  attributes.value[0].dates = [{start: new Date(day.id), span: 7}];
-}
 
 const openDialog = () => {
   isCreateAdDialogOpen.value = true;
