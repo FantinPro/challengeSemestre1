@@ -12,7 +12,7 @@
         pr-10
         text-sm
         leading-5
-        text-black
+        text-white
         focus:ring-0
         rounded-full
       "
