@@ -58,7 +58,7 @@
               </button>
             </div>
             <div class="flex flex-col">
-              <span v-if="isLoading">
+              <span v-if="isLoading || isFetching">
                 <EchoLoader />
               </span>
               <span v-else-if="isError">Error occured</span>
@@ -130,10 +130,10 @@ userStore.$subscribe((mutation) => {
 
 const feed = ref([]);
 
-const { isLoading, isError } = useQuery({
+const { isLoading, isFetching, isError } = useQuery({
   queryKey: ['feedv2', page],
   queryFn: () => Promise.all([fetchFeed(page.value), getRandomAd()]),
-  keepPreviousData: true,
+  keepPreviousData: false,
   refetchOnWindowFocus: false,
   onSuccess: async ([dataFeed, dataRandomAd]) => {
     if (dataFeed.length === 0) {
