@@ -54,6 +54,18 @@ class UserEmailService
         }
     }
 
+    public function sendAdRejectedMail(User $user) {
+        $sendEmail = new SendSmtpEmail();
+        $sendEmail['to'] = [["email" => $user->getEmail(), "name" => 'test']];
+        $sendEmail['templateId'] = 12;
+
+        try {
+            $response = $this->apiInstance->sendTransacEmail($sendEmail);
+        } catch (\Exception $e) {
+            echo 'Exception when calling AccountApi->getAccount: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
     public function sendAdPaymentLink(User $user, string $paymentLink) {
         $sendEmail = new SendSmtpEmail();
         $sendEmail['to'] = [["email" => $user->getEmail(), "name" => 'test']];

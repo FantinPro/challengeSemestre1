@@ -41,6 +41,9 @@ class PubsSubscriber implements EventSubscriberInterface
             if($body->status === 'accepted') {
                 $this->paymentService->createAdPaymentLink($pub);
             }
+            if($body->status === 'rejected') {
+                $this->paymentService->handleAdRejected($pub);
+            }
         }
     }
 }
