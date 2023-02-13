@@ -28,7 +28,7 @@
               <div class="flex gap-2 pb-3">
                 <div class="flex flex-col">
                   <img
-                    class="h-12 w-12 min-w-[48px] rounded-full"
+                    class="h-12 w-12 min-w-[48px] rounded-full object-cover"
                     :src="props.message.creator.profilePicture"
                     alt="avatar" />
                   <div
@@ -43,7 +43,7 @@
               <div class="flex gap-2">
                 <div class="flex flex-col">
                   <img
-                    class="h-12 w-12 min-w-[48px] rounded-full"
+                    class="h-12 w-12 min-w-[48px] rounded-full object-cover"
                     :src="user.profilePicture"
                     alt="avatar" />
                 </div>

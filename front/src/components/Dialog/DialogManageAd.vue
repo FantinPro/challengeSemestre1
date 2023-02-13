@@ -44,7 +44,7 @@
                 <div class="my-4 flex flex-col gap-3  text-black">
                   <div class="flex justify-center">
                     <img
-                      class="h-12 rounded-full"
+                      class="h-12 rounded-full object-cover"
                       :src="props.ad.owner.profilePicture"
                       alt="" />
                   </div>

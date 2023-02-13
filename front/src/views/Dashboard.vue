@@ -86,7 +86,7 @@
           <div class="group flex items-center gap-2">
             <img class="h-6 w-6 rotate-180" src="/back.svg" />
             <div>Back to App</div>
-            <img class="ml-2 h-5" :src="user.profilePicture" alt="">
+            <img class="ml-2 h-5 object-cover" :src="user.profilePicture" alt="">
           </div>
         </MenuButton>
       </Menu>

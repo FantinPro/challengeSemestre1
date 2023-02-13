@@ -44,7 +44,7 @@
       <div v-if="props.item.parent" class="mb-4 flex">
         <div class="flex min-w-max flex-col">
           <img
-            class="h-12 w-12 rounded-md"
+            class="h-12 w-12 rounded-md object-cover"
             :src="props.item.parent.creator.profilePicture"
             alt="avatar" />
           <div
@@ -75,7 +75,7 @@
       </div>
       <div class="flex">
         <img
-          class="h-12 w-12 rounded-full"
+          class="h-12 w-12 rounded-full object-cover"
           :src="props.item.creator.profilePicture"
           alt="avatar" />
         <div class="ml-2 flex-1">

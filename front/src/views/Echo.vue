@@ -35,7 +35,7 @@
               <div v-if="echo.parent" class="mb-4 flex">
                 <div class="flex min-w-max flex-col">
                   <img
-                    class="h-12 w-12 rounded-md"
+                    class="h-12 w-12 rounded-md object-cover"
                     :src="echo.parent.creator.profilePicture"
                     alt="avatar" />
                   <div
@@ -61,7 +61,7 @@
               <div class="flex justify-between">
                 <div class="flex items-center gap-2">
                   <img
-                    class="h-12 w-12 rounded-full"
+                    class="h-12 w-12 rounded-full object-cover"
                     :src="echo.creator.profilePicture"
                     alt="avatar" />
                   <router-link

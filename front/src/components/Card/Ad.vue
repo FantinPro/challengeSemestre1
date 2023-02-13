@@ -1,7 +1,7 @@
 <template>
   <div class="flex p-2 hover:bg-opacity-10 hover:bg-black">
     <img
-      class="h-12 w-12 rounded-full"
+      class="h-12 w-12 rounded-full object-cover"
       :src="props.item.owner.profilePicture"
       alt="avatar" />
     <div class="ml-2 flex-1 flex flex-col">

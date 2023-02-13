@@ -4,7 +4,7 @@
       <img
         v-if="user.profilePicture"
         :src="user.profilePicture"
-        class="w-10 h-10 rounded-full"
+        class="w-10 h-10 rounded-full object-cover"
         alt="avatar" />
       <div v-else class="w-10 h-10 rounded-full bg-gray-400" />
       <div class="flex-1 ml-1">
