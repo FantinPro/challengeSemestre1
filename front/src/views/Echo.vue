@@ -310,12 +310,7 @@ watch(
 const { isLoading, isError } = useQuery({
   queryKey: ['echo', username, echoId],
   queryFn: async () => {
-    const echo = await fetchMessage(echoId.value);
-    // if username is not the same as the creator of the echo redirect to 404
-    if (username.value !== echo.creator.pseudo) {
-      router.push('/404');
-    }
-    return echo;
+    return fetchMessage(echoId.value);
   },
   onSuccess: (data) => {
     echo.value = data;
