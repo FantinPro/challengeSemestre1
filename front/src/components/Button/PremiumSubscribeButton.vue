@@ -1,7 +1,7 @@
 <template>
 
   <button
-      v-if="!isPremium && !premiumLink.isLoading.value"
+      v-if="!isPremium && !premiumLink.isLoading.value && !isAdmin"
       type="button"
       @click="pay"
       class="
@@ -19,7 +19,7 @@
   </button>
 
   <button
-      v-if="isPremium && !premiumLink.isLoading.value"
+      v-if="isPremium && !premiumLink.isLoading.value && !isAdmin"
       type="button"
       @click="cancel.mutateAsync"
       :disabled="cancel.isLoading.value"
@@ -52,6 +52,8 @@ const $cookies = inject('$cookies');
   const href = ref('');
 
 
+  const userStore = useUserStore();
+  const isAdmin = userStore.user?.roles?.includes('ROLE_ADMIN');
 
   async function fetchPremiumPK() {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/premium_subscription`,{
