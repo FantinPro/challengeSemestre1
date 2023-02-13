@@ -44,7 +44,7 @@
                       </p>
                     </div>
                     <button
-                      v-if="ad.status !== 'payed'"
+                      v-if="ad.status !== 'payed' && ad.status !== 'rejected'"
                       type="button"
                       class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       @click="editAd(ad)">
@@ -57,7 +57,7 @@
                   </div>
                 </div>
                 <div class="mt-2 sm:flex sm:justify-between">
-                  <div class="sm:flex">
+                  <div class="gap-3 sm:flex">
                     <p
                       class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                       <CreditCardIcon
@@ -66,7 +66,16 @@
                       {{ ad.price }}€
                     </p>
 
-                    {{ ad.status }}
+                    <a
+                      :href="ad.link"
+                      target="_blank"
+                      class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                      <LinkIcon
+                        class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true" />
+                      {{ ad.link }}
+                    </a>
+
                     <p
                       v-if="ad.status === 'payed'"
                       class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
@@ -112,6 +121,7 @@ import {
   CalendarIcon,
   CreditCardIcon,
   EyeIcon,
+  LinkIcon,
 } from '@heroicons/vue/24/solid/index.js';
 import { ref } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';

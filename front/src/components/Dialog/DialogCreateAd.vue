@@ -83,7 +83,7 @@
                       length: 'Content must be between 1 and 255 characters',
                       url: 'Please enter a valid URL',
                     }"
-                    help="Maximum 255 characters" />
+                    help="Add a valid URL, your link will be attached to the 'sponsored' button" />
                   <FormKit
                     type="number"
                     name="price"
