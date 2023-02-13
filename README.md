@@ -57,3 +57,4 @@ notverified@gmail.com / ROLE_USER / password : password (not verified by confirm
 
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate --no-interaction
+dazd
