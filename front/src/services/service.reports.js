@@ -19,9 +19,9 @@ export const createReport = async ({ messageId, userId, type }) => {
   return json;
 };
 
-export const getAllMessagesWithAtLeast2Reports = async (page, isDeleted) => {
+export const getAllMessagesWithAtLeast2Reports = async (page, isDeleted, { orderBy = 'created', order = 'asc' } = {}) => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/messages/reports?page=${page}&isDeleted=${isDeleted}`,
+    `${import.meta.env.VITE_API_URL}/api/messages/reports?page=${page}&isDeleted=${isDeleted}&order[${orderBy}]=${order}`,
     {
       method: 'GET',
       headers: {

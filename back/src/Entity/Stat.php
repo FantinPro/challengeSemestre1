@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new Post(
-            security: "is_granted('ROLE_USER') and object.getFromUser() == user",
+            securityPostDenormalize: "is_granted('ROLE_USER') and object.getFromUser() == user",
         ),
         new Patch(
             denormalizationContext: ['groups' => ['patch:stat']],
@@ -41,13 +41,15 @@ class Stat
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['patch:stat'])]
+    #[Groups(['read:stat', 'patch:stat'])]
     private ?bool $click = null;
 
     #[ORM\ManyToOne(inversedBy: 'stats')]
+    #[Groups(['read:stat', 'write:stat'])]
     private ?Pub $ad = null;
 
     #[ORM\ManyToOne(inversedBy: 'stats')]
+    #[Groups(['read:stat', 'write:stat'])]
     private ?User $fromUser = null;
 
     #[Timestampable(on: 'create')]

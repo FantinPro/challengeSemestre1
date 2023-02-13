@@ -20,6 +20,7 @@
             <th scope="col" class="px-6 py-4 font-medium text-white">Price</th>
             <th scope="col" class="px-6 py-4 font-medium text-white">Start</th>
             <th scope="col" class="px-6 py-4 font-medium text-white">End</th>
+            <th scope="col" class="px-6 py-4 font-medium text-white">Created At</th>
             <th scope="col" class="px-6 py-4 font-medium text-white"></th>
           </tr>
         </thead>
@@ -82,6 +83,11 @@
               <td class="px-6 py-4">
                 <div class="font-medium text-white">
                   {{ new Date(ad.endDate).toLocaleDateString() }}
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="font-medium text-white">
+                  {{ new Date(ad.created).toLocaleDateString() }}
                 </div>
               </td>
               <td class="px-6 py-4">

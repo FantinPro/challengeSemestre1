@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -41,6 +43,7 @@ use Symfony\Component\Validator\Constraints\Choice;
     message: 'You already reported it.',
     errorPath: 'reportedMessage',
 )]
+#[ApiFilter(OrderFilter::class, properties: ['created'], arguments: ['orderParameterName' => 'order'])]
 class Report
 {
 

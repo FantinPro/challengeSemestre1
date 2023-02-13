@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -79,6 +80,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: ['groups' => ['write:message']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['content' => 'ipartial', 'creator' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['created'], arguments: ['orderParameterName' => 'order'])]
 class Message
 {
     #[ORM\Id]
