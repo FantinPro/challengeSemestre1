@@ -38,9 +38,6 @@
   </button>
 </template>
 
-
-
-
 <script setup>
 import {inject, onMounted, ref} from 'vue';
 import {useMutation, useQuery} from "vue-query";
@@ -95,20 +92,27 @@ const $cookies = inject('$cookies');
 
     if(premiumSubscription && premiumSubscription === "success" ) {
       toast.success('Premium subscription successful')
+      setTimeout(() => {
+        userStore.refreshToken()
+      }, 3000)
+
+      // clear query params
+      urlParams.delete('premium_subscription');
     }
   })
 
-  const store = useUserStore()
-
   const premiumLink = useQuery(['premiumLink'], fetchPremiumPK, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      console.log(data)
+
       if (data?.premium === "active") {
         isPremium.value = true
-        store.setPremium()
+
+
       }
       if (data?.premium === "link") {
         isPremium.value = false
-        store.unsetPremium()
+
         href.value = data.url
       }
     }
@@ -116,9 +120,8 @@ const $cookies = inject('$cookies');
 
   const cancel = useMutation(cancelSubscribtion, {
     onSuccess: async () => {
-
-      store.unsetPremium()
       await premiumLink.refetch.value()
+      await userStore.refreshToken()
       toast.success('Premium subscription canceled')
     },
     onError: async () => {

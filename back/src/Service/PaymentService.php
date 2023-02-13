@@ -139,5 +139,10 @@ class PaymentService
         ];
     }
 
+    public function handleAdRejected(Pub $pub): void
+    {
+        $this->userEmailService->sendAdRejectedMail($pub->getOwner());
+    }
+
 }
 

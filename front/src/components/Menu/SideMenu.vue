@@ -54,7 +54,7 @@
         </svg>
         <p class="hidden md:flex">Messages</p>
       </MenuButton>
-      <MenuButton v-slot="{ isActive }" :to="`/profile/${pseudo}`">
+      <MenuButton v-slot="{ isActive }" :to="`/profile/${userStore.user.pseudo}`">
         <svg
           v-if="isActive"
           viewBox="0 0 24 24"
@@ -97,17 +97,8 @@ import Logo from '../Logo/Logo.vue';
 import { ROLES } from '../../utils/constants';
 
 const userStore = useUserStore();
-const { user } = userStore;
-let pseudo = ref(user.pseudo);
-
-watch(
-  () => useUserStore().user.pseudo,
-  (newPseudo) => {
-    pseudo.value = newPseudo;
-  }
-);
 
 const isAllowToGoToDashboard = computed(() => {
-  return user.roles.some((role) => [ROLES.ROLE_ADMIN, ROLES.ROLE_MODERATOR, ROLES.ROLE_PREMIUM].includes(role))
+  return userStore.user.roles.some((role) => [ROLES.ROLE_ADMIN, ROLES.ROLE_MODERATOR, ROLES.ROLE_PREMIUM].includes(role))
 });
 </script>
