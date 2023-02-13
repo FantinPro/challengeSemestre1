@@ -30,7 +30,24 @@
             <div class="flex justify-end border-b border-[#4c5157] pb-2 pr-2">
               <button
                 type="button"
-                class="inline-flex justify-center rounded-full border border-transparent bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50"
+                class="
+                  inline-flex
+                  justify-center
+                  rounded-full
+                  border border-transparent
+                  bg-slate-200
+                  px-4
+                  py-1
+                  text-sm
+                  font-bold
+                  text-slate-900
+                  hover:bg-slate-200
+                  focus:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-blue-500
+                  focus-visible:ring-offset-2
+                  disabled:opacity-50
+                "
                 :disabled="
                   isLoading ||
                   newMessage.length === 0 ||
@@ -41,41 +58,17 @@
               </button>
             </div>
             <div class="flex flex-col">
-              <span v-if="isLoading">Loading...</span>
-              <span v-else-if="isError">Error occured</span>
+              <span v-if="isLoading || isFetching">
+                <EchoLoader />
+              </span>
+              <span v-else-if="isError">
+                <div class="flex p-4 justify-center bg-slate-600">
+                  <span class="text-lg font-bold">Something went wrong</span>
+                </div>
+              </span>
               <div v-for="message in feed" :key="message.id">
                 <div v-if="message.isAd" class="border-b border-[#4c5157]">
-                  <div class="flex flex-col gap-2 p-2">
-                    <div class="flex">
-                      <img
-                        class="h-12 w-12 rounded-full"
-                        :src="message.owner.profilePicture"
-                        alt="avatar" />
-                      <div class="ml-2 flex-1 flex flex-col">
-                        <div class="flex gap-1 items-center">
-                          <router-link
-                            :to="`/profile/${message.owner.pseudo}`"
-                            class="font-bold text-gray-200">
-                            {{ message.owner.pseudo }}
-                          </router-link>
-                          <CheckBadgeIcon class="h-4 w-4 text-green-500" />
-                          <router-link
-                            :to="`/profile/${message.owner.pseudo}`"
-                            class="text-sm text-gray-400">
-                            @{{message.owner.pseudo }}
-                          </router-link>
-                        </div>
-                        <div>
-                            {{message.message }}
-                        </div>
-                      </div>
-                    </div>
-                    <span
-                      class="ease flex w-max cursor-pointer items-center rounded-lg bg-gray-200 p-1 text-[10px] font-semibold text-gray-500 opacity-60 transition duration-300 active:bg-gray-300">
-                      Sponsored
-                      <ArrowUpRightIcon class="ml-1 h-4 w-4" />
-                    </span>
-                  </div>
+                  <Ad :item="message" />
                 </div>
                 <Card
                   v-else
@@ -85,7 +78,11 @@
               </div>
             </div>
           </TabPanel>
-          <TabPanel>Available soon</TabPanel>
+          <TabPanel>
+            <div class="flex p-4 justify-center bg-slate-600">
+              <span class="text-lg font-bold">Available soon ⏳</span>
+            </div>
+          </TabPanel>
         </TabPanels>
       </template>
     </HeaderMenu>
@@ -93,11 +90,12 @@
 </template>
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { ArrowUpRightIcon, CheckBadgeIcon } from '@heroicons/vue/20/solid';
 import { computed, onMounted, ref } from 'vue';
 import { useMutation, useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
+import Ad from '../components/Card/Ad.vue';
+import EchoLoader from '../components/Loader/EchoLoader.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import { getRandomAd, createImpressionForAd } from '../services/service.ads';
 import { fetchFeed } from '../services/service.messages';
@@ -136,10 +134,10 @@ userStore.$subscribe((mutation) => {
 
 const feed = ref([]);
 
-const { isLoading, isError } = useQuery({
+const { isLoading, isFetching, isError } = useQuery({
   queryKey: ['feedv2', page],
   queryFn: () => Promise.all([fetchFeed(page.value), getRandomAd()]),
-  keepPreviousData: true,
+  keepPreviousData: false,
   refetchOnWindowFocus: false,
   onSuccess: async ([dataFeed, dataRandomAd]) => {
     if (dataFeed.length === 0) {
@@ -167,13 +165,13 @@ const { postMessage } = useFeedStore();
 const { mutate: postMessageMutation } = useMutation(
   (data) => postMessage(data),
   {
-    onSuccess: async (message) => {
-      toast.success('Echo created!');
+    onSuccess: (message) => {
+      toast.success('Echo published !');
       feed.value = [message, ...feed.value];
       newMessage.value = '';
     },
     onError: () => {
-      toast.error('Something went wrongeeee');
+      toast.error('Something went wrong');
     },
   }
 );

@@ -7,9 +7,9 @@
       <div class="flex flex-col flex-1 border-r border-l border-[#4c5157]">
         <router-view></router-view>
       </div>
-      <div class="hidden lg:flex w-[31%] flex-col pt-4 pl-6">
+      <div class="hidden lg:flex lg:min-w-[33%] flex-col pt-4 pl-4">
         <SearchButton />
-        <CardFollowings class="mt-8" />
+        <CardFollowings class="mt-6" />
       </div>
     </main>
   </div>
