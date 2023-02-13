@@ -61,7 +61,11 @@
               <span v-if="isLoading || isFetching">
                 <EchoLoader />
               </span>
-              <span v-else-if="isError">Error occured</span>
+              <span v-else-if="isError">
+                <div class="flex p-4 justify-center bg-slate-600">
+                  <span class="text-lg font-bold">Something went wrong</span>
+                </div>
+              </span>
               <div v-for="message in feed" :key="message.id">
                 <div v-if="message.isAd" class="border-b border-[#4c5157]">
                   <Ad :item="message" />
