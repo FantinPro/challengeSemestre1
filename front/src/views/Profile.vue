@@ -86,8 +86,8 @@ const updateFollow = () => {
   queryClient.invalidateQueries(['profile']);
 };
 
-const { isLoading, isError, isFetching } = useQuery({
-  queryKey: ['profile', page],
+const { isLoading, isError } = useQuery({
+  queryKey: ['profile', username, page],
   queryFn: async () => {
     const [profile] = await Promise.all([getUserProfileByUsername(username.value)]);
     const dataEchoes = await fetchMessages(page.value, {
@@ -100,11 +100,15 @@ const { isLoading, isError, isFetching } = useQuery({
       return;
     }
     hasHit80.value = false;
-    echoes.value = [
-      ...new Map(
-        [...echoes.value, ...dataEchoes].map((item) => [item.id, item])
-      ).values(),
-    ];
+    if (!echoes.value.find(echoe => echoe.creator.id === dataEchoes[0].creator.id)) {
+      echoes.value = [...dataEchoes];
+    } else {
+      echoes.value = [
+        ...new Map(
+          [...echoes.value, ...dataEchoes].map((item) => [item.id, item])
+        ).values(),
+      ];
+    }
   },
   keepPreviousData: true,
   refetchOnWindowFocus: false,
