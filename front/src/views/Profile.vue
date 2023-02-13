@@ -10,7 +10,7 @@
       md:min-w-[600px]
       h-full
     ">
-    <ProfilHeader />
+    <ProfilHeader @update-follow="updateFollow" />
     <div class="mt-4">
       <HeaderMenu :tabs="tabs">
         <template #panels>
@@ -34,7 +34,7 @@
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
 import { onMounted, ref, watch } from 'vue-demi';
-import { useQuery } from 'vue-query';
+import { useQuery, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
@@ -45,6 +45,7 @@ import { useUserStore } from '../store/user';
 const { getUserProfileByUsername } = useUserStore();
 const { fetchMessages } = useFeedStore();
 const router = useRouter();
+const queryClient = useQueryClient();
 const tabs = ['Echoes', 'Likes'];
 
 const containerElement = ref();
@@ -73,6 +74,9 @@ const echoes = ref([]);
 const deleteOneMessageFromFeed = (echo) => {
   echoes.value = echoes.value.filter((m) => m.id !== echo.id);
 };
+const updateFollow = () => {
+  queryClient.invalidateQueries(['profile']);
+};
 
 const { isLoading, isError } = useQuery({
   queryKey: ['profile', page],
@@ -88,7 +92,11 @@ const { isLoading, isError } = useQuery({
       return;
     }
     hasHit80.value = false;
-    echoes.value = [...echoes.value, ...dataEchoes]
+    echoes.value = [
+      ...new Map(
+        [...echoes.value, ...dataEchoes].map((item) => [item.id, item])
+      ).values(),
+    ];
   },
   keepPreviousData: true,
   refetchOnWindowFocus: false,

@@ -55,8 +55,8 @@
       </div>
       <div class="flex gap-4 p-4">
         <div class="flex flex-col items-end w-full">
-          <div v-if="user?.pseudo === profile?.pseudo" class="flex gap-2">
-            <PremiumSubscribeButton/>
+          <div v-if="userStore.user?.pseudo === profile?.pseudo" class="flex gap-2">
+            <PremiumSubscribeButton />
             <button
               class="
                 hover:bg-[#2f3336]
@@ -134,6 +134,7 @@
               </svg>
             </button>
             <button
+              v-if="!profile?.followed"
               class="
                 font-semibold
                 px-4
@@ -146,21 +147,46 @@
                 transition-all
                 duration-300
               "
-              @click="follow()">
+              @click="followUser">
               <span>Follow</span>
+            </button>
+            <button
+              v-else
+              class="
+                text-white
+                border-white border
+                rounded-full
+                px-4
+                py-1
+                w-28
+                text-base
+                font-bold
+                transition
+                duration-200
+                ease-in-out
+                hover:bg-opacity-50
+                hover:bg-red-800
+                hover:border-red-500
+                hover:text-red-500
+              "
+              @click="unfollowUser"
+              @mouseover="showUnfollowOnHover = true"
+              @mouseleave="showUnfollowOnHover = false">
+              <template v-if="showUnfollowOnHover">Unfollow</template>
+              <template v-else>Following</template>
             </button>
           </div>
         </div>
       </div>
       <div class="flex flex-col p-4 pb-0">
         <div class="flex flex-col">
-            <div class="flex items-center gap-1">
-                <h1 class="text-xl font-semibold">{{ profile?.pseudo }}</h1>
-                <CheckBadgeIcon
-                        v-if="profile?.roles?.includes('ROLE_PREMIUM')"
-                        class="h-4 w-4 text-green-500" />
-            </div>
-          
+          <div class="flex items-center gap-1">
+            <h1 class="text-xl font-semibold">{{ profile?.pseudo }}</h1>
+            <CheckBadgeIcon
+              v-if="profile?.roles?.includes('ROLE_PREMIUM')"
+              class="h-4 w-4 text-green-500" />
+          </div>
+
           <p class="text-gray-500 font-medium">@{{ profile?.pseudo }}</p>
         </div>
         <div class="flex flex-col mt-4">
@@ -173,7 +199,7 @@
               </p>
             </span>
           </div>
-          <div class="flex gap-6 mt-2 text-gray-500">
+          <div class="flex gap-4 mt-2 text-gray-500">
             <router-link :to="'/profile/' + profile?.pseudo + '/following'">
               <span class="flex gap-1 font-medium hover:underline">
                 <p class="font-bold text-white">
@@ -209,8 +235,9 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '../../store/user';
 import HeaderMenu from '../Menu/HeaderMenu.vue';
 import DialogEditProfile from './DialogEditProfile.vue';
-import PremiumSubscribeButton from "../Button/PremiumSubscribeButton.vue";
+import PremiumSubscribeButton from '../Button/PremiumSubscribeButton.vue';
 import { CheckBadgeIcon } from '@heroicons/vue/20/solid';
+import { toast } from 'vue3-toastify';
 
 const props = defineProps({
   disableInfos: {
@@ -220,7 +247,12 @@ const props = defineProps({
 });
 
 const router = useRouter();
-const { user } = useUserStore();
+const {
+  followUserById,
+  unfollowUserById
+} = useUserStore();
+
+const userStore = useUserStore();
 const profile = computed(() => useUserStore().profile);
 
 const createdAt = computed(() => {
@@ -241,5 +273,29 @@ const closeReportDialog = () => {
   isOpenReportDialog.value = false;
 };
 
-const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+const randomColor = ref(Math.floor(Math.random() * 16777215).toString(16));
+
+const showUnfollowOnHover = ref(false);
+
+const emit = defineEmits(['updateFollow']);
+
+const followUser = async () => {
+  const res = await followUserById(userStore.profile.id);
+  if (res) {
+    toast.success(`You are now following ${userStore.profile.pseudo} 🙌`);
+    emit('updateFollow');
+  } else {
+    toast.error(`Something went wrong 😢`);
+  }
+};
+
+const unfollowUser = async () => {
+  const res = await unfollowUserById(userStore.profile.id);
+  if (res) {
+    toast.success(`You are no longer following ${userStore.profile.pseudo} 😢`);
+    emit('updateFollow');
+  } else {
+    toast.error(`Something went wrong 😢`);
+  }
+};
 </script>
