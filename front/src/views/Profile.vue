@@ -32,15 +32,15 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue-demi';
-import { useQuery, useQueryClient } from 'vue-query';
-import { useRouter } from 'vue-router';
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { useUserStore } from '../store/user';
-import { useFeedStore } from '../store/feed';
+import { onMounted, ref, watch } from 'vue-demi';
+import { useQuery } from 'vue-query';
+import { useRouter } from 'vue-router';
+import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import ProfilHeader from '../components/Profile/ProfileHeader.vue';
-import Card from '../components/Card/Card.vue';
+import { useFeedStore } from '../store/feed';
+import { useUserStore } from '../store/user';
 
 const { getUserProfileByUsername } = useUserStore();
 const { fetchMessages } = useFeedStore();

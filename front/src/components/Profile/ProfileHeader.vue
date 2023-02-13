@@ -154,7 +154,13 @@
       </div>
       <div class="flex flex-col p-4 pb-0">
         <div class="flex flex-col">
-          <h1 class="text-xl font-semibold">{{ profile?.pseudo }}</h1>
+            <div class="flex items-center gap-1">
+                <h1 class="text-xl font-semibold">{{ profile?.pseudo }}</h1>
+                <CheckBadgeIcon
+                        v-if="profile?.roles?.includes('ROLE_PREMIUM')"
+                        class="h-4 w-4 text-green-500" />
+            </div>
+          
           <p class="text-gray-500 font-medium">@{{ profile?.pseudo }}</p>
         </div>
         <div class="flex flex-col mt-4">
@@ -203,6 +209,7 @@ import { useUserStore } from '../../store/user';
 import HeaderMenu from '../Menu/HeaderMenu.vue';
 import DialogEditProfile from './DialogEditProfile.vue';
 import PremiumSubscribeButton from "../Button/PremiumSubscribeButton.vue";
+import { CheckBadgeIcon } from '@heroicons/vue/20/solid';
 
 const props = defineProps({
   disableInfos: {

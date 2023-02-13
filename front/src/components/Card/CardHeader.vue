@@ -1,13 +1,13 @@
 <template>
   <div class="flex justify-between">
     <div class="flex flex-col">
-      <div class="flex gap-1 items-baseline">
+      <div class="flex items-center gap-1">
         <button
           class="font-bold text-gray-200 hover:underline"
           @click.stop="handleGoToProfile">
           {{ props.item.creator.pseudo }}
         </button>
-        <CheckBadgeIcon v-if="props.item.creator.isVerified" class="h-4 w-4 text-green-500" />
+        <CheckBadgeIcon v-if="props.item.creator.roles.includes('ROLE_PREMIUM')" class="h-4 w-4 text-green-500" />
         <button
           class="text-sm text-gray-400"
           @click.stop="handleGoToProfile">

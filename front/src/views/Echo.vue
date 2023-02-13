@@ -2,20 +2,13 @@
   <div
     ref="containerElement"
     :key="username"
-    class="
-      flex flex-col
-      overflow-auto
-      min-w-[300px]
-      sm:min-w-[500px]
-      md:min-w-[600px]
-      h-full
-    ">
+    class="flex h-full min-w-[300px] flex-col overflow-auto sm:min-w-[500px] md:min-w-[600px]">
     <div class="">
       <HeaderMenu :custom-title="true" :title="Echo" :sticky="true">
         <template #title>
-          <div class="flex gap-2 cursor-pointer items-center">
+          <div class="flex cursor-pointer items-center gap-2">
             <button
-              class="hover:bg-[#2f3336] font-semibold px-2 py-2 rounded-full"
+              class="rounded-full px-2 py-2 font-semibold hover:bg-[#2f3336]"
               @click="router.back()">
               <svg
                 class="h-6 w-6"
@@ -39,27 +32,26 @@
             </span>
             <span v-else-if="isError">Error: {{ error.message }}</span>
             <div v-else-if="echo.creator" class="flex flex-col p-4 pb-2">
-              <div v-if="echo.parent" class="flex mb-4">
-                <div class="flex flex-col min-w-max">
+              <div v-if="echo.parent" class="mb-4 flex">
+                <div class="flex min-w-max flex-col">
                   <img
                     class="h-12 w-12 rounded-md"
                     :src="echo.parent.creator.profilePicture"
                     alt="avatar" />
                   <div
-                    class="
-                      mt-1
-                      mr-auto
-                      ml-[22px]
-                      h-full
-                      min-h-full
-                      border border-slate-500
-                    " />
+                    class="mt-1 mr-auto ml-[22px] h-full min-h-full border border-slate-500" />
                 </div>
-                <div class="ml-2 flex flex-col w-full">
-                  <CardHeader :item="echo.parent" @delete-one-message-from-feed="onClickProfile(echo.parent.creator.pseudo)" />
+                <div class="ml-2 flex w-full flex-col">
+                  <CardHeader
+                    :item="echo.parent"
+                    @delete-one-message-from-feed="
+                      onClickProfile(echo.parent.creator.pseudo)
+                    " />
                   <div v-if="echo.parent.isDeleted" class="text-white">
                     <span class="font-bold text-orange-400">[deleted]</span>
-                    <span class="ml-2 text-gray-400">{{ echo.parent.content }}</span>
+                    <span class="ml-2 text-gray-400">{{
+                      echo.parent.content
+                    }}</span>
                   </div>
                   <span v-else class="text-base font-medium">
                     {{ echo.parent.content }}
@@ -67,7 +59,7 @@
                 </div>
               </div>
               <div class="flex justify-between">
-                <div class="flex gap-2 items-center">
+                <div class="flex items-center gap-2">
                   <img
                     class="h-12 w-12 rounded-full"
                     :src="echo.creator.profilePicture"
@@ -75,9 +67,15 @@
                   <router-link
                     class="flex flex-col"
                     :to="`/profile/${echo.creator.pseudo}`">
-                    <span class="text-base font-semibold">{{
-                      echo.creator.pseudo
-                    }}</span>
+                    <div class="flex items-center gap-1">
+                      <span class="text-base font-semibold">{{
+                        echo.creator.pseudo
+                      }}</span>
+                      <CheckBadgeIcon
+                        v-if="echo.creator.roles.includes('ROLE_PREMIUM')"
+                        class="h-4 w-4 text-green-500" />
+                    </div>
+
                     <span class="text-sm text-gray-400"
                       >@{{ echo.creator.pseudo }}</span
                     >
@@ -85,20 +83,7 @@
                 </div>
                 <Menu as="div" class="relative text-left">
                   <MenuButton
-                    class="
-                      absolute
-                      -top-2
-                      right-0
-                      justify-center
-                      rounded-full
-                      bg-opacity-20
-                      p-2
-                      hover:bg-[#4c5157]
-                      focus:outline-none
-                      focus-visible:ring-2
-                      focus-visible:ring-white
-                      focus-visible:ring-opacity-95
-                    "
+                    class="absolute -top-2 right-0 justify-center rounded-full bg-opacity-20 p-2 hover:bg-[#4c5157] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-95"
                     @click.stop>
                     <EllipsisHorizontalIcon
                       class="h-5 w-5 text-violet-200 hover:text-violet-100"
@@ -113,19 +98,7 @@
                     leave-from-class="transform scale-100 opacity-100"
                     leave-to-class="transform scale-95 opacity-0">
                     <MenuItems
-                      class="
-                        absolute
-                        right-0
-                        mt-2
-                        w-56
-                        origin-top-right
-                        divide-y divide-gray-100
-                        rounded-md
-                        bg-white
-                        shadow-lg
-                        ring-1 ring-black ring-opacity-5
-                        focus:outline-none
-                      ">
+                      class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div class="px-1 py-1">
                         <MenuItem
                           v-if="echo.creator.id === user.id"
@@ -179,13 +152,15 @@
                   :message="echo"
                   @close="closeReportDialog" />
               </div>
-              <div class="flex mt-4 border-b border-[#3b4043]">
-                <div class="flex flex-col mb-3">
+              <div class="mt-4 flex border-b border-[#3b4043]">
+                <div class="mb-3 flex flex-col">
                   <div
                     v-if="echo.parent"
-                    class="flex text-base font-medium text-gray-400 mb-1">
+                    class="mb-1 flex text-base font-medium text-gray-400">
                     Replying to
-                    <router-link class="ml-1 text-primary-400 hover:underline cursor-pointer" :to="`/profile/${echo.parent.creator.pseudo}`">
+                    <router-link
+                      class="ml-1 cursor-pointer text-primary-400 hover:underline"
+                      :to="`/profile/${echo.parent.creator.pseudo}`">
                       @{{ echo.parent.creator.pseudo }}
                     </router-link>
                   </div>
@@ -196,13 +171,13 @@
                   <div v-else class="text-base font-medium">
                     {{ echo.content }}
                   </div>
-                  <span class="text-base text-gray-400 mt-2">{{
+                  <span class="mt-2 text-base text-gray-400">{{
                     createdAt(echo.created)
                   }}</span>
                 </div>
               </div>
-              <div class="flex mt-4 border-b border-[#3b4043]">
-                <div class="flex gap-2 mb-3">
+              <div class="mt-4 flex border-b border-[#3b4043]">
+                <div class="mb-3 flex gap-2">
                   <span class="flex text-base font-medium">
                     {{ echo.commentsCount }}
                     <span class="ml-1 text-gray-400">
@@ -247,11 +222,8 @@ import Card from '../components/Card/Card.vue';
 import CardHeader from '../components/Card/CardHeader.vue';
 import CardFooter from '../components/Card/CardFooter.vue';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { FlagIcon } from '@heroicons/vue/20/solid';
-import {
-  EllipsisHorizontalIcon,
-  TrashIcon,
-} from '@heroicons/vue/24/solid';
+import { CheckBadgeIcon, FlagIcon } from '@heroicons/vue/20/solid';
+import { EllipsisHorizontalIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import DialogReport from '../components/Dialog/DialogReport.vue';
 import EchoLoader from '../components/Loader/EchoLoader.vue';
 
@@ -310,12 +282,7 @@ watch(
 const { isLoading, isError } = useQuery({
   queryKey: ['echo', username, echoId],
   queryFn: async () => {
-    const echo = await fetchMessage(echoId.value);
-    // if username is not the same as the creator of the echo redirect to 404
-    if (username.value !== echo.creator.pseudo) {
-      router.push('/404');
-    }
-    return echo;
+    return fetchMessage(echoId.value);
   },
   onSuccess: (data) => {
     echo.value = data;

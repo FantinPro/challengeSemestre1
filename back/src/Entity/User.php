@@ -64,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/users/profile',
             controller: MeController::class,
+            normalizationContext: ['groups' => ['read:user', 'read:user:profile']],
             security: "is_granted('ROLE_USER')",
             read: false,
         ),
@@ -168,7 +169,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read:user', 'write:user', 'read:user_to_user', 'read:message:feed', 'read:message', 'read:message:search', 'read:user:search'])]
     private ?string $bio = null;
 
-    #[Groups(['read:user:follow'])]
+    #[Groups(['read:user:profile', 'read:user:follow'])]
     public bool $followed = false;
 
     #[Groups(['read:user:follow'])]

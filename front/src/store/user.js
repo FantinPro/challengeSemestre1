@@ -68,12 +68,12 @@ export const useUserStore = defineStore('user', {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/token/refresh`, {
         method: 'POST',
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
         },
         body: JSON.stringify({
-            refresh_token: localStorage.getItem('refreshToken'),
+          refresh_token: localStorage.getItem('refreshToken'),
         })
       })
 
@@ -87,14 +87,14 @@ export const useUserStore = defineStore('user', {
         console.log(decoded);
 
         const userRes = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,
-            {
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userToken.token}`,
-              },
-            }
+          `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken.token}`,
+            },
+          }
         );
 
         const user = await userRes.json();
