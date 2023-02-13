@@ -30,19 +30,30 @@
                 <div class="flex items-center justify-between">
                   <p
                     class="w-1/2 truncate text-ellipsis text-sm font-medium text-indigo-600">
+                    <strong>Content: </strong>
                     {{ ad.message }}
                   </p>
                   <div class="flex gap-2">
                     <div class="ml-2 flex flex-shrink-0">
                       <p
-                      class="h-fit mt-auto"
+                        class="my-auto h-fit"
                         :class="`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getBgColor(
                           ad.status
                         )}`">
                         {{ ad.status }}
                       </p>
                     </div>
-                    <DialogYesNo :ad="ad" action-name="Delete" @action="deleteAdAction" />
+                    <button
+                      v-if="ad.status !== 'payed'"
+                      type="button"
+                      class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      @click="editAd(ad)">
+                      <span>Edit</span>
+                    </button>
+                    <DialogYesNo
+                      :ad="ad"
+                      action-name="Delete"
+                      @action="deleteAdAction" />
                   </div>
                 </div>
                 <div class="mt-2 sm:flex sm:justify-between">
@@ -90,7 +101,10 @@
     </template>
     <span v-else class="mt-4">No ads</span>
 
-    <DialogCreateAd :is-open="isCreateAdDialogOpen" @close="closeDialog" />
+    <DialogCreateAd
+      :is-open="isCreateAdDialogOpen"
+      :ad="selectedAd"
+      @close="closeDialog" />
   </div>
 </template>
 <script setup>
@@ -108,7 +122,7 @@ import { getAds, deleteAd } from '../services/service.ads';
 import DialogYesNo from '../components/Dialog/DialogYesNo.vue';
 import { toast } from 'vue3-toastify';
 
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 
 const adStatus = AD_STATUS;
 
@@ -120,6 +134,8 @@ const selectedStatus = ref(adStatus[0]);
 
 const $cookies = inject('$cookies');
 const date = ref(null);
+
+const selectedAd = ref(null);
 
 const isCreateAdDialogOpen = ref(false);
 
@@ -148,6 +164,7 @@ const openDialog = () => {
 
 const closeDialog = () => {
   isCreateAdDialogOpen.value = false;
+  selectedAd.value = null;
 };
 
 const deleteAdAction = async (ad) => {
@@ -159,5 +176,10 @@ const deleteAdAction = async (ad) => {
     console.error(error);
     toast.error('Error deleting ad');
   }
+};
+
+const editAd = (ad) => {
+  selectedAd.value = ad;
+  openDialog();
 };
 </script>

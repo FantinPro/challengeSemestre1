@@ -27,13 +27,18 @@
               class="flex w-full max-w-md transform flex-col overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
               <DialogTitle
                 as="h3"
-                class="text-lg font-medium leading-6 text-gray-900 mb-2">
-                Create ad
+                class="mb-2 text-lg font-medium leading-6 text-gray-900">
+                {{ props.ad ? 'Edit Ad' : 'Create Ad' }}
               </DialogTitle>
 
-              <v-date-picker :min-date="new Date()" is-expanded mode="date" :attributes="attributes" @dayclick="onDayClick"/>
+              <v-date-picker
+                :min-date="new Date()"
+                is-expanded
+                mode="date"
+                :attributes="attributes"
+                @dayclick="onDayClick" />
 
-              <div class="flex flex-col gap-2 text-black mt-4">
+              <div class="mt-4 flex flex-col gap-2 text-black">
                 <div class="flex items-center">
                   <div>
                     from :
@@ -41,12 +46,13 @@
                   </div>
                   <ArrowLongRightIcon class="mx-4 h-4 w-4" />
                   <div>
-                    to : <strong>{{ getEndDate().toLocaleDateString() }}</strong>
+                    to :
+                    <strong>{{ getEndDate().toLocaleDateString() }}</strong>
                   </div>
                 </div>
 
                 <FormKit
-                  v-slot="{ state: { valid }}"
+                  v-slot="{ state: { valid } }"
                   type="form"
                   :actions="false"
                   :submit-attrs="{
@@ -60,6 +66,7 @@
                     placeholder="Content"
                     name="message"
                     label="Content of the Ad"
+                    :value="props.ad ? props.ad.message : ''"
                     validation="required|length:1,255"
                     :validation-messages="{
                       length: 'Content must be between 1 and 255 characters',
@@ -68,7 +75,7 @@
                   <FormKit
                     type="number"
                     name="price"
-                    :value="5"
+                    :value="props.ad ? props.ad.price : 5"
                     placeholder="€"
                     :max="1000"
                     :min="1"
@@ -80,10 +87,10 @@
                     label="Price of the Ad"
                     help="The higher your offer, the more likely it is to appear, (max 1000€)" />
 
-
-                    <div class="text-xs text-primary-400 my-3">
-                        Once created, your ad will be pending validation. Your ad will be processed as soon as possible by our teams.
-                    </div>
+                  <div class="my-3 text-xs text-primary-400">
+                    Once created, your ad will be pending validation. Your ad
+                    will be processed as soon as possible by our teams.
+                  </div>
 
                   <div class="mt-auto flex justify-end gap-2">
                     <button
@@ -96,7 +103,9 @@
                       type="submit"
                       :disabled="!valid"
                       class="inline-flex justify-center gap-2 rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                      <span>Create</span>
+                      <span>
+                        {{ props.ad ? 'Edit' : 'Create' }}
+                      </span>
                       <Spin :is-loading="isLoading" />
                     </button>
                   </div>
@@ -119,61 +128,56 @@ import {
   TransitionRoot,
 } from '@headlessui/vue';
 import { ArrowLongRightIcon } from '@heroicons/vue/20/solid';
-import {useMutation, useQueryClient} from 'vue-query';
+import { ref } from 'vue';
+import { useMutation, useQueryClient } from 'vue-query';
 import { toast } from 'vue3-toastify';
-import { createAd } from '../../services/service.ads';
+import { createAd, updateAd } from '../../services/service.ads';
 import { useUserStore } from '../../store/user';
 import Spin from '../Loader/Spin.vue';
-import {ref} from "vue";
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 const { user } = userStore;
-
-const attributes = ref([{
-  highlight: true,
-  dates: [{start: new Date(), span: 7}],
-}]);
-
-function getStartDate() {
-  console.log('getStart', new Date(attributes.value[0].dates[0].start));
-  return new Date(attributes.value[0].dates[0].start);
-}
-
-function getEndDate() {
-
-  const date = getStartDate();
-  date.setDate(date.getDate() + 7);
-  console.log('getEnd', date);
-  return date;
-}
-
-function onDayClick(day) {
-
-
-  const clickedDate = new Date(day.id);
-  const today = new Date();
-
-  if(clickedDate.getDate() < today.getDate() && clickedDate.getMonth() <= today.getMonth() && clickedDate.getFullYear() <= today.getFullYear()) {
-    return;
-  }
-
-  attributes.value[0].dates = [{start: new Date(day.id), span: 7}];
-}
 
 const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false,
   },
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
+  ad: {
+    type: Object,
+    default: null,
+  }
 });
+
+const attributes = ref([
+  {
+    highlight: true,
+    dates: props.ad ? [{ start: new Date(props.ad.startDate), span: 7 }] : [{ start: new Date(), span: 7 }],
+  },
+]);
+
+function getStartDate() {
+  return new Date(attributes.value[0].dates[0].start);
+}
+
+function getEndDate() {
+  const date = getStartDate();
+  date.setDate(date.getDate() + 7);
+  return date;
+}
+
+function onDayClick(day) {
+  const clickedDate = new Date(day.id);
+  const today = new Date();
+  if (
+    clickedDate.getDate() < today.getDate() &&
+    clickedDate.getMonth() <= today.getMonth() &&
+    clickedDate.getFullYear() <= today.getFullYear()
+  ) {
+    return;
+  }
+  attributes.value[0].dates = [{ start: new Date(day.id), span: 7 }];
+}
 
 const emit = defineEmits(['close']);
 const client = useQueryClient();
@@ -181,9 +185,23 @@ function closeModal() {
   emit('close');
 }
 
-const { isLoading, mutate: createAdMutation } = useMutation((newAd) => createAd(newAd), {
+const { isLoading, mutate: createAdMutation } = useMutation(
+  (newAd) => createAd(newAd),
+  {
+    onSuccess: async () => {
+      toast.success('Ad created');
+      await client.invalidateQueries('ads');
+      closeModal();
+    },
+    onError: (error) => {
+      toast.error('Something went wrong');
+    },
+  }
+);
+
+const { mutate: updateAdMutation } = useMutation((newAd) => updateAd(newAd), {
   onSuccess: async () => {
-    toast.success('Ad created');
+    toast.success('Updated Ad');
     await client.invalidateQueries('ads');
     closeModal();
   },
@@ -193,13 +211,22 @@ const { isLoading, mutate: createAdMutation } = useMutation((newAd) => createAd(
 });
 
 const handleSubmit = (values) => {
-  createAdMutation({
-    ...values,
-    price: +values.price,
-    startDate: getStartDate(),
-    endDate: getEndDate(),
-    owner: `/api/users/${user.id}`
-  })
+  if (!props.ad) {
+    createAdMutation({
+      ...values,
+      price: +values.price,
+      startDate: getStartDate(),
+      endDate: getEndDate(),
+      owner: `/api/users/${user.id}`,
+    });
+  } else {
+    updateAdMutation({
+      ...values,
+      price: +values.price,
+      startDate: getStartDate(),
+      endDate: getEndDate(),
+      adId: props.ad.id,
+    });
+  }
 };
-
 </script>

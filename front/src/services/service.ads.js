@@ -50,6 +50,34 @@ export const createAd = async ({
   return json;
 }
 
+export const updateAd = async ({
+  startDate,
+  endDate,
+  message,
+  price,
+  adId
+}) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs/${adId}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+    },
+    body: JSON.stringify({
+      startDate,
+      endDate,
+      message,
+      price,
+    }),
+  });
+  const json = await response.json();
+  if (!response.ok) {
+    throw new Error(json.detail);
+  }
+  return json;
+}
+
 export const getAds = async (page, status, { orderBy = 'created', order = 'asc', pagination = true } = {}) => {
   let query = `?page=${page}&order[${orderBy}]=${order}`
   if (status !== 'all') {
