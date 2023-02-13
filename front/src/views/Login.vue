@@ -40,11 +40,17 @@ onMounted(() => {
 
 const submit = async (values) => {
   const response = await userStore.signIn(values);
-
+  console.log('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩')
+  console.log(response)
+  console.log('🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦')
   if (response.ok) {
     toast.success('Login successfull!')
   } else {
-    toast.error('Error in the request')
+    if (response.status === 401) {
+      toast.error('Invalid credentials')
+    } else {
+      toast.error('Something went wrong')
+    }
   }
 }
 
