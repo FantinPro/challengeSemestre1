@@ -181,12 +181,11 @@ const isMe = computed(() => {
 });
 const showUnfollowOnHover = ref(false);
 
-const emit = defineEmits(['updateFollowersList', 'onFollowUser']);
+const emit = defineEmits(['updateFollowersList']);
 
 const followUser = async () => {
   const res = await followUserById(user.value.id);
   if (res) {
-    emit('onFollowUser');
     toast.success(`You are now following ${user.value.pseudo} 🙌`);
     emit('updateFollowersList');
   } else {

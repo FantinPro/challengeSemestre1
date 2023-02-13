@@ -6,8 +6,8 @@
           <TabPanel>
             <div class="flex gap-2 px-2 pt-2">
               <img
-                v-if="user?.profilePicture"
-                :src="user?.profilePicture"
+                v-if="userStore.user?.profilePicture"
+                :src="userStore.user?.profilePicture"
                 class="h-12 w-12 rounded-full"
                 alt="User avatar" />
               <div class="flex w-full flex-col">
@@ -105,6 +105,8 @@ import { fetchFeed } from '../services/service.messages';
 import { useFeedStore } from '../store/feed';
 import { useUserStore } from '../store/user';
 
+const userStore = useUserStore();
+
 const containerElement = ref();
 
 const hasHit80 = ref(false);
@@ -122,6 +124,14 @@ const onScroll = () => {
 
 onMounted(() => {
   containerElement.value.addEventListener('scroll', onScroll);
+});
+
+userStore.$subscribe((mutation) => {
+  if(mutation.events.key === "refetchFeed") {
+    feed.value = [];
+    page.value = 1;
+    hasHit80.value = false;
+  }
 });
 
 const feed = ref([]);
@@ -147,7 +157,7 @@ const { isLoading, isError } = useQuery({
   },
 });
 
-const { user } = useUserStore();
+
 const newMessage = ref('');
 
 const tabs = ['For you', 'Following'];
@@ -177,7 +187,7 @@ const sendMessage = async () => {
   }
   postMessageMutation({
     content: newMessage.value,
-    creator: `/api/users/${user.id}`,
+    creator: `/api/users/${userStore.user.id}`,
   });
 };
 

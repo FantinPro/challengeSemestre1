@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     user: JSON.parse(localStorage.getItem('echoUser')),
     profile: null,
+    refetchFeed: 0,
   }),
   actions: {
     setPremium() {
