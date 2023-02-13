@@ -10,16 +10,6 @@ export const useUserStore = defineStore('user', {
     refetchFeed: 0,
   }),
   actions: {
-    setPremium() {
-      this.user.roles.push('ROLE_PREMIUM');
-      localStorage.setItem('echoUser', JSON.stringify(this.user));
-    },
-
-    unsetPremium() {
-      this.user.roles = this.user.roles.filter((role) => role !== 'ROLE_PREMIUM');
-      localStorage.setItem('echoUser', JSON.stringify(this.user));
-    },
-
     setLocalUser(user) {
       this.user = user;
       localStorage.setItem('echoUser', JSON.stringify(user));
@@ -47,8 +37,9 @@ export const useUserStore = defineStore('user', {
       const userToken = await response.json();
 
       if (userToken && userToken.token) {
+        console.log(userToken);
         $cookies.set('echo_user_token', userToken.token);
-
+        localStorage.setItem('refreshToken', userToken.refresh_token);
         const decoded = jwt_decode(userToken.token);
 
         const res = await fetch(
@@ -72,6 +63,45 @@ export const useUserStore = defineStore('user', {
       }
 
       return response;
+    },
+    async refreshToken() {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/token/refresh`, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+        },
+        body: JSON.stringify({
+            refresh_token: localStorage.getItem('refreshToken'),
+        })
+      })
+
+      if (res.ok) {
+        const userToken = await res.json();
+        $cookies.set('echo_user_token', userToken.token);
+        localStorage.setItem('refreshToken', userToken.refresh_token);
+
+        const decoded = jwt_decode(userToken.token);
+
+        console.log(decoded);
+
+        const userRes = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/users/${decoded.id}`,
+            {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userToken.token}`,
+              },
+            }
+        );
+
+        const user = await userRes.json();
+        if (user) {
+          this.setLocalUser(user);
+        }
+      }
     },
     async forgotPassword(values) {
       return await fetch(`${import.meta.env.VITE_API_URL}/forgot_password`, {
