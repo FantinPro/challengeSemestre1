@@ -113,14 +113,14 @@ import {
   CreditCardIcon,
   EyeIcon,
 } from '@heroicons/vue/24/solid/index.js';
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
-import DialogCreateAd from '../components/Dialog/DialogCreateAd.vue';
-import Select from '../components/Select/Select.vue';
-import { AD_STATUS } from '../utils/constants';
-import { getAds, deleteAd } from '../services/service.ads';
-import DialogYesNo from '../components/Dialog/DialogYesNo.vue';
 import { toast } from 'vue3-toastify';
+import DialogCreateAd from '../components/Dialog/DialogCreateAd.vue';
+import DialogYesNo from '../components/Dialog/DialogYesNo.vue';
+import Select from '../components/Select/Select.vue';
+import { deleteAd, getAds } from '../services/service.ads';
+import { AD_STATUS } from '../utils/constants';
 
 const queryClient = useQueryClient();
 
@@ -131,9 +131,6 @@ const updateStatus = (state) => {
 };
 
 const selectedStatus = ref(adStatus[0]);
-
-const $cookies = inject('$cookies');
-const date = ref(null);
 
 const selectedAd = ref(null);
 

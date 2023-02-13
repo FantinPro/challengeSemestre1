@@ -24,6 +24,7 @@ export const getRandomAd = async () => {
 export const createAd = async ({
   startDate,
   endDate,
+  link,
   message,
   price,
   owner
@@ -38,6 +39,7 @@ export const createAd = async ({
     body: JSON.stringify({
       startDate,
       endDate,
+      link,
       message,
       price,
       owner
@@ -55,6 +57,7 @@ export const updateAd = async ({
   endDate,
   message,
   price,
+  link,
   adId
 }) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs/${adId}`, {
@@ -68,6 +71,7 @@ export const updateAd = async ({
       startDate,
       endDate,
       message,
+      link,
       price,
     }),
   });
@@ -78,7 +82,7 @@ export const updateAd = async ({
   return json;
 }
 
-export const getAds = async (page, status, { orderBy = 'created', order = 'asc', pagination = true } = {}) => {
+export const getAds = async (page, status, { orderBy = 'created', order = 'asc' } = {}) => {
   let query = `?page=${page}&order[${orderBy}]=${order}`
   if (status !== 'all') {
     query += `&status=${status}`

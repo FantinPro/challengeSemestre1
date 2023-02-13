@@ -128,6 +128,10 @@ class Pub
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $paymentIntentId = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['read:ad', 'put:ad', 'post:ad', 'read:ad:random'])]
+    private ?string $link = null;
+
     public function __construct()
     {
         $this->stats = new ArrayCollection();
@@ -279,6 +283,18 @@ class Pub
     public function setPaymentIntentId(?string $paymentIntentId): self
     {
         $this->paymentIntentId = $paymentIntentId;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link): self
+    {
+        $this->link = $link;
 
         return $this;
     }

@@ -73,6 +73,18 @@
                     }"
                     help="Maximum 255 characters" />
                   <FormKit
+                    type="text"
+                    placeholder="Link"
+                    name="link"
+                    label="Add a link to your ad"
+                    :value="props.ad ? props.ad.link : ''"
+                    validation="required|length:1,255|url"
+                    :validation-messages="{
+                      length: 'Content must be between 1 and 255 characters',
+                      url: 'Please enter a valid URL',
+                    }"
+                    help="Maximum 255 characters" />
+                  <FormKit
                     type="number"
                     name="price"
                     :value="props.ad ? props.ad.price : 5"
@@ -146,13 +158,15 @@ const props = defineProps({
   ad: {
     type: Object,
     default: null,
-  }
+  },
 });
 
 const attributes = ref([
   {
     highlight: true,
-    dates: props.ad ? [{ start: new Date(props.ad.startDate), span: 7 }] : [{ start: new Date(), span: 7 }],
+    dates: props.ad
+      ? [{ start: new Date(props.ad.startDate), span: 7 }]
+      : [{ start: new Date(), span: 7 }],
   },
 ]);
 
