@@ -50,8 +50,12 @@ export const createAd = async ({
   return json;
 }
 
-export const getAds = async (page, status, { orderBy = 'created', order = 'asc' } = {}) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs?page=${page}&status=${status}&order[${orderBy}]=${order}`, {
+export const getAds = async (page, status, { orderBy = 'created', order = 'asc', pagination = true } = {}) => {
+  let query = `?page=${page}&order[${orderBy}]=${order}`
+  if (status !== 'all') {
+    query += `&status=${status}`
+  }
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs${query}`, {
     method: 'GET',
     headers: {
     //   Accept: 'application/json',
@@ -85,6 +89,21 @@ export const patchAd = async ({ id, status }) => {
     throw new Error(json.detail);
   }
   return json;
+}
+
+export const deleteAd = async ({ id }) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/pubs/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('something went wrong');
+  }
+  return { id };
 }
 
 export const createImpressionForAd = async ({ ad, fromUser }) => {

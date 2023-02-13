@@ -15,6 +15,10 @@ export const REPORT_TYPES = {
 
 export const AD_STATUS = [
   {
+    value: 'all',
+    display: 'All',
+  },
+  {
     value: 'pending',
     display: 'Pending',
   },
