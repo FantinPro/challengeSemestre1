@@ -17,6 +17,9 @@
             <th scope="col" class="px-6 py-4 font-medium text-white">
               Total echoes
             </th>
+            <th scope="col" class="px-6 py-4 font-medium text-white">
+              Created At
+            </th>
             <th scope="col" class="px-6 py-4 font-medium text-white"></th>
           </tr>
         </thead>
@@ -57,6 +60,9 @@
                   {{ user.messagesCount }}
                 </span>
               </div>
+            </td>
+            <td class="px-6 py-4 text-white">
+              {{ new Date(user.created).toLocaleDateString() }}
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-end gap-4">

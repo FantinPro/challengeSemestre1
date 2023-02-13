@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -62,6 +63,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
     denormalizationContext: ['groups' => ['write:ad']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['created'], arguments: ['orderParameterName' => 'order'])]
 class Pub
 {
 
@@ -236,7 +238,7 @@ class Pub
     public function setStatus(string $status): self
     {
         $this->status = $status;
-        
+
         return $this;
     }
 
@@ -264,16 +266,9 @@ class Pub
         return $this;
     }
 
-    #[Groups(['read:ad:stats'])]
+    #[Groups(['read:ad'])]
     public function getImpressions() {
         return count($this->stats);
-    }
-
-    #[Groups(['read:ad:stats'])]
-    public function getClicks() {
-        return count(array_filter($this->stats->toArray(), function (Stat $stat) {
-            return $stat->isClick();
-        }));
     }
 
     public function getPaymentIntentId(): ?string

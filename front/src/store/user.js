@@ -168,9 +168,9 @@ export const useUserStore = defineStore('user', {
       }
       return users;
     },
-    async fetchUsersPaginated(page = 1) {
+    async fetchUsersPaginated(page = 1, { orderBy = 'created', order = 'asc' } = {}) {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users?page=${page}`,
+        `${import.meta.env.VITE_API_URL}/api/users?page=${page}&order[${orderBy}]=${order}`,
         {
           headers: {
             // explicitly no set accept

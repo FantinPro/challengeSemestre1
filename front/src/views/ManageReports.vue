@@ -23,6 +23,9 @@
             <th scope="col" class="px-6 py-4 font-medium text-white">
               Total reports
             </th>
+            <th scope="col" class="px-6 py-4 font-medium text-white">
+              Message Created At
+            </th>
             <th scope="col" class="px-6 py-4 font-medium text-white"></th>
           </tr>
         </thead>
@@ -72,6 +75,9 @@
                   {{ message.reportsCount }}
                 </span>
               </div>
+            </td>
+            <td class="px-6 py-4">
+                {{ new Date(message.created).toLocaleDateString() }}
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-end gap-4">

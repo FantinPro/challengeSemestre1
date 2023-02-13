@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -81,6 +82,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['write:user']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['pseudo' => 'ipartial'])]
+#[ApiFilter(OrderFilter::class, properties: ['created'], arguments: ['orderParameterName' => 'order'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_USER = 'ROLE_USER';
@@ -152,6 +154,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Timestampable(on: 'create')]
     #[ORM\Column(name: 'created', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['read:user'])]
     private $created;
 
     #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]

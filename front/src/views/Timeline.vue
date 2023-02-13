@@ -99,7 +99,7 @@ import { useMutation, useQuery } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
-import { getRandomAd } from '../services/service.ads';
+import { getRandomAd, createImpressionForAd } from '../services/service.ads';
 import { fetchFeed } from '../services/service.messages';
 
 import { useFeedStore } from '../store/feed';
@@ -141,7 +141,7 @@ const { isLoading, isError } = useQuery({
   queryFn: () => Promise.all([fetchFeed(page.value), getRandomAd()]),
   keepPreviousData: true,
   refetchOnWindowFocus: false,
-  onSuccess: ([dataFeed, dataRandomAd]) => {
+  onSuccess: async ([dataFeed, dataRandomAd]) => {
     if (dataFeed.length === 0) {
       return;
     }
@@ -151,6 +151,7 @@ const { isLoading, isError } = useQuery({
         ...dataRandomAd,
         isAd: true,
       });
+      await createImpression(dataRandomAd);
     }
     const tab = [...feed.value, ...dataFeed];
     feed.value = tab;
@@ -166,7 +167,7 @@ const { postMessage } = useFeedStore();
 const { mutate: postMessageMutation } = useMutation(
   (data) => postMessage(data),
   {
-    onSuccess: (message) => {
+    onSuccess: async (message) => {
       toast.success('Echo created!');
       feed.value = [message, ...feed.value];
       newMessage.value = '';
@@ -210,4 +211,17 @@ const messageHeight = computed(() => {
   }
   return '!h-12';
 });
+
+const createImpression = async (ad) => {
+  const impression = {
+    ad: `/api/pubs/${ad.id}`,
+    fromUser: `/api/users/${userStore.user.id}`,
+  };
+  try { 
+    await createImpressionForAd(impression);
+    console.info('[AD_IMPRESSION] add impression');
+  } catch (e) {
+    console.info('[AD_IMPRESSION] already seen');
+  }
+}
 </script>
