@@ -39,7 +39,7 @@
                     :src="echo.parent.creator.profilePicture"
                     alt="avatar" />
                   <div
-                    class="mt-1 mr-auto ml-[22px] h-full min-h-full border border-slate-500" />
+                    class="mt-1 mr-auto ml-[22px] h-full min-h-full border border-slate-500 bg-slate-500" />
                 </div>
                 <div class="ml-2 flex w-full flex-col">
                   <CardHeader
@@ -68,7 +68,7 @@
                     class="flex flex-col"
                     :to="`/profile/${echo.creator.pseudo}`">
                     <div class="flex items-center gap-1">
-                      <span class="text-base font-semibold">{{
+                      <span class="text-base font-semibold hover:underline">{{
                         echo.creator.pseudo
                       }}</span>
                       <CheckBadgeIcon

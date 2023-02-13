@@ -3,7 +3,7 @@
     <div class="flex flex-col">
       <div class="flex items-center gap-1">
         <button
-          class="font-bold text-gray-200 hover:underline"
+          class="font-extrabold text-gray-200 hover:underline"
           @click.stop="handleGoToProfile">
           {{ props.item.creator.pseudo }}
         </button>
@@ -38,7 +38,6 @@
           class="h-5 w-5 text-violet-200 hover:text-violet-100"
           aria-hidden="true" />
       </MenuButton>
-
       <transition
         enter-active-class="transition duration-100 ease-out"
         enter-from-class="transform scale-95 opacity-0"
