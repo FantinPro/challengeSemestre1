@@ -12,3 +12,6 @@ docs:
     path: /api/docs
     controller: api_platform.swagger.action.ui
     condition: "false"
+
+api_refresh_token:
+    path: /api/token/refresh
