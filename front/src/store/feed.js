@@ -10,7 +10,7 @@ export const useFeedStore = defineStore('feed', {
     async fetchMessages(page, options = {}) {
       try {
         const { content, creator } = options;
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages?page=${page}${content ? '&content=' + content : ''}${creator ? '&creator=' + creator : ''}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/messages?page=${page}${content ? '&content=' + content : ''}${creator ? '&creator=' + creator : ''}&order[created]=desc`, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${$cookies.get('echo_user_token')}`,
