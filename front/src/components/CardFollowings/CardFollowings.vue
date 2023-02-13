@@ -28,7 +28,6 @@ const userStore = useUserStore();
 const onFolllow = () => {
   updateStoreFeed();
   queryClient.invalidateQueries('users-suggestions');
-  queryClient.invalidateQueries('feedv2')
 };  
 
 const updateStoreFeed = () => {

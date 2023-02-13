@@ -94,7 +94,7 @@
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
 import { computed, onMounted, ref } from 'vue';
-import { useMutation, useQuery } from 'vue-query';
+import { useMutation, useQuery, useQueryClient } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
 import EchoLoader from '../components/Loader/EchoLoader.vue';
@@ -105,6 +105,8 @@ import { fetchFeed } from '../services/service.messages';
 
 import { useFeedStore } from '../store/feed';
 import { useUserStore } from '../store/user';
+
+const queryClient = useQueryClient();
 
 const userStore = useUserStore();
 
@@ -132,6 +134,7 @@ userStore.$subscribe((mutation) => {
     feed.value = [];
     page.value = 1;
     hasHit80.value = false;
+    queryClient.invalidateQueries('feedv2')
   }
 });
 
