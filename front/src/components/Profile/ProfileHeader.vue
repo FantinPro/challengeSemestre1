@@ -191,6 +191,7 @@
       </div>
     </div>
     <DialogEditProfile
+      v-if="isOpenReportDialog"
       :is-open="isOpenReportDialog"
       :profile="profile"
       @close="closeReportDialog" />

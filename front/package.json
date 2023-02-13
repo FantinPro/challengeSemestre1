@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@formkit/vue": "^1.0.0-beta.12",
+    "@formkit/vue": "^1.0.0-beta.15",
     "@headlessui/vue": "^1.7.7",
     "@heroicons/vue": "^2.0.14",
     "@tailwindcss/line-clamp": "^0.4.2",
