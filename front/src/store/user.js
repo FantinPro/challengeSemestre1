@@ -205,7 +205,7 @@ export const useUserStore = defineStore('user', {
       userId,
       pseudo,
       bio,
-      avatar,
+      profilePicture,
       password,
     }) {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
@@ -218,7 +218,7 @@ export const useUserStore = defineStore('user', {
         body: JSON.stringify({
           pseudo,
           bio,
-          profilePicture: avatar,
+          profilePicture,
           password,
         }),
       })

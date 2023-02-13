@@ -8,7 +8,7 @@
               <img
                 v-if="userStore.user?.profilePicture"
                 :src="userStore.user?.profilePicture"
-                class="h-12 w-12 rounded-full"
+                class="h-12 w-12 rounded-full object-cover"
                 alt="User avatar" />
               <div class="flex w-full flex-col">
                 <FormKit

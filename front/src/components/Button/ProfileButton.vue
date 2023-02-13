@@ -5,7 +5,7 @@
         <img
           v-if="user?.profilePicture"
           :src="user?.profilePicture"
-          class="w-8 h-8 rounded-full"
+          class="w-8 h-8 rounded-full object-cover"
           alt="User avatar"
         />
         <div v-else class="w-7 h-7 bg-neutral-500 rounded-full" />

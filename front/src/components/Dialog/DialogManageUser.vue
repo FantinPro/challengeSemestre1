@@ -85,7 +85,7 @@
                 <div class="my-auto flex justify-center text-black">
                   <img
                     :src="props.user.profilePicture"
-                    class="h-20 rounded-[50%] border border-blue-300" />
+                    class="h-20 rounded-[50%] border border-blue-300 object-cover" />
                 </div>
 
                 <div class="mt-auto flex justify-end gap-2">

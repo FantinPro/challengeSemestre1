@@ -79,7 +79,7 @@
         </svg>
         <p class="hidden md:flex">Profile</p>
       </MenuButton>
-      <MenuButton v-if="isAllowToGoToDashboard" v-slot="{ isActive }" :to="'/dashboard'">
+      <MenuButton v-if="isAllowToGoToDashboard" :to="'/dashboard'">
         <img class="h-6 w-6 text-white" src="/dashboard.svg" />
         <p class="hidden md:flex">Dashboard</p>
       </MenuButton>

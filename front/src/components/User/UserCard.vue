@@ -9,7 +9,7 @@
       v-if="profilePicture"
       :src="profilePicture"
       :class="[
-        'w-8 h-8 rounded-full',
+        'w-8 h-8 rounded-full object-cover',
         type == 'default' && 'self-start'
       ]"
       alt="User avatar"

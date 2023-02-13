@@ -132,9 +132,7 @@
                     ">
                     <img
                       class="h-full w-full rounded-full object-cover"
-                      :src="
-                        profile?.profilePicture
-                      "
+                      :src="profile?.profilePicture"
                       alt="" />
                     <button
                       class="
@@ -174,7 +172,11 @@
                   type="text"
                   name="username"
                   label="Username"
-                  :validation="[[ 'required' ], [ 'length:3,255' ], [ 'matches', /^[a-zA-Z0-9_]*$/ ]]"
+                  :validation="[
+                    ['required'],
+                    ['length:3,255'],
+                    ['matches', /^[a-zA-Z0-9_]*$/],
+                  ]"
                   class="w-full"
                   :wrapper-class="{ 'formkit-wrapper': false }"
                   :classes="{ input: '!text-white' }" />
@@ -187,6 +189,37 @@
                   validation="length:0,255"
                   :wrapper-class="{ 'formkit-wrapper': false }"
                   :classes="{ input: '!text-white' }" />
+                <FormKit
+                  v-model="avatar"
+                  type="url"
+                  name="avatar"
+                  label="Avatar"
+                  :validation="[
+                    ['required'],
+                    ['length:3,255'],
+                    ['matches', /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|webp)$/],
+                  ]"
+                  class="w-full"
+                  :wrapper-class="{ 'formkit-wrapper': false }"
+                  :classes="{ input: '!text-white' }" />
+                <!-- Preview -->
+                <div class="flex justify-center items-center">
+                  <div
+                    class="
+                      h-32
+                      w-32
+                      rounded-full
+                      bg-gray-300
+                      border-4 border-[#2f3336]
+                      shadow-md
+                    ">
+                    <img
+                      class="h-full w-full rounded-full object-cover"
+                      :src="avatar"
+                      onerror="this.src='https://via.placeholder.com/150?text=?';"
+                      alt="Url incorrect" />
+                  </div>
+                </div>
               </div>
 
               <div class="my-4 overflow-auto text-black">
@@ -233,20 +266,20 @@ const props = defineProps({
 
 let username = ref(user?.pseudo);
 let bio = ref(props.profile?.bio);
-let avatar = ref(props.profile?.avatar);
-
+let avatar = ref(props.profile?.profilePicture);
 
 function closeModal() {
   emit('close');
 }
 
 const { isLoading, mutate: saveMutation } = useMutation(
-  () => updateProfile({
-    userId: user.id,
-    pseudo: username.value,
-    bio: bio.value,
-    avatar: avatar.value,
-  }),
+  () =>
+    updateProfile({
+      userId: user.id,
+      pseudo: username.value,
+      bio: bio.value,
+      profilePicture: avatar.value,
+    }),
   {
     onSuccess: () => {
       toast.success('Profile updated !');
