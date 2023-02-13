@@ -56,7 +56,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
             security: "is_granted('ROLE_ADMIN')",
         ),
         new Delete(
-            security: "is_granted('ROLE_PREMIUM') and object.getOwner() == user",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PREMIUM') and object.getOwner() == user",
         )
     ],
     normalizationContext: ['groups' => ['read:ad']],
@@ -107,7 +107,7 @@ class Pub
     #[Groups(['read:ad', 'read:ad:random', 'post:ad'])]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Stat::class)]
+    #[ORM\OneToMany(mappedBy: 'ad', targetEntity: Stat::class, cascade: ['remove'])]
     private Collection $stats;
 
     #[ORM\Column(length: 30)]

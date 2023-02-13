@@ -28,11 +28,18 @@
             <a href="#" class="block bg-white hover:bg-gray-50">
               <div class="px-4 py-4 sm:px-6">
                 <div class="flex items-center justify-between">
-                  <p
-                    class="w-1/2 truncate text-ellipsis text-sm font-medium text-indigo-600">
-                    <strong>Content: </strong>
-                    {{ ad.message }}
-                  </p>
+                  <div class="flex flex-col">
+                    <p class="text-indigo-600 text-sm">
+                      <strong>Pseudo: </strong>
+                      {{ ad.owner.pseudo }}
+                    </p>
+                    <p
+                      class="truncate text-ellipsis text-sm font-medium text-indigo-600">
+                      <strong>Content: </strong>
+                      {{ $filters.shortText(ad.message, 120) }}
+                    </p>
+                  </div>
+
                   <div class="flex gap-2">
                     <div class="ml-2 flex flex-shrink-0">
                       <p
