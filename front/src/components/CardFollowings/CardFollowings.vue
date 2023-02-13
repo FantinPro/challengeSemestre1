@@ -12,7 +12,6 @@
           @update-followers-list="onFolllow" />
       </div>
     </div>
-    <button @click="updateStoreFeed">click me</button>
   </div>
 </template>
 
