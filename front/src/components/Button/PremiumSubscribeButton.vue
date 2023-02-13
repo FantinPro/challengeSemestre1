@@ -43,11 +43,14 @@ import {inject, onMounted, ref} from 'vue';
 import {useMutation, useQuery} from "vue-query";
 import {toast} from "vue3-toastify";
 import {useUserStore} from "../../store/user.js";
+import { useRoute, useRouter } from 'vue-router';
 
 const $cookies = inject('$cookies');
 
   const href = ref('');
 
+  const route = useRoute();
+  const router = useRouter();
 
   const userStore = useUserStore();
   const isAdmin = userStore.user?.roles?.includes('ROLE_ADMIN');
@@ -86,30 +89,23 @@ const $cookies = inject('$cookies');
   }
 
   onMounted(() => {
-    // get query params
-    const urlParams = new URLSearchParams(window.location.search);
-    const premiumSubscription = urlParams.get('premium_subscription');
-
+    let premiumSubscription = route.query['premium_subscription']
     if(premiumSubscription && premiumSubscription === "success" ) {
       toast.success('Premium subscription successful')
       setTimeout(() => {
         userStore.refreshToken()
       }, 3000)
 
-      // clear query params
-      urlParams.delete('premium_subscription');
+      router.replace({})
     }
   })
 
   const premiumLink = useQuery(['premiumLink'], fetchPremiumPK, {
     onSuccess: async (data) => {
-      console.log(data)
-
       if (data?.premium === "active") {
         isPremium.value = true
-
-
       }
+
       if (data?.premium === "link") {
         isPremium.value = false
 
