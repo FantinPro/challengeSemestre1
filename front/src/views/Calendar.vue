@@ -32,6 +32,13 @@
                   <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                     <CreditCardIcon class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
                     {{ ad.price }}€
+
+                  </p>
+
+                  {{ad.status}}
+                  <p v-if="ad.status === 'payed'" class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                    <EyeIcon class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+                    {{ad.impressions}}
                   </p>
                 </div>
                 <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
@@ -63,9 +70,7 @@ const $cookies = inject('$cookies');
 const date = ref(null);
 
 const isCreateAdDialogOpen = ref(false);
-import {CreditCardIcon, CalendarIcon} from "@heroicons/vue/24/solid/index.js";
-
-
+import {CreditCardIcon, CalendarIcon, EyeIcon} from "@heroicons/vue/24/solid/index.js";
 
 
 function getBgColor(status) {
