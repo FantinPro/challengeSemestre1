@@ -45,6 +45,8 @@ class Post
     #[Groups(['read:post', 'write:post'])]
     private ?Category $category = null;
 
+    //okokok
+    
     #[ORM\Column(length: 255)]
     private ?string $toto = null;
 

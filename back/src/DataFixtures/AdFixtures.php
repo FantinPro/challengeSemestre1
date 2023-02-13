@@ -53,7 +53,7 @@ class AdFixtures extends Fixture implements DependentFixtureInterface
             ->setPrice($faker->numberBetween(100, 1000))
             ->setStartDate($startTime2)
             ->setEndDate($endTime2)
-            ->setLink('https://www.mcdonalds.fr')
+            ->setLink('https://www.mceeeedonalds.fr')
             ->setStatus(Pub::STATUS_ACCEPTED);
 
         $manager->persist($adThatStartNow);
