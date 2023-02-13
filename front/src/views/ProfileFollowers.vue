@@ -45,7 +45,9 @@
         <TabPanels>
           <TabPanel>
             <div class="flex flex-col gap-2 border-t border-[#3b4043]">
-              <span v-if="isLoading">Loading...</span>
+              <span v-if="isLoading">
+                <EchoLoader :quantity="10" />
+              </span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="user in followers" :key="user.id">
                 <UserCard
@@ -55,7 +57,7 @@
             </div>
           </TabPanel>
           <TabPanel>
-            <div class="flex flex-col gap-2 border-t border-[#3b4043]">
+            <div class="flex flex-col border-t border-[#3b4043]">
               <span v-if="isLoading">Loading...</span>
               <span v-else-if="isError">Error: {{ error.message }}</span>
               <div v-for="user in following" :key="user.id">
@@ -78,6 +80,7 @@ import { TabPanel, TabPanels } from '@headlessui/vue';
 import { useUserStore } from '../store/user';
 import HeaderMenu from '../components/Menu/HeaderMenu.vue';
 import UserCard from '../components/UserCard/UserCard.vue';
+import EchoLoader from '../components/Loader/EchoLoader.vue';
 
 const {
   getFollowersPaginated,
@@ -101,10 +104,6 @@ let selectedTab = ref(
 );
 
 const profile = computed(() => useUserStore().profile);
-
-const updateFollowersList = () => {
-  queryClient.invalidateQueries(['followers']);
-};
 
 onMounted(async () => {
   if (
@@ -168,6 +167,12 @@ onMounted(() => {
 
 const followers = ref([]);
 const following = ref([]);
+
+const updateFollowersList = (userId, follow) => {
+  queryClient.invalidateQueries(['followers']);
+  const index = following.value.findIndex((u) => u.id === userId);
+  following.value[index].followed = follow;
+};
 
 const { isLoading, isError } = useQuery({
   queryKey: ['followers', page, username],

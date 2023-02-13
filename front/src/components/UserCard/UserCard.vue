@@ -1,5 +1,5 @@
 <template>
-  <div :class="!suggestions && 'border-[#4c5157] border-b'">
+  <div :class="!suggestions && 'border-[#4c5157] border-b py-2 px-3'">
     <div class="flex">
       <img
         v-if="user.profilePicture"
@@ -29,8 +29,9 @@
                   bg-[#fff]
                   text-black
                   rounded-full
-                  px-2
+                  px-4
                   py-1
+                  w-28
                   text-sm
                   lg:text-base
                   font-bold
@@ -51,7 +52,8 @@
                   px-4
                   py-1
                   w-28
-                  text-base
+                  text-sm
+                  lg:text-base
                   font-bold
                   transition
                   duration-200
@@ -189,7 +191,7 @@ const followUser = async () => {
   const res = await followUserById(user.value.id);
   if (res) {
     toast.success(`You are now following ${user.value.pseudo} 🙌`);
-    emit('updateFollowersList');
+    emit('updateFollowersList', user.value.id, true);
   } else {
     toast.error(`Something went wrong 😢`);
   }
@@ -199,7 +201,7 @@ const unfollowUser = async () => {
   const res = await unfollowUserById(user.value.id);
   if (res) {
     toast.success(`You are no longer following ${user.value.pseudo} 😢`);
-    emit('updateFollowersList');
+    emit('updateFollowersList', user.value.id, false);
   } else {
     toast.error(`Something went wrong 😢`);
   }
