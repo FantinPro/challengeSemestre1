@@ -1,5 +1,5 @@
 <template>
-  <div class="flex p-2">
+  <div class="flex p-2 hover:bg-opacity-10 hover:bg-black">
     <img
       class="h-12 w-12 rounded-full"
       :src="props.item.owner.profilePicture"
@@ -8,7 +8,7 @@
       <div class="flex gap-1 items-center">
         <router-link
           :to="`/profile/${props.item.owner.pseudo}`"
-          class="font-bold text-gray-200">
+          class="font-bold text-gray-200 hover:underline">
           {{ props.item.owner.pseudo }}
         </router-link>
         <CheckBadgeIcon class="h-4 w-4 text-green-500" />
@@ -18,10 +18,12 @@
           @{{ props.item.owner.pseudo }}
         </router-link>
       </div>
-      <div>
+      <div class="text-base">
         {{ props.item.message }}
       </div>
-      <div
+      <a
+        :href="props.item.link"
+        target="_blank"
         class="
           flex
           text-[10px]
@@ -51,7 +53,7 @@
           <ArrowUpRightIcon class="h-4 w-4 fill-gray-50" />
         </span>
         Sponsored
-      </div>
+      </a>
     </div>
   </div>
 </template>
