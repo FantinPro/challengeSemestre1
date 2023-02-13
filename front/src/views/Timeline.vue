@@ -93,7 +93,7 @@
 </template>
 <script setup>
 import { TabPanel, TabPanels } from '@headlessui/vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useMutation, useQuery, useQueryClient } from 'vue-query';
 import { toast } from 'vue3-toastify';
 import Card from '../components/Card/Card.vue';
@@ -129,15 +129,11 @@ onMounted(() => {
   containerElement.value.addEventListener('scroll', onScroll);
 });
 
-userStore.$subscribe(async (mutation) => {
-  console.log('mutation', mutation)
-  if(mutation.events.key === "refetchFeed") {
-    console.log('refecth feed')
-    feed.value = [];
-    page.value = 1;
-    hasHit80.value = false;
-    await queryClient.invalidateQueries('feedv2')
-  }
+watch(() => userStore.refetchFeed, async () => {
+  feed.value = [];
+  page.value = 1;
+  hasHit80.value = false;
+  await queryClient.invalidateQueries('feedv2')
 });
 
 const feed = ref([]);
