@@ -209,6 +209,7 @@ export const useUserStore = defineStore('user', {
       pseudo,
       bio,
       avatar,
+      password,
     }) {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
         method: 'PUT',
@@ -221,6 +222,7 @@ export const useUserStore = defineStore('user', {
           pseudo,
           bio,
           profilePicture: avatar,
+          password,
         }),
       })
       const json = await response.json()

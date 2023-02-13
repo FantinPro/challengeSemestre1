@@ -14,6 +14,11 @@
       <MenuItems class="absolute left-0 bottom-14 mt-2 w-40 origin-top-left divide-y divide-gray-100 rounded-md bg-neutral-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
         <div class="p-2">
           <MenuItem v-slot="{ active }">
+            <button :class="['flex w-full items-center rounded-md px-2 py-2 text-sm transition duration-200 ease-in-out', active && 'bg-neutral-700']" @click="openDialogSettings">
+              Settings
+            </button>
+          </MenuItem>
+          <MenuItem v-slot="{ active }">
             <button :class="['flex w-full items-center rounded-md px-2 py-2 text-sm transition duration-200 ease-in-out', active && 'bg-neutral-700']" @click="logout">
               Logout
             </button>
@@ -21,6 +26,12 @@
         </div>
       </MenuItems>
     </Menu>
+    <DialogSettings
+      v-if="isOpenDialogSettings"
+      :is-open="isOpenDialogSettings"
+      :profile="user"
+      @close="closeDialogSettings"
+    />
   </div>
 </template>
 
@@ -29,6 +40,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useUserStore } from '../../store/user'
 import { useRouter } from 'vue-router'
 import { ref, watch } from 'vue-demi';
+import DialogSettings from '../Profile/DialogSettings.vue'
 
 const userStore = useUserStore()
 const { user } = userStore;
@@ -41,6 +53,17 @@ watch(
     pseudo.value = newPseudo;
   }
 );
+
+const isOpenDialogSettings = ref(false);
+
+const openDialogSettings = () => {
+  isOpenDialogSettings.value = true
+}
+
+const closeDialogSettings = () => {
+  isOpenDialogSettings.value = false;
+};
+
 
 const logout = () => {
   userStore.logout()
