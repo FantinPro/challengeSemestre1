@@ -25,7 +25,7 @@ app.config.globalProperties.$filters = {
   displayStat(statTitle) {
     if (statTitle === 'nbUsers') return 'Number of users'
     if (statTitle === 'nbAds') return 'Number of Ads'
-    if (statTitle === 'nbMessages') return 'Number of Messages'
+    if (statTitle === 'nbMessages') return 'Number of Echoes'
     if (statTitle === 'amountEarned') return 'Amount Earned'
   },
   shortText(text, length) {

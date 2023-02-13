@@ -1,17 +1,19 @@
 <template>
   <div :class="!suggestions && 'border-[#4c5157] border-b'">
-    <div class="p-2 flex">
+    <div class="flex">
       <img
-        class="w-12 h-12 rounded-full"
+        v-if="user.profilePicture"
         :src="user.profilePicture"
+        class="w-10 h-10 rounded-full"
         alt="avatar" />
-      <div class="ml-2 flex-1">
+      <div v-else class="w-10 h-10 rounded-full bg-gray-400" />
+      <div class="flex-1 ml-1">
         <div class="flex flex-col">
           <div class="flex justify-between">
             <div class="flex flex-col items-baseline">
               <router-link
                 :to="`/profile/${user.pseudo}`"
-                class="font-bold text-white text-lg hover:underline">
+                class="font-bold text-white text-md hover:underline">
                 {{ user.pseudo }}
               </router-link>
               <router-link
@@ -20,16 +22,17 @@
                 @{{ user.pseudo }}
               </router-link>
             </div>
-            <div v-if="!isMe" class="flex items-center p-1 gap-2">
+            <div v-if="!isMe" class="flex items-center gap-2">
               <button
                 v-if="!user.followed"
                 class="
                   bg-[#fff]
                   text-black
                   rounded-full
-                  px-6
+                  px-2
                   py-1
-                  text-base
+                  text-sm
+                  lg:text-base
                   font-bold
                   hover:opacity-80
                   transition
@@ -87,7 +90,6 @@
                     class="h-5 w-5 text-violet-200 hover:text-violet-100"
                     aria-hidden="true" />
                 </MenuButton>
-
                 <transition
                   enter-active-class="transition duration-100 ease-out"
                   enter-from-class="transform scale-95 opacity-0"

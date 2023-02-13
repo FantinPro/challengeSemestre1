@@ -21,7 +21,7 @@
         @click.stop>
         <ArrowPathRoundedSquareIcon
           class="mr-2 h-5 w-5"
-          :class="[props.item.shared ? 'text-green-400' : 'text-[#9ca3af]']" />
+          :class="[shared ? 'text-green-400' : 'text-[#9ca3af]']" />
         <span class="ml-1 text-gray-400">{{ props.item.sharesCount }}</span>
       </MenuButton>
 
@@ -47,7 +47,7 @@
                   class="mr-2 h-5 w-5"
                   :class="[active ? 'text-white-400' : 'text-primary-300']"
                   aria-hidden="true" />
-                {{ props.item.shared ? 'Cancel Share' : 'Share it' }}
+                {{ shared ? 'Remove share' : 'Share it' }}
               </button>
             </MenuItem>
           </div>
@@ -81,6 +81,7 @@ const props = defineProps({
   },
 });
 
+const shared = ref(props.item.shared);
 const emit = defineEmits(['upsertMessageFromFeed']);
 
 const upsertMessageFromFeed = (message) => {
@@ -98,8 +99,13 @@ const { mutate: createShareMutation } = useMutation(
         shared: true,
       });
     },
-    onError: () => {
-      toast.error('Something went wrong');
+    onError: (e) => {
+      if (String(e).match(/already shared/)) {
+        toast.success('Echo has been shared');
+        shared.value = true;
+      } else {
+        toast.error('Something went wrong');
+      }
     },
   }
 );

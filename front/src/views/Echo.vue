@@ -34,7 +34,9 @@
         </template>
         <template #panels>
           <div class="flex flex-col gap-2 border-b border-[#3b4043]">
-            <span v-if="isLoading">Loading...</span>
+            <span v-if="isLoading">
+              <EchoLoader />
+            </span>
             <span v-else-if="isError">Error: {{ error.message }}</span>
             <div v-else-if="echo.creator" class="flex flex-col p-4 pb-2">
               <div v-if="echo.parent" class="flex mb-4">
@@ -55,7 +57,11 @@
                 </div>
                 <div class="ml-2 flex flex-col w-full">
                   <CardHeader :item="echo.parent" @delete-one-message-from-feed="onClickProfile(echo.parent.creator.pseudo)" />
-                  <span class="text-base font-medium">
+                  <div v-if="echo.parent.isDeleted" class="text-white">
+                    <span class="font-bold text-orange-400">[deleted]</span>
+                    <span class="ml-2 text-gray-400">{{ echo.parent.content }}</span>
+                  </div>
+                  <span v-else class="text-base font-medium">
                     {{ echo.parent.content }}
                   </span>
                 </div>
@@ -177,13 +183,19 @@
                 <div class="flex flex-col mb-3">
                   <div
                     v-if="echo.parent"
-                    class="flex text-base font-medium text-gray-400">
+                    class="flex text-base font-medium text-gray-400 mb-1">
                     Replying to
                     <router-link class="ml-1 text-primary-400 hover:underline cursor-pointer" :to="`/profile/${echo.parent.creator.pseudo}`">
                       @{{ echo.parent.creator.pseudo }}
                     </router-link>
                   </div>
-                  <span class="text-lg font-medium">{{ echo.content }}</span>
+                  <div v-if="echo.isDeleted" class="text-white">
+                    <span class="font-bold text-orange-400">[deleted]</span>
+                    <span class="ml-2 text-gray-400">{{ echo.content }}</span>
+                  </div>
+                  <div v-else class="text-base font-medium">
+                    {{ echo.content }}
+                  </div>
                   <span class="text-base text-gray-400 mt-2">{{
                     createdAt(echo.created)
                   }}</span>
@@ -239,9 +251,9 @@ import { FlagIcon } from '@heroicons/vue/20/solid';
 import {
   EllipsisHorizontalIcon,
   TrashIcon,
-  CheckBadgeIcon,
 } from '@heroicons/vue/24/solid';
 import DialogReport from '../components/Dialog/DialogReport.vue';
+import EchoLoader from '../components/Loader/EchoLoader.vue';
 
 import { toast } from 'vue3-toastify';
 import { useFeedStore } from '../store/feed';
@@ -274,7 +286,7 @@ const echoId = ref(router.currentRoute.value.params.id);
 const echo = ref({});
 const username = ref(router.currentRoute.value.params.pseudo);
 const refresh = () => {
-  queryClient.invalidateQueries(['echo', username, echoId]);
+  queryClient.invalidateQueries(['echo']);
 };
 
 watch(

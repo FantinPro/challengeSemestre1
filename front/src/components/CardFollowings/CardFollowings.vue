@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading && data?.length" class="rounded-2xl bg-neutral-800 p-4">
-    <h1 class="text-2xl font-semibold">Suggestions</h1>
-    <div class="mt-2 flex flex-col gap-2 text-center text-xl">
+    <h1 class="text-xl font-semibold">Suggestions</h1>
+    <div class="flex flex-col text-center text-xl gap-1 mt-4">
       <Spin v-if="isLoading" :is-loading="isLoading" />
       <span v-else-if="isError">Error: {{ error.message }}</span>
       <div v-for="user in data" :key="user.id" class="text-left text-base">
