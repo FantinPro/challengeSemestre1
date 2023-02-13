@@ -129,12 +129,12 @@ onMounted(() => {
   containerElement.value.addEventListener('scroll', onScroll);
 });
 
-userStore.$subscribe((mutation) => {
+userStore.$subscribe(async (mutation) => {
   if(mutation.events.key === "refetchFeed") {
     feed.value = [];
     page.value = 1;
     hasHit80.value = false;
-    queryClient.invalidateQueries('feedv2')
+    await queryClient.invalidateQueries('feedv2')
   }
 });
 
